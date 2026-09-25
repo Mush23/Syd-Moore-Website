@@ -1,0 +1,135 @@
+---
+import { site } from "../config/site";
+const current = Astro.url.pathname.replace(/\/$/, "") || "/";
+const isCurrent = (href: string) => current === href || current.startsWith(`${href}/`) ||
+  (href === "/books" && current.startsWith("/series"));
+---
+<header class="site-header">
+  <div class="container bar">
+    <a class="wordmark" href="/" aria-label="Syd Moore, home">Syd Moore</a>
+
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" hidden>
+      <span class="menu-icon" aria-hidden="true"></span>
+      <span>Menu</span>
+    </button>
+
+    <nav id="site-nav" class="site-nav" aria-label="Main">
+      <ul>
+        {site.nav.map((item) => (
+          <li>
+            <a href={item.href} aria-current={isCurrent(item.href) ? "page" : undefined}>{item.label}</a>
+          </li>
+        ))}
+        <li class="nav-cta"><a class="btn btn-primary" href="/newsletter">Newsletter</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  // Mobile menu: progressive enhancement. Without JS the menu simply stays open.
+  const header = document.querySelector<HTMLElement>(".site-header");
+  const toggle = header?.querySelector<HTMLButtonElement>(".menu-toggle");
+  const nav = header?.querySelector<HTMLElement>("#site-nav");
+  if (header && toggle && nav) {
+    header.dataset.js = "true";
+    toggle.hidden = false;
+    const setOpen = (open: boolean) => {
+      toggle.setAttribute("aria-expanded", String(open));
+      header.dataset.open = String(open);
+    };
+    setOpen(false);
+    toggle.addEventListener("click", () => setOpen(toggle.getAttribute("aria-expanded") !== "true"));
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && header.dataset.open === "true") {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+  }
+</script>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--paper) 94%, transparent);
+    backdrop-filter: saturate(1.2) blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    min-height: 4rem;
+    flex-wrap: wrap;
+  }
+  .wordmark {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    text-decoration: none;
+    padding-block: 0.5rem;
+  }
+  .site-nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 1.25rem;
+    list-style: none;
+    padding: 0;
+  }
+  .site-nav a:not(.btn) {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    color: var(--ink);
+    font-weight: 500;
+    font-size: 1rem;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+  }
+  .site-nav a:not(.btn):hover { border-bottom-color: var(--ink); }
+  .site-nav a[aria-current="page"] { border-bottom-color: var(--brass); }
+
+  .menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: var(--tap);
+    padding: 0.5rem 0.9rem;
+    background: transparent;
+    border: 1px solid var(--ink-muted);
+    border-radius: var(--radius);
+    font-weight: 600;
+  }
+  .menu-toggle[hidden] { display: none; }
+  .menu-icon, .menu-icon::before, .menu-icon::after {
+    display: block;
+    width: 18px;
+    height: 2px;
+    background: currentColor;
+    position: relative;
+  }
+  .menu-icon::before, .menu-icon::after { content: ""; position: absolute; left: 0; }
+  .menu-icon::before { top: -6px; }
+  .menu-icon::after { top: 6px; }
+
+  /* Below 1000px, collapse the menu once JS is available */
+  @media (max-width: 999px) {
+    .site-header[data-js] .site-nav { flex-basis: 100%; display: none; padding-bottom: var(--space-2); }
+    .site-header[data-js][data-open="true"] .site-nav { display: block; }
+    .site-header[data-js] .site-nav ul { flex-direction: column; align-items: stretch; gap: 0; }
+    .site-header[data-js] .site-nav li { border-top: 1px solid var(--line); }
+    .site-header[data-js] .site-nav a:not(.btn) { width: 100%; }
+    .nav-cta { padding-top: var(--space-2); }
+    .nav-cta .btn { width: 100%; }
+  }
+  @media (min-width: 1000px) {
+    .menu-toggle { display: none !important; }
+  }
+</style>

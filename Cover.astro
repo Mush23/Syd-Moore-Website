@@ -1,0 +1,84 @@
+---
+/**
+ * A book cover at its true 2:3 ratio. Uses the uploaded cover when there is one,
+ * otherwise an accessible typographic placeholder in the series accent colour.
+ */
+import { Image } from "astro:assets";
+import { coverAlt, coverImage, type Book, type Series } from "../lib/books";
+
+interface Props {
+  book: Book;
+  series?: Series;
+  /** Rendered width in CSS pixels, used for responsive sizes. */
+  width?: number;
+  loading?: "eager" | "lazy";
+  /** When the cover sits inside a link that already names the book, hide it from screen readers. */
+  decorative?: boolean;
+}
+const { book, series, width = 240, loading = "lazy", decorative = false } = Astro.props;
+const img = coverImage(book);
+const accent = series?.data.accent ?? "brass";
+const alt = decorative ? "" : coverAlt(book);
+---
+<div class="cover" data-accent={accent}>
+  {img ? (
+    <Image
+      src={img}
+      alt={alt}
+      widths={[width, width * 2]}
+      sizes={`${width}px`}
+      loading={loading}
+      fetchpriority={loading === "eager" ? "high" : undefined}
+      format="avif"
+    />
+  ) : (
+    <div class="placeholder" role={decorative ? "presentation" : "img"} aria-label={decorative ? undefined : alt}>
+      <span class="ph-series" aria-hidden="true">{series?.data.shortName ?? ""}</span>
+      <span class="ph-title" aria-hidden="true">{book.data.title}</span>
+      <span class="ph-author" aria-hidden="true">Syd Moore</span>
+    </div>
+  )}
+</div>
+
+<style>
+  .cover {
+    aspect-ratio: 2 / 3;
+    width: 100%;
+    border-radius: 3px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.18), 0 10px 24px rgb(0 0 0 / 0.16);
+    background: var(--accent);
+  }
+  .cover :global(img) { width: 100%; height: 100%; object-fit: contain; background: var(--surface); }
+  .placeholder {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 12% 10%;
+    color: #fffcf5;
+    background:
+      radial-gradient(120% 80% at 50% 0%, rgb(255 255 255 / 0.12), transparent 60%),
+      var(--accent);
+    container-type: inline-size;
+  }
+  .ph-series {
+    font-family: var(--font-mono);
+    font-size: max(0.625rem, 6.5cqi);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .ph-title {
+    font-family: var(--font-display);
+    font-size: max(1rem, 12cqi);
+    line-height: 1.05;
+    font-weight: 600;
+    text-wrap: balance;
+  }
+  .ph-author {
+    font-family: var(--font-display);
+    font-size: max(0.75rem, 7.5cqi);
+    border-top: 1px solid rgb(255 252 245 / 0.6);
+    padding-top: 6%;
+  }
+</style>

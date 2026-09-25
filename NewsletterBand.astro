@@ -1,0 +1,23 @@
+---
+import { site } from "../config/site";
+import NewsletterForm from "./NewsletterForm.astro";
+interface Props { idPrefix?: string }
+const { idPrefix = "band" } = Astro.props;
+---
+{site.newsletter.kitFormAction && (
+  <section class="band-night newsletter-band" aria-labelledby={`${idPrefix}-heading`}>
+    <div class="container section-tight inner">
+      <p class="label">Newsletter</p>
+      <h2 id={`${idPrefix}-heading`}>{site.newsletter.name}</h2>
+      <p class="muted">New books, events, and the odd tale from Essex's witchy past. Once a month at most, and never any spam.</p>
+      <NewsletterForm idPrefix={idPrefix} />
+    </div>
+  </section>
+)}
+
+<style>
+  .newsletter-band { margin-top: var(--space-5); }
+  .inner { max-width: 60rem; }
+  .inner > * + * { margin-top: var(--space-1); }
+  .label { color: var(--brass-light); }
+</style>

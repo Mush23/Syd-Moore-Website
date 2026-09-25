@@ -1,0 +1,61 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { eventParts } from "../lib/dates";
+interface Props { event: CollectionEntry<"events">; past?: boolean; headingLevel?: 2 | 3 }
+const { event, past = false, headingLevel = 3 } = Astro.props;
+const e = event.data;
+const when = eventParts(e.start);
+const end = e.end ? eventParts(e.end) : undefined;
+const H = `h${headingLevel}` as "h2" | "h3";
+const typeLabel: Record<string, string> = {
+  talk: "Talk", signing: "Signing", workshop: "Workshop", festival: "Festival", launch: "Launch", other: "Event",
+};
+---
+<article class:list={["event", { past }]}>
+  <div class="date" aria-hidden="true">
+    <span class="d">{when.day}</span>
+    <span class="m">{when.month}</span>
+    <span class="y">{when.year}</span>
+  </div>
+  <div class="body">
+    <p class="label type">{typeLabel[e.type]}</p>
+    <H class="title">{e.title}</H>
+    <p class="meta">
+      <time datetime={e.start}>{when.full}, {when.time}{end ? `–${end.time}` : ""}</time>
+      <br />{e.venue}, {e.town}{e.price ? ` · ${e.price}` : ""}
+    </p>
+    {!past && (
+      <div class="actions">
+        {e.ticketUrl && <a class="btn btn-primary" href={e.ticketUrl} rel="noopener">Tickets<span class="visually-hidden"> for {e.title}</span></a>}
+        <a class="btn btn-secondary" href={`/events/${event.id}.ics`} download>Add to calendar<span class="visually-hidden">: {e.title}</span></a>
+      </div>
+    )}
+  </div>
+</article>
+
+<style>
+  .event {
+    display: grid;
+    grid-template-columns: 4.5rem 1fr;
+    gap: var(--space-2);
+    padding-block: var(--space-3);
+    border-top: 1px solid var(--line);
+  }
+  .date {
+    display: grid;
+    justify-items: center;
+    align-content: start;
+    padding: 0.5rem 0.25rem;
+    border-radius: var(--radius);
+    background: var(--night);
+    color: var(--parchment);
+    line-height: 1.1;
+  }
+  .d { font-family: var(--font-display); font-size: 1.75rem; font-weight: 600; }
+  .m, .y { font-family: var(--font-mono); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; }
+  .type { color: var(--brass); }
+  .title { font-size: 1.3rem; margin-top: 0.15rem; }
+  .meta { margin-top: 0.35rem; color: var(--ink-muted); font-size: 1rem; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: var(--space-2); }
+  .past .date { background: var(--ink-muted); }
+</style>

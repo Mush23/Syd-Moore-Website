@@ -1,0 +1,292 @@
+---
+/**
+ * Buy panel: format tabs (WAI-ARIA tabs pattern), local-first retailer buttons,
+ * the affiliate disclosure above the buttons, and on phones a sticky "Buy" bar
+ * that opens a bottom-sheet <dialog>.
+ *
+ * Works without JavaScript: every format is listed under its own heading.
+ */
+import { site } from "../config/site";
+import { bookStatus, buyLinks, type Book } from "../lib/books";
+
+interface Props { book: Book }
+const { book } = Astro.props;
+const status = bookStatus(book);
+const tabs = status === "coming-soon" ? [] : buyLinks(book);
+const verb = status === "pre-order" ? "Pre-order" : "Buy";
+const heading = status === "coming-soon" ? "Coming soon" : status === "pre-order" ? "Pre-order" : "Buy the book";
+const printIsbn = book.data.isbn.paperback ?? book.data.isbn.hardback;
+const anyIsbn = printIsbn ?? book.data.isbn.ebook;
+const uid = `buy-${book.id}`;
+const title = book.data.title;
+const aria = (label: string) => `${verb} ${title} from ${label} (opens retailer site)`;
+---
+<section class="buy-panel" id={uid} aria-labelledby={`${uid}-heading`} data-buy-panel>
+  <h2 class="buy-heading" id={`${uid}-heading`}>{heading}</h2>
+
+  {status === "coming-soon" ? (
+    <div class="coming-soon">
+      <p>Be the first to hear when <cite>{title}</cite> is available to order.</p>
+      <a class="btn btn-primary" href="/newsletter">Join {site.newsletter.name}</a>
+    </div>
+  ) : tabs.length > 0 ? (
+    <>
+      <p class="disclosure">{site.disclosure}</p>
+
+      {tabs.length > 1 && (
+        <div class="tablist" role="tablist" aria-label="Format" hidden data-tablist>
+          {tabs.map((t, i) => (
+            <button
+              type="button"
+              role="tab"
+              id={`${uid}-tab-${t.tab}`}
+              aria-controls={`${uid}-panel-${t.tab}`}
+              aria-selected={i === 0 ? "true" : "false"}
+              tabindex={i === 0 ? 0 : -1}
+            >{t.label}</button>
+          ))}
+        </div>
+      )}
+
+      {tabs.map((t) => (
+        <div
+          class="tabpanel"
+          id={`${uid}-panel-${t.tab}`}
+          role={tabs.length > 1 ? "tabpanel" : undefined}
+          aria-labelledby={tabs.length > 1 ? `${uid}-tab-${t.tab}` : undefined}
+          data-tabpanel
+        >
+          <h3 class="format-heading">{t.label}</h3>
+          <ul class="retailers">
+            {t.links.map((l) => (
+              <li>
+                <a
+                  class:list={["btn", l.retailer.primary ? "btn-primary" : "btn-retailer"]}
+                  href={l.url}
+                  rel="sponsored noopener"
+                  aria-label={aria(l.retailer.label)}
+                >{l.retailer.primary ? `Buy local: ${l.retailer.label}` : l.retailer.label}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </>
+  ) : (
+    <p>Retailer links are coming soon.</p>
+  )}
+
+  {status !== "coming-soon" && anyIsbn && (
+    <p class="isbn-note">
+      Prefer a bookshop near you? Any bookshop can order it with ISBN <span class="isbn">{anyIsbn}</span>.
+    </p>
+  )}
+</section>
+
+{status !== "coming-soon" && tabs.length > 0 && (
+  <>
+    <div class="buy-bar" data-buy-bar hidden>
+      <button type="button" class="btn btn-primary" data-buy-open aria-haspopup="dialog" aria-controls={`${uid}-sheet`}>
+        {verb} <span class="bar-title">{title}</span>
+      </button>
+    </div>
+    <dialog class="buy-sheet" id={`${uid}-sheet`} aria-labelledby={`${uid}-sheet-heading`} data-buy-sheet>
+      <div class="sheet-head">
+        <h2 id={`${uid}-sheet-heading`}>{verb} <cite>{title}</cite></h2>
+        <button type="button" class="sheet-close" data-buy-close aria-label="Close">×</button>
+      </div>
+      <p class="disclosure">{site.disclosure}</p>
+      {tabs.map((t) => (
+        <div class="sheet-group">
+          <h3 class="format-heading">{t.label}</h3>
+          <ul class="retailers">
+            {t.links.map((l) => (
+              <li>
+                <a
+                  class:list={["btn", l.retailer.primary ? "btn-primary" : "btn-retailer"]}
+                  href={l.url}
+                  rel="sponsored noopener"
+                  aria-label={aria(l.retailer.label)}
+                >{l.retailer.primary ? `Buy local: ${l.retailer.label}` : l.retailer.label}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </dialog>
+  </>
+)}
+
+<script>
+  // ---- Format tabs (WAI-ARIA tabs pattern, automatic activation) ----
+  document.querySelectorAll<HTMLElement>("[data-buy-panel]").forEach((panel) => {
+    const tablist = panel.querySelector<HTMLElement>("[data-tablist]");
+    if (!tablist) return;
+    const tabs = Array.from(tablist.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+    const panels = Array.from(panel.querySelectorAll<HTMLElement>("[data-tabpanel]"));
+    panel.dataset.js = "true";
+    tablist.hidden = false;
+
+    const select = (index: number, focus = true) => {
+      tabs.forEach((tab, i) => {
+        const on = i === index;
+        tab.setAttribute("aria-selected", String(on));
+        tab.tabIndex = on ? 0 : -1;
+        panels[i].hidden = !on;
+      });
+      if (focus) tabs[index].focus();
+    };
+    select(0, false);
+
+    tabs.forEach((tab, i) => {
+      tab.addEventListener("click", () => select(i));
+      tab.addEventListener("keydown", (e) => {
+        const last = tabs.length - 1;
+        const map: Record<string, number> = {
+          ArrowRight: i === last ? 0 : i + 1,
+          ArrowLeft: i === 0 ? last : i - 1,
+          Home: 0,
+          End: last,
+        };
+        if (e.key in map) {
+          e.preventDefault();
+          select(map[e.key]);
+        }
+      });
+    });
+  });
+
+  // ---- Sticky buy bar + bottom sheet (phones) ----
+  const bar = document.querySelector<HTMLElement>("[data-buy-bar]");
+  const sheet = document.querySelector<HTMLDialogElement>("[data-buy-sheet]");
+  const panelEl = document.querySelector<HTMLElement>("[data-buy-panel]");
+  if (bar && sheet && panelEl && typeof sheet.showModal === "function") {
+    const opener = bar.querySelector<HTMLButtonElement>("[data-buy-open]")!;
+    const closer = sheet.querySelector<HTMLButtonElement>("[data-buy-close]")!;
+    bar.hidden = false;
+    document.documentElement.classList.add("has-buy-bar");
+
+    // Only show the bar while the in-page panel is off screen.
+    const io = new IntersectionObserver(([entry]) => {
+      bar.dataset.visible = String(!entry.isIntersecting);
+    });
+    io.observe(panelEl);
+
+    opener.addEventListener("click", () => sheet.showModal());
+    closer.addEventListener("click", () => sheet.close());
+    // Clicking the dimmed backdrop (outside the sheet's box) closes it.
+    sheet.addEventListener("click", (e) => {
+      if (e.target !== sheet) return;
+      const r = sheet.getBoundingClientRect();
+      const inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+      if (!inside) sheet.close();
+    });
+    sheet.addEventListener("close", () => opener.focus());
+  }
+</script>
+
+<style>
+  .buy-panel {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: var(--space-3);
+    box-shadow: var(--shadow);
+  }
+  .buy-heading { font-size: 1.35rem; }
+  .disclosure {
+    margin-top: var(--space-1);
+    font-size: var(--small);
+    color: var(--ink-muted);
+  }
+  .tablist {
+    display: flex;
+    gap: 0.25rem;
+    margin-top: var(--space-2);
+    border-bottom: 1px solid var(--ink-muted);
+  }
+  .tablist[hidden] { display: none; }
+  [role="tab"] {
+    min-height: var(--tap);
+    padding: 0.5rem 0.9rem;
+    background: transparent;
+    border: 0;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -1px;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--ink-muted);
+  }
+  [role="tab"][aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent, var(--brass)); }
+  [role="tab"]:hover { color: var(--ink); }
+
+  .tabpanel { margin-top: var(--space-2); }
+  .tabpanel + .tabpanel { margin-top: var(--space-3); }
+  .buy-panel[data-js] .tabpanel + .tabpanel { margin-top: var(--space-2); }
+  .format-heading { font-family: var(--font-body); font-size: 1rem; font-weight: 600; margin-bottom: var(--space-1); }
+  .buy-panel[data-js] .format-heading { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  .retailers {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  }
+  .retailers li:has(.btn-primary) { grid-column: 1 / -1; }
+  .retailers .btn { width: 100%; }
+  .btn-retailer { background: var(--paper); color: var(--ink); border-color: var(--ink-muted); border-width: 1px; }
+  .btn-retailer:hover { border-color: var(--ink); background: #ebe4d6; }
+
+  .isbn-note { margin-top: var(--space-2); font-size: var(--small); color: var(--ink-muted); }
+  .isbn { font-family: var(--font-mono); letter-spacing: 0.02em; color: var(--ink); }
+  .coming-soon { margin-top: var(--space-1); display: grid; gap: var(--space-2); justify-items: start; }
+
+  /* ---- Sticky bar (phones only) ---- */
+  .buy-bar {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 40;
+    padding: 0.75rem var(--gutter) calc(0.75rem + env(safe-area-inset-bottom));
+    background: color-mix(in srgb, var(--surface) 96%, transparent);
+    border-top: 1px solid var(--line);
+    box-shadow: 0 -6px 18px rgb(28 26 31 / 0.08);
+    transform: translateY(110%);
+    transition: transform var(--duration) ease;
+  }
+  .buy-bar[data-visible="true"] { transform: none; }
+  .buy-bar .btn { width: 100%; }
+  .bar-title { font-style: italic; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 60vw; }
+  @media (min-width: 810px) { .buy-bar { display: none !important; } }
+  .buy-bar[hidden] { display: none; }
+
+  .buy-sheet {
+    width: 100%;
+    max-width: 36rem;
+    max-height: 85vh;
+    margin: auto auto 0;
+    padding: var(--space-3) var(--gutter) calc(var(--space-3) + env(safe-area-inset-bottom));
+    border: 0;
+    border-radius: 12px 12px 0 0;
+    background: var(--surface);
+    color: var(--ink);
+  }
+  .buy-sheet::backdrop { background: rgb(22 20 26 / 0.55); }
+  .sheet-head { display: flex; justify-content: space-between; align-items: start; gap: var(--space-2); }
+  .sheet-head h2 { font-size: 1.35rem; }
+  .sheet-close {
+    min-width: var(--tap);
+    min-height: var(--tap);
+    font-size: 1.75rem;
+    line-height: 1;
+    background: transparent;
+    border: 1px solid var(--ink-muted);
+    border-radius: var(--radius);
+  }
+  .sheet-group { margin-top: var(--space-3); }
+
+  :global(html.has-buy-bar) { scroll-padding-bottom: 6rem; }
+  @media (max-width: 809px) {
+    :global(html.has-buy-bar body) { padding-bottom: 5rem; }
+  }
+</style>

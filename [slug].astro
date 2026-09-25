@@ -1,0 +1,89 @@
+---
+import { render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import SeriesReadingOrder from "../../components/SeriesReadingOrder.astro";
+import NewsletterBand from "../../components/NewsletterBand.astro";
+import BookCard from "../../components/BookCard.astro";
+import { bookUrl, booksInSeries, getBooks, getSeriesList, type Series } from "../../lib/books";
+import { site } from "../../config/site";
+
+export async function getStaticPaths() {
+  const list = await getSeriesList();
+  return list.map((series) => ({ params: { slug: series.id }, props: { series } }));
+}
+
+interface Props { series: Series }
+const { series } = Astro.props;
+const s = series.data;
+const books = await booksInSeries(series.id);
+const start = books.find((b) => b.id === s.startHere);
+const { Content } = await render(series);
+const others = (await getSeriesList()).filter((x) => x.id !== series.id);
+const all = await getBooks();
+
+const ld = series.id === "standalones" ? undefined : {
+  "@context": "https://schema.org",
+  "@type": "BookSeries",
+  name: s.name,
+  url: new URL(`/series/${series.id}`, site.url).toString(),
+  author: { "@type": "Person", name: "Syd Moore" },
+  hasPart: books.map((b) => ({
+    "@type": "Book",
+    name: b.data.title,
+    url: new URL(bookUrl(b), site.url).toString(),
+    ...(b.data.seriesNumber ? { position: b.data.seriesNumber } : {}),
+  })),
+};
+---
+<BaseLayout
+  title={series.id === "standalones" ? "Standalone novels and stories · Syd Moore" : `${s.name} books in order · Syd Moore`}
+  description={s.tagline}
+  accent={s.accent}
+  jsonLd={ld}
+>
+  <header class="series-hero band-night" data-accent={s.accent}>
+    <div class="container page-header">
+      <p class="label">{s.label}</p>
+      <h1>{s.name}</h1>
+      <div class="lede intro"><Content /></div>
+      {start && (
+        <p class="btn-row cta"><a class="btn btn-primary" href={bookUrl(start)}>Start with {start.data.title}</a></p>
+      )}
+    </div>
+  </header>
+
+  <section class="container section" aria-labelledby="order-heading">
+    <h2 id="order-heading">{series.id === "standalones" ? "The books" : "Reading order"}</h2>
+    <div class="order">
+      <SeriesReadingOrder books={books} series={series} headingId="order-heading" />
+    </div>
+    {s.notes.length > 0 && (
+      <ul class="notes">
+        {s.notes.map((n) => <li>{n}</li>)}
+      </ul>
+    )}
+  </section>
+
+  <section class="container section-tight" aria-labelledby="more-heading">
+    <h2 id="more-heading">More from Syd</h2>
+    <div class="grid-books more">
+      {others.map((o) => {
+        const b = all.find((x) => x.id === o.data.startHere);
+        return b ? <BookCard book={b} series={o} /> : null;
+      })}
+    </div>
+  </section>
+
+  <NewsletterBand idPrefix="series-nl" />
+</BaseLayout>
+
+<style>
+  .series-hero .label { color: var(--accent-light); }
+  .intro { color: var(--parchment); }
+  .intro :global(p) { max-width: var(--measure); }
+  .cta { margin-top: var(--space-3); }
+  .order { margin-top: var(--space-3); }
+  .notes { margin-top: var(--space-4); max-width: var(--measure); padding-left: 1.25rem; color: var(--ink-muted); }
+  .notes li + li { margin-top: 0.5rem; }
+  .more { margin-top: var(--space-3); max-width: 40rem; }
+</style>

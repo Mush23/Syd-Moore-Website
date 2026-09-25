@@ -1,0 +1,25 @@
+---
+import { getEntry, render } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import NewsletterBand from "../components/NewsletterBand.astro";
+
+const page = (await getEntry("pages", "essex-girls-and-witches"))!;
+const { Content } = await render(page);
+---
+<BaseLayout title="Essex girls, Essex witches · Syd Moore" description={page.data.description}>
+  <header class="band-night">
+    <div class="container page-header">
+      <p class="label label-light">Essex Girls & Witches</p>
+      <h1>{page.data.title}</h1>
+      {page.data.intro && <p class="lede">{page.data.intro}</p>}
+    </div>
+  </header>
+  <div class="container section-tight">
+    <div class="prose"><Content /></div>
+  </div>
+  <NewsletterBand idPrefix="eglf-nl" />
+</BaseLayout>
+
+<style>
+  .label-light { color: var(--brass-light); }
+</style>

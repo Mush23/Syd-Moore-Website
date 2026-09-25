@@ -1,0 +1,323 @@
+# Pages CMS configuration (https://pagescms.org/docs/configuration/)
+# These forms mirror the schemas in src/content.config.ts. Keep the two in step.
+
+media:
+  - name: covers
+    label: Book covers
+    input: src/assets/covers
+    output: /covers
+    categories: [image]
+    rename: safe
+  - name: photos
+    label: Author photos
+    input: src/assets/photos
+    output: /photos
+    categories: [image]
+  - name: files
+    label: Extracts and downloads
+    input: public/downloads
+    output: /downloads
+    extensions: [pdf, docx, zip, jpg, png]
+
+content:
+  # ------------------------------------------------------------------ Books
+  - name: books
+    label: Books
+    type: collection
+    path: src/content/books
+    format: yaml-frontmatter
+    filename: "{primary}.md"
+    view:
+      primary: title
+      fields: [title, series, pubDate, status, featured]
+      sort: [pubDate, title]
+      default: { sort: pubDate, order: desc }
+    fields:
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: series
+        label: Series
+        type: select
+        required: true
+        options:
+          values:
+            - { name: section-w, label: "Section W" }
+            - { name: essex-witch-museum-mysteries, label: "The Essex Witch Museum Mysteries" }
+            - { name: standalones, label: "Standalones and stories" }
+      - name: seriesNumber
+        label: Book number in the series
+        description: "Novels only (1, 2, 3…). Leave empty for story collections."
+        type: number
+      - name: order
+        label: Reading-order position
+        description: "Sorts books inside the series. Use 4.5 to slot a collection between books 4 and 5."
+        type: number
+        required: true
+      - name: seriesNote
+        label: Series note
+        description: "Shown instead of a book number, e.g. \"Christmas stories\"."
+        type: string
+      - name: status
+        label: Status
+        description: "Automatic shows Pre-order before the publication date and Out now after it. Coming soon hides the buy buttons."
+        type: select
+        default: auto
+        options:
+          values:
+            - { name: auto, label: "Automatic (Pre-order, then Out now)" }
+            - { name: coming-soon, label: "Coming soon (no buy buttons)" }
+      - name: featured
+        label: Feature on the home page
+        description: "Tick one book only. It becomes the big book at the top of the home page."
+        type: boolean
+        default: false
+      - name: pubDate
+        label: UK publication date
+        type: date
+        required: true
+        options:
+          format: yyyy-MM-dd
+      - name: firstPublished
+        label: First published (if earlier edition)
+        description: "e.g. \"October 2012\""
+        type: string
+      - name: formerTitle
+        label: Previous title
+        type: string
+      - name: imprint
+        label: Publisher / imprint
+        type: string
+      - name: pages
+        label: Pages
+        type: number
+      - name: narrator
+        label: Audiobook narrator
+        type: string
+      - name: formats
+        label: Formats
+        type: select
+        options:
+          multiple: true
+          values:
+            - { name: hardback, label: Hardback }
+            - { name: paperback, label: Paperback }
+            - { name: ebook, label: Ebook }
+            - { name: audiobook, label: Audiobook }
+            - { name: large-print, label: Large print }
+      - name: isbn
+        label: ISBNs
+        description: "13 digits, no hyphens."
+        type: object
+        fields:
+          - { name: paperback, label: Paperback, type: string, pattern: "^97[89]\\d{10}$" }
+          - { name: hardback, label: Hardback, type: string, pattern: "^97[89]\\d{10}$" }
+          - { name: ebook, label: Ebook, type: string, pattern: "^97[89]\\d{10}$" }
+          - { name: audio, label: Audiobook, type: string, pattern: "^97[89]\\d{10}$" }
+      - name: hook
+        label: Hook line
+        description: "One sentence, 140 characters max. Used on book cards and in search results."
+        type: string
+        required: true
+      - name: body
+        label: Description
+        description: "The blurb shown on the book page."
+        type: rich-text
+      - name: quotes
+        label: Praise quotes
+        type: object
+        list:
+          collapsible:
+            summary: "{fields.source}"
+        fields:
+          - { name: text, label: Quote, type: text, required: true }
+          - { name: source, label: "Who said it (publication or author)", type: string, required: true }
+      - name: historyNote
+        label: The history behind the book
+        description: "Syd's 100–200 word note. Leave a blank line between paragraphs. Hidden if empty."
+        type: text
+      - name: cover
+        label: Cover image
+        description: "Upload the full front cover (JPG or PNG, at least 1000px tall)."
+        type: image
+        options:
+          media: covers
+      - name: extract
+        label: Extract (PDF)
+        type: file
+        options:
+          media: files
+      - name: links
+        label: Where to buy (leave any empty to hide that button)
+        type: object
+        fields:
+          - { name: readOnSea, label: "Read on Sea (local shop)", type: string }
+          - { name: bookshop, label: "Bookshop.org", type: string }
+          - { name: waterstones, label: "Waterstones", type: string }
+          - { name: hive, label: "Hive", type: string }
+          - { name: blackwells, label: "Blackwell's", type: string }
+          - { name: amazon, label: "Amazon UK (built automatically from the ISBN if empty)", type: string }
+          - { name: kindle, label: "Kindle", type: string }
+          - { name: appleBooks, label: "Apple Books", type: string }
+          - { name: kobo, label: "Kobo", type: string }
+          - { name: googlePlay, label: "Google Play", type: string }
+          - { name: audible, label: "Audible", type: string }
+          - { name: libroFm, label: "Libro.fm", type: string }
+      - name: seoTitle
+        label: Search title (optional)
+        description: "60 characters max. Leave empty to use the book title."
+        type: string
+      - name: seoDescription
+        label: Search description (optional)
+        description: "155 characters max. Leave empty to use the hook line."
+        type: string
+      - name: draft
+        label: Draft (hide from the website)
+        type: boolean
+        default: false
+
+  # ------------------------------------------------------------------ Events
+  - name: events
+    label: Events
+    type: collection
+    path: src/content/events
+    format: yaml-frontmatter
+    filename: "{year}-{month}-{day}-{primary}.md"
+    view:
+      primary: title
+      fields: [title, start, town, draft]
+      default: { sort: start, order: desc }
+    fields:
+      - name: title
+        label: Event title
+        type: string
+        required: true
+      - name: start
+        label: Starts (UK time)
+        type: date
+        required: true
+        options:
+          time: true
+          format: "yyyy-MM-dd'T'HH:mm"
+      - name: end
+        label: Ends (UK time, optional)
+        type: date
+        default: ""
+        options:
+          time: true
+          format: "yyyy-MM-dd'T'HH:mm"
+      - name: venue
+        label: Venue
+        type: string
+        required: true
+      - name: town
+        label: Town
+        type: string
+        required: true
+      - name: type
+        label: Type
+        type: select
+        default: talk
+        options:
+          values: [talk, signing, workshop, festival, launch, other]
+      - name: price
+        label: Price (optional)
+        description: "e.g. \"£10 (£8 concessions)\" or \"Free\""
+        type: string
+      - name: ticketUrl
+        label: Tickets link
+        type: string
+      - name: book
+        label: Related book (optional)
+        description: "The book's file name without .md, e.g. the-grand-illusion"
+        type: string
+      - name: body
+        label: Description
+        type: rich-text
+      - name: draft
+        label: Draft (hide from the website)
+        type: boolean
+        default: false
+
+  # ------------------------------------------------------------------ News
+  - name: news
+    label: News
+    type: collection
+    path: src/content/news
+    format: yaml-frontmatter
+    filename: "{year}-{month}-{day}-{primary}.md"
+    view:
+      primary: title
+      fields: [title, date, draft]
+      default: { sort: date, order: desc }
+    fields:
+      - name: title
+        label: Headline
+        type: string
+        required: true
+      - name: date
+        label: Date
+        type: date
+        required: true
+        options:
+          format: yyyy-MM-dd
+      - name: summary
+        label: Summary
+        description: "One or two sentences, 200 characters max."
+        type: text
+        required: true
+      - name: body
+        label: Post
+        type: rich-text
+      - name: draft
+        label: Draft (hide from the website)
+        type: boolean
+        default: false
+
+  # ------------------------------------------------------------------ Pages
+  - name: pages
+    label: Pages
+    type: collection
+    path: src/content/pages
+    format: yaml-frontmatter
+    operations: { create: false, delete: false, rename: false }
+    view:
+      primary: title
+    fields:
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: description
+        label: Search description
+        type: string
+      - name: intro
+        label: Introduction
+        type: text
+      - name: shortBio
+        label: Short bio (about 50 words)
+        type: text
+      - name: mediumBio
+        label: Medium bio (about 130 words)
+        type: text
+      - name: quickFacts
+        label: Quick facts
+        type: object
+        list: true
+        fields:
+          - { name: label, label: Label, type: string }
+          - { name: value, label: Value, type: string }
+      - name: publicistName
+        label: Publicist name
+        type: string
+      - name: publicistEmail
+        label: Publicist email
+        type: string
+      - name: talkTopics
+        label: Talk topics
+        type: string
+        list: true
+      - name: body
+        label: Page text
+        type: rich-text

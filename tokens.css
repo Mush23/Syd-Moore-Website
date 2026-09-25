@@ -1,0 +1,70 @@
+/*
+ * Design tokens — "archive noir".
+ * Every text/background pairing used on the site passes WCAG 2.2 AA (4.5:1).
+ * Ratios are documented in docs/brief.md ("Design system and accessibility").
+ */
+:root {
+  /* Surfaces */
+  --paper: #f4efe4;          /* page background */
+  --surface: #fffcf5;        /* cards, buy panel */
+  --night: #16141a;          /* hero, newsletter and footer bands */
+  --night-raised: #211e26;   /* cards on night bands */
+
+  /* Text */
+  --ink: #1c1a1f;            /* 15.1:1 on paper */
+  --ink-muted: #5b5560;      /* 6.3:1 on paper */
+  --parchment: #efe8da;      /* 15.0:1 on night */
+  --parchment-muted: #b8af9f;/* 8.4:1 on night */
+
+  /* Brand */
+  --brass: #8a5a12;          /* links, primary buttons on light (5.2:1) */
+  --brass-light: #d9a441;    /* links, primary buttons on night (8.1:1) */
+  --witch-green: #2e5e4e;    /* Essex Witch Museum accent (6.5:1 on paper) */
+  --witch-green-light: #7fbfa8;
+  --oxblood: #8e2b2b;        /* Section W accent (7.2:1 on paper) */
+  --oxblood-light: #e08a7a;
+  --focus: #1d5fd1;          /* 5.1:1 on paper */
+  --focus-light: #8ab4ff;    /* 8.8:1 on night */
+
+  --line: #d9d0bf;           /* hairlines on paper (decorative only) */
+  --line-night: #3a3541;
+
+  /* Type */
+  --font-display: "Fraunces Variable", "Fraunces", Georgia, "Times New Roman", serif;
+  --font-body: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  --text-base: 1.125rem;     /* 18px */
+  --leading: 1.6;
+  --measure: 70ch;
+
+  --h1: clamp(2.25rem, 1.4rem + 3.2vw, 3.5rem);   /* 36 → 56px */
+  --h2: clamp(1.75rem, 1.45rem + 1.2vw, 2.25rem); /* 28 → 36px */
+  --h3: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);  /* 20 → 24px */
+  --small: 0.9375rem;
+  --label: 0.8125rem;
+
+  /* Space & layout */
+  --gutter: 1rem;            /* 16px phone gutter */
+  --max: 75rem;              /* 1200px */
+  --radius: 6px;
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --space-5: 3rem;
+  --space-6: 4.5rem;
+  --tap: 2.75rem;            /* 44px minimum tap target */
+
+  --shadow: 0 1px 2px rgb(28 26 31 / 0.08), 0 8px 24px rgb(28 26 31 / 0.08);
+  --duration: 180ms;
+}
+
+@media (min-width: 810px) {
+  :root { --gutter: 2rem; }
+}
+
+/* Series accents: set data-accent on any wrapper */
+[data-accent="oxblood"] { --accent: var(--oxblood); --accent-light: var(--oxblood-light); }
+[data-accent="witch-green"] { --accent: var(--witch-green); --accent-light: var(--witch-green-light); }
+[data-accent="brass"] { --accent: var(--brass); --accent-light: var(--brass-light); }

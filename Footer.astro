@@ -1,0 +1,77 @@
+---
+import { site } from "../config/site";
+import NewsletterForm from "./NewsletterForm.astro";
+const year = new Date().getFullYear();
+---
+<footer class="site-footer band-night">
+  <div class="container footer-grid section-tight">
+    <div class="footer-brand">
+      <p class="wordmark">Syd Moore</p>
+      <p class="muted">Mysteries with history in their bones.</p>
+      {site.social.length > 0 && (
+        <ul class="social" aria-label="Syd Moore on social media">
+          {site.social.map((s) => (
+            <li><a href={s.url} rel="me noopener">{s.label}</a></li>
+          ))}
+        </ul>
+      )}
+    </div>
+
+    <nav aria-label="Footer">
+      <ul class="footer-links">
+        <li><a href="/books">Books</a></li>
+        <li><a href="/events">Events</a></li>
+        <li><a href="/news">News</a></li>
+        <li><a href="/press">Press</a></li>
+        <li><a href="/contact">Contact</a></li>
+        <li><a href="/privacy">Privacy</a></li>
+        <li><a href="/accessibility">Accessibility</a></li>
+      </ul>
+    </nav>
+
+    {site.newsletter.kitFormAction && (
+      <div class="footer-newsletter">
+        <h2 class="footer-heading">{site.newsletter.name}</h2>
+        <p class="muted">New books and events, once a month at most.</p>
+        <NewsletterForm compact idPrefix="footer" />
+      </div>
+    )}
+  </div>
+  <div class="container legal">
+    <p>{site.amazonStatement} Some other book links are affiliate links too; see the <a href="/privacy#links-to-shops">privacy notice</a>.</p>
+    <p>© {year} Syd Moore</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer { margin-top: var(--space-6); }
+  .footer-grid {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 810px) {
+    .footer-grid { grid-template-columns: 1.2fr 0.8fr 1.4fr; }
+  }
+  .wordmark { font-family: var(--font-display); font-size: 1.75rem; font-weight: 650; }
+  .footer-heading { font-size: 1.25rem; }
+  .social, .footer-links { list-style: none; padding: 0; }
+  .social { display: flex; flex-wrap: wrap; gap: 0.25rem 1.25rem; margin-top: var(--space-2); }
+  .social a, .footer-links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+  }
+  .footer-links { columns: 2; column-gap: var(--space-3); }
+  .footer-newsletter > * + * { margin-top: var(--space-1); }
+  .legal {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-1) var(--space-3);
+    padding-block: var(--space-3);
+    border-top: 1px solid var(--line-night);
+    font-size: var(--small);
+    color: var(--parchment-muted);
+  }
+</style>

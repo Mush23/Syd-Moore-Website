@@ -1,0 +1,18 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+<BaseLayout title="Page not found · Syd Moore" description="This page has vanished." noindex>
+  <div class="container page-header nf">
+    <p class="label">404</p>
+    <h1>This page has vanished.</h1>
+    <p class="lede">Possibly witchcraft. It may have moved, or the link may be wrong.</p>
+    <p class="btn-row cta">
+      <a class="btn btn-primary" href="/books">Back to the books</a>
+      <a class="btn btn-secondary" href="/">Home</a>
+    </p>
+  </div>
+</BaseLayout>
+<style>
+  .nf { padding-block: var(--space-6); }
+  .cta { margin-top: var(--space-3); }
+</style>

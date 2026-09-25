@@ -1,0 +1,40 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import NewsletterBand from "../../components/NewsletterBand.astro";
+import { formatDate } from "../../lib/dates";
+
+const posts = (await getCollection("news", ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+<BaseLayout title="News · Syd Moore" description="News from Syd Moore: new books, events and announcements.">
+  <header class="container page-header">
+    <p class="label">News</p>
+    <h1>News</h1>
+  </header>
+  <div class="container">
+    {posts.length === 0 && <p>No news yet. <a href="/newsletter">Sign up to the newsletter</a> to hear first.</p>}
+    <ol class="posts">
+      {posts.map((p) => (
+        <li>
+          <article>
+            <p class="muted"><time datetime={p.data.date.toISOString().slice(0, 10)}>{formatDate(p.data.date)}</time></p>
+            <h2><a href={`/news/${p.id}`}>{p.data.title}</a></h2>
+            <p>{p.data.summary}</p>
+          </article>
+        </li>
+      ))}
+    </ol>
+    <p class="rss"><a href="/rss.xml">RSS feed</a></p>
+  </div>
+  <NewsletterBand idPrefix="news-nl" />
+</BaseLayout>
+
+<style>
+  .posts { list-style: none; padding: 0; max-width: 46rem; }
+  .posts li { padding-block: var(--space-3); border-top: 1px solid var(--line); }
+  .posts article > * + * { margin-top: 0.35rem; }
+  .posts h2 { font-size: var(--h3); }
+  .posts h2 a { color: var(--ink); }
+  .rss { margin-top: var(--space-3); font-size: var(--small); }
+</style>

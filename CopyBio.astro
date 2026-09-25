@@ -1,0 +1,39 @@
+---
+/** A bio with a "Copy" button (progressive enhancement: the text is always selectable). */
+interface Props { id: string; title: string; text: string }
+const { id, title, text } = Astro.props;
+---
+<div class="bio">
+  <div class="bio-head">
+    <h3 id={`${id}-h`}>{title}</h3>
+    <button type="button" class="btn btn-secondary copy" data-copy={id} hidden>Copy<span class="visually-hidden"> {title}</span></button>
+  </div>
+  <p id={id}>{text}</p>
+  <p class="copied" role="status" data-copied-for={id}></p>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>("[data-copy]").forEach((btn) => {
+    if (!navigator.clipboard) return;
+    btn.hidden = false;
+    btn.addEventListener("click", async () => {
+      const id = btn.dataset.copy!;
+      const text = document.getElementById(id)?.textContent ?? "";
+      const status = document.querySelector<HTMLElement>(`[data-copied-for="${id}"]`);
+      try {
+        await navigator.clipboard.writeText(text.trim());
+        if (status) status.textContent = "Copied to clipboard.";
+      } catch {
+        if (status) status.textContent = "Couldn't copy. Select the text instead.";
+      }
+    });
+  });
+</script>
+
+<style>
+  .bio { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: var(--space-3); }
+  .bio-head { display: flex; justify-content: space-between; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
+  .bio-head h3 { font-family: var(--font-body); font-size: 1rem; font-weight: 600; }
+  .bio p { margin-top: var(--space-1); }
+  .copied { font-size: var(--small); color: var(--witch-green); min-height: 1.2em; }
+</style>

@@ -1,0 +1,33 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import NewsletterForm from "../../components/NewsletterForm.astro";
+import { site } from "../../config/site";
+---
+<BaseLayout
+  title={`${site.newsletter.name} · Syd Moore's newsletter`}
+  description="Be first to hear about Syd Moore's new books and cover reveals, get event invitations, and read history notes from her research."
+>
+  <section class="band-night nl">
+    <div class="container page-header inner">
+      <p class="label label-light">Newsletter</p>
+      <h1>{site.newsletter.name}</h1>
+      <p class="lede">
+        Be first to hear about new books and cover reveals, get event invitations, and read history notes from Syd's
+        research that don't make it into the books. Once a month at most.
+      </p>
+      {site.newsletter.kitFormAction ? (
+        <NewsletterForm idPrefix="nl-page" />
+      ) : (
+        <p class="soon">Sign-up opens soon. In the meantime, <a href="/events">see upcoming events</a> or follow Syd on <a href="https://bsky.app/profile/sydmoore.bsky.social">Bluesky</a>.</p>
+      )}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .nl { padding-bottom: var(--space-5); }
+  .inner { max-width: calc(52rem + 2 * var(--gutter)); }
+  .label-light { color: var(--brass-light); }
+  .lede { color: var(--parchment); }
+  .soon { margin-top: var(--space-3); }
+</style>

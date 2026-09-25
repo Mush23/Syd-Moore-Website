@@ -1,0 +1,17 @@
+# Old sydmoore.com URLs → new pages (301 = permanent, keeps search rankings).
+# See docs/brief.md, "Domain and redirects". Add any other old URLs found by crawling the old site.
+/biography                        /about                                   301
+/biography/                       /about                                   301
+/blog                             /news                                    301
+/blog/                            /news                                    301
+/essex-witch-museum               /series/essex-witch-museum-mysteries     301
+/essex-witch-museum/              /series/essex-witch-museum-mysteries     301
+/syd-moore-strange-magic          /books/strange-magic                     301
+/syd-moore-strange-magic/         /books/strange-magic                     301
+/syd-moore-strange-fascination    /books/strange-fascination               301
+/syd-moore-strange-fascination/   /books/strange-fascination               301
+/syd-moore-the-drowning-pool      /books/the-witching-hour                 301
+/syd-moore-the-drowning-pool/     /books/the-witching-hour                 301
+/noirwich-the-witching-hour       /news                                    301
+/noirwich-the-witching-hour/      /news                                    301
+/books/the-drowning-pool          /books/the-witching-hour                 301

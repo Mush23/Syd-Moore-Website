@@ -1,0 +1,29 @@
+---
+interface Props { text: string; source: string; size?: "large" | "normal" }
+const { text, source, size = "normal" } = Astro.props;
+// Italicise publication names only when they are known outlets.
+---
+<figure class:list={["quote", size]}>
+  <blockquote><p>“{text.replace(/^[“"]|[”"]$/g, "")}”</p></blockquote>
+  <figcaption>{source}</figcaption>
+</figure>
+
+<style>
+  .quote { max-width: 46rem; }
+  blockquote p {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    line-height: 1.35;
+    font-weight: 500;
+    text-wrap: balance;
+  }
+  .large blockquote p { font-size: clamp(1.5rem, 1.2rem + 1.6vw, 2.25rem); }
+  figcaption {
+    margin-top: var(--space-1);
+    font-family: var(--font-mono);
+    font-size: var(--label);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  figcaption::before { content: "— "; }
+</style>

@@ -1,0 +1,94 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import BookCard from "../../components/BookCard.astro";
+import { getBooks, getSeriesList } from "../../lib/books";
+
+const books = await getBooks();
+const seriesList = await getSeriesList();
+const groups = seriesList.map((s) => ({ s, books: books.filter((b) => b.data.series === s.id) }));
+---
+<BaseLayout
+  title="Books by Syd Moore · Section W, Essex Witch Museum and more"
+  description="Every book by Syd Moore: the Section W trilogy, the Essex Witch Museum Mysteries, and standalone ghost stories."
+>
+  <div class="books-page">
+    <header class="container page-header">
+      <p class="label">Bibliography</p>
+      <h1>The books</h1>
+      <p class="lede">
+        Two series, two haunting standalones and a shelf of strange Christmas tales. New here? Start with
+        <a href="/books/strange-magic"><cite>Strange Magic</cite></a> for witches and wit, or
+        <a href="/books/the-grand-illusion"><cite>The Grand Illusion</cite></a> for wartime espionage.
+      </p>
+    </header>
+
+    <div class="container">
+      <fieldset class="filter">
+        <legend>Show</legend>
+        <div class="chips">
+          <input type="radio" name="series-filter" id="f-all" value="all" checked />
+          <label for="f-all">All books</label>
+          {seriesList.map((s) => (
+            <>
+              <input type="radio" name="series-filter" id={`f-${s.id}`} value={s.id} />
+              <label for={`f-${s.id}`}>{s.data.shortName}</label>
+            </>
+          ))}
+        </div>
+      </fieldset>
+    </div>
+
+    {groups.map(({ s, books }) => (
+      <section class="container section-tight group" data-group={s.id} data-accent={s.data.accent} aria-labelledby={`g-${s.id}`}>
+        <div class="group-head">
+          <h2 id={`g-${s.id}`}><a href={`/series/${s.id}`}>{s.data.name}</a></h2>
+          <p class="muted">{s.data.tagline}</p>
+        </div>
+        <div class="grid-books">
+          {books.map((b) => <BookCard book={b} series={s} />)}
+        </div>
+      </section>
+    ))}
+
+    <section class="container section-tight local" aria-labelledby="local-heading">
+      <h2 id="local-heading">Find Syd's books in Essex</h2>
+      <p>
+        Prefer to browse in person? <a href="https://readonsea.co.uk/">Read on Sea</a> on Broadway in Leigh-on-Sea is
+        Syd's local independent bookshop, and any bookshop can order her books using the ISBN on each book's page.
+      </p>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .filter { border: 0; padding: 0; margin-bottom: var(--space-2); }
+  .filter legend { font-weight: 600; margin-bottom: var(--space-1); }
+  .chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .chips input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .chips label {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--ink-muted);
+    border-radius: 999px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 1rem;
+    background: var(--surface);
+  }
+  .chips input:checked + label { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .chips input:focus-visible + label { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+  .books-page:has(#f-section-w:checked) .group:not([data-group="section-w"]),
+  .books-page:has(#f-essex-witch-museum-mysteries:checked) .group:not([data-group="essex-witch-museum-mysteries"]),
+  .books-page:has(#f-standalones:checked) .group:not([data-group="standalones"]) { display: none; }
+
+  .group { border-top: 4px solid var(--accent); margin-top: var(--space-3); }
+  .group-head { margin-block: var(--space-3); }
+  .group-head h2 a { color: inherit; text-decoration: none; }
+  .group-head h2 a:hover { text-decoration: underline; }
+  .group-head p { margin-top: 0.35rem; max-width: 46rem; }
+  .local { margin-top: var(--space-4); }
+  .local p { margin-top: var(--space-1); max-width: var(--measure); }
+</style>

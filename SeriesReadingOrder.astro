@@ -1,0 +1,55 @@
+---
+import Cover from "./Cover.astro";
+import StatusTag from "./StatusTag.astro";
+import { bookStatus, bookUrl, type Book, type Series } from "../lib/books";
+interface Props { books: Book[]; series: Series; currentId?: string; headingId?: string }
+const { books, series, currentId, headingId } = Astro.props;
+const start = series.data.startHere;
+---
+<ol class="reading-order" aria-labelledby={headingId} data-accent={series.data.accent}>
+  {books.map((b) => {
+    const status = bookStatus(b);
+    const current = b.id === currentId;
+    return (
+      <li class:list={["item", { current }]}>
+        <a href={bookUrl(b)} aria-current={current ? "page" : undefined}>
+          <Cover book={b} series={series} width={140} decorative />
+          <span class="num label">
+            {b.data.seriesNumber ? `Book ${b.data.seriesNumber}` : (b.data.seriesNote ?? "Also")}
+          </span>
+          <span class="title">{b.data.title}</span>
+        </a>
+        {b.id === start && !current && <span class="start">Start here</span>}
+        {current && <span class="start">You are here</span>}
+        {status !== "out-now" && <StatusTag status={status} />}
+      </li>
+    );
+  })}
+</ol>
+
+<style>
+  .reading-order {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--space-3) var(--space-2);
+    grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr));
+  }
+  .item { display: flex; flex-direction: column; gap: 0.35rem; align-items: flex-start; }
+  .item a { color: inherit; text-decoration: none; display: flex; flex-direction: column; gap: 0.5rem; width: 100%; }
+  .item a:hover .title { text-decoration: underline; }
+  .num { color: var(--accent); }
+  .title { font-family: var(--font-display); font-weight: 600; line-height: 1.2; }
+  .current a :global(.cover) { outline: 3px solid var(--accent); outline-offset: 3px; }
+  .start {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: var(--accent);
+    color: #fffcf5;
+    padding: 0.1rem 0.45rem;
+    border-radius: 999px;
+  }
+  :global(.band-night) .num { color: var(--accent-light); }
+</style>

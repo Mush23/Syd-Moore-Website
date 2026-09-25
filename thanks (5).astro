@@ -1,0 +1,13 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { site } from "../../config/site";
+---
+<BaseLayout title={`Thanks for joining ${site.newsletter.name}`} description="Check your inbox to confirm your subscription." noindex>
+  <div class="container page-header">
+    <p class="label">Newsletter</p>
+    <h1>Nearly there</h1>
+    <p class="lede">Check your inbox for an email asking you to confirm. Once you click it, you're on the list.</p>
+    <p class="btn-row cta"><a class="btn btn-primary" href="/books">Browse the books</a></p>
+  </div>
+</BaseLayout>
+<style>.cta { margin-top: var(--space-3); }</style>

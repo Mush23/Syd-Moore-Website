@@ -1,0 +1,43 @@
+---
+/**
+ * Plain HTML form that posts straight to Kit — works without JavaScript.
+ * Set Kit's form "After subscribing" option to redirect to https://sydmoore.com/newsletter/thanks
+ */
+import { site } from "../config/site";
+interface Props { compact?: boolean; idPrefix?: string }
+const { compact = false, idPrefix = "nl" } = Astro.props;
+const action = site.newsletter.kitFormAction;
+---
+{action && (
+  <form class:list={["newsletter-form", { compact }]} action={action} method="post">
+    <div class="fields">
+      <div class="field">
+        <label for={`${idPrefix}-name`}>First name</label>
+        <input class="input" id={`${idPrefix}-name`} name="fields[first_name]" type="text" autocomplete="given-name" />
+      </div>
+      <div class="field">
+        <label for={`${idPrefix}-email`}>Email address</label>
+        <input class="input" id={`${idPrefix}-email`} name="email_address" type="email" autocomplete="email" required />
+      </div>
+      <button class="btn btn-primary" type="submit">Sign me up</button>
+    </div>
+    <p class="consent">
+      You'll get emails from Syd Moore about books and events. Unsubscribe any time. See the <a href="/privacy">privacy notice</a>.
+    </p>
+  </form>
+)}
+
+<style>
+  .fields {
+    display: grid;
+    gap: var(--space-2);
+    grid-template-columns: 1fr;
+    align-items: end;
+    margin-top: var(--space-2);
+  }
+  @media (min-width: 810px) {
+    .newsletter-form:not(.compact) .fields { grid-template-columns: 1fr 1.4fr auto; }
+  }
+  .consent { margin-top: var(--space-2); font-size: var(--small); }
+  .band-night .consent { color: var(--parchment-muted); }
+</style>

@@ -1,0 +1,23 @@
+name: Daily rebuild
+
+# Rebuilds the live site every morning so "Pre-order" becomes "Out now" on
+# publication day and past events move into the archive automatically.
+# 05:00 UTC = 06:00 UK time in summer, 05:00 in winter.
+
+on:
+  schedule:
+    - cron: "0 5 * * *"
+  workflow_dispatch:
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Cloudflare Pages deploy hook
+        env:
+          HOOK: ${{ secrets.CF_PAGES_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$HOOK" ]; then
+            echo "CF_PAGES_DEPLOY_HOOK secret is not set yet; see docs/DEPLOY.md" && exit 0
+          fi
+          curl -fsS -X POST "$HOOK"

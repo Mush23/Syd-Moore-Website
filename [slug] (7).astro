@@ -1,0 +1,223 @@
+---
+import { render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Cover from "../../components/Cover.astro";
+import StatusTag from "../../components/StatusTag.astro";
+import BuyPanel from "../../components/BuyPanel.astro";
+import QuoteBlock from "../../components/QuoteBlock.astro";
+import SeriesReadingOrder from "../../components/SeriesReadingOrder.astro";
+import NewsletterBand from "../../components/NewsletterBand.astro";
+import BookCard from "../../components/BookCard.astro";
+import {
+  bookStatus, bookUrl, booksInSeries, formatsText, getBooks, getSeries, getSeriesList, seriesPosition, type Book, type Series,
+} from "../../lib/books";
+import { formatDate } from "../../lib/dates";
+import { bookLd } from "../../lib/jsonld";
+import { site } from "../../config/site";
+
+export async function getStaticPaths() {
+  const books = await getBooks();
+  return books.map((book) => ({ params: { slug: book.id }, props: { book } }));
+}
+
+interface Props { book: Book }
+const { book } = Astro.props;
+const d = book.data;
+const series = await getSeries(d.series);
+const siblings = await booksInSeries(d.series);
+const idx = siblings.findIndex((b) => b.id === book.id);
+const prev = idx > 0 ? siblings[idx - 1] : undefined;
+const next = idx < siblings.length - 1 ? siblings[idx + 1] : undefined;
+const status = bookStatus(book);
+const { Content } = await render(book);
+// History note is plain text from the CMS: blank lines separate paragraphs.
+const historyParas = (d.historyNote ?? "").split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+
+// "If you liked this": the first book of each other series.
+const otherSeries = (await getSeriesList()).filter((s) => s.id !== d.series);
+const allBooks = await getBooks();
+const crossLinks = otherSeries
+  .map((s) => ({ s, b: allBooks.find((b) => b.id === s.data.startHere) }))
+  .filter((x): x is { s: Series; b: Book } => Boolean(x.b));
+
+const details: [string, string][] = [];
+if (status !== "coming-soon") details.push(["UK publication", formatDate(d.pubDate)]);
+if (d.firstPublished) details.push(["First published", d.firstPublished]);
+if (d.imprint) details.push(["Publisher", d.imprint]);
+if (d.formats.length) details.push(["Formats", formatsText(book)]);
+if (d.pages) details.push(["Pages", String(d.pages)]);
+if (d.isbn.paperback) details.push(["ISBN (paperback)", d.isbn.paperback]);
+if (d.isbn.hardback) details.push(["ISBN (hardback)", d.isbn.hardback]);
+if (d.isbn.ebook) details.push(["ISBN (ebook)", d.isbn.ebook]);
+if (d.isbn.audio) details.push(["ISBN (audiobook)", d.isbn.audio]);
+if (d.narrator) details.push(["Audiobook narrator", d.narrator]);
+
+const position = seriesPosition(book, series);
+const title = d.seoTitle ?? `${d.title} by Syd Moore${d.seriesNumber && series ? ` · ${series.data.shortName} book ${d.seriesNumber}` : ""}`;
+const description = d.seoDescription ?? d.hook;
+const ogImage = `/og/${book.id}.png`;
+---
+<BaseLayout
+  title={title}
+  description={description}
+  image={ogImage}
+  imageAlt={`${d.title} by Syd Moore`}
+  type="book"
+  accent={series?.data.accent}
+  jsonLd={bookLd(book, series, new URL(ogImage, site.url).toString())}
+>
+  <nav class="container crumbs" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="/books">Books</a></li>
+      {series && <li><a href={`/series/${series.id}`}>{series.data.name}</a></li>}
+      <li aria-current="page">{d.title}</li>
+    </ol>
+  </nav>
+
+  <article class="container book" aria-labelledby="book-title">
+    <div class="book-cover">
+      <Cover book={book} series={series} width={360} loading="eager" />
+    </div>
+
+    <header class="book-head">
+      <p class="label series-label">{position}</p>
+      <h1 id="book-title">{d.title}</h1>
+      {d.formerTitle && <p class="muted former">Previously published as <cite>{d.formerTitle}</cite></p>}
+      <p class="status-line"><StatusTag status={status} />{status === "pre-order" && <span class="muted"> Out {formatDate(d.pubDate)}</span>}</p>
+      <p class="hook">{d.hook}</p>
+    </header>
+
+    <div class="book-buy">
+      <BuyPanel book={book} />
+    </div>
+
+    <div class="book-body">
+      <section class="prose blurb" aria-label="About the book">
+        <Content />
+      </section>
+
+      {d.quotes.length > 0 && (
+        <section class="quotes" aria-labelledby="praise-heading">
+          <h2 id="praise-heading" class="visually-hidden">Praise</h2>
+          {d.quotes.map((q) => <QuoteBlock text={q.text} source={q.source} />)}
+        </section>
+      )}
+
+      {historyParas.length > 0 && (
+        <section class="history" aria-labelledby="history-heading">
+          <p class="label series-label">From Syd's research</p>
+          <h2 id="history-heading">The history behind the book</h2>
+          <div class="prose">{historyParas.map((p) => <p>{p}</p>)}</div>
+        </section>
+      )}
+
+      {d.extract && (
+        <p><a class="btn btn-secondary" href={d.extract}>Read an extract (PDF)</a></p>
+      )}
+
+      {details.length > 0 && (
+        <section aria-labelledby="details-heading">
+          <h2 id="details-heading" class="details-heading">Details</h2>
+          <dl class="details">
+            {details.map(([k, v]) => (<div><dt>{k}</dt><dd>{v}</dd></div>))}
+          </dl>
+        </section>
+      )}
+    </div>
+  </article>
+
+  {series && series.id !== "standalones" && siblings.length > 1 && (
+    <section class="container section" aria-labelledby="order-heading">
+      <h2 id="order-heading">{series.data.name}: reading order</h2>
+      <div class="order-wrap">
+        <SeriesReadingOrder books={siblings} series={series} currentId={book.id} headingId="order-heading" />
+      </div>
+      <nav class="prev-next" aria-label="Series navigation">
+        {prev && <a href={bookUrl(prev)} rel="prev"><span class="label">Previous</span><span>{prev.data.title}</span></a>}
+        {next && <a href={bookUrl(next)} rel="next" class="next"><span class="label">Next</span><span>{next.data.title}</span></a>}
+      </nav>
+    </section>
+  )}
+
+  {crossLinks.length > 0 && (
+    <section class="container section cross" aria-labelledby="cross-heading">
+      <h2 id="cross-heading">If you liked this</h2>
+      <div class="grid-books">
+        {crossLinks.map(({ s, b }) => <BookCard book={b} series={s} />)}
+      </div>
+    </section>
+  )}
+
+  <NewsletterBand idPrefix="book-nl" />
+</BaseLayout>
+
+<style>
+  .crumbs ol {
+    list-style: none;
+    padding: var(--space-2) 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.5rem;
+    font-size: var(--small);
+    color: var(--ink-muted);
+  }
+  .crumbs li + li::before { content: "/"; margin-right: 0.5rem; color: var(--ink-muted); }
+  .crumbs a { display: inline-flex; align-items: center; min-height: 1.5rem; }
+
+  .book {
+    display: grid;
+    gap: var(--space-3) var(--space-5);
+    padding-block: var(--space-3) var(--space-4);
+    grid-template-columns: 1fr;
+    grid-template-areas: "head" "cover" "buy" "body";
+  }
+  .book-head { grid-area: head; }
+  .book-cover { grid-area: cover; width: min(70%, 18rem); margin-inline: auto; }
+  .book-buy { grid-area: buy; }
+  .book-body { grid-area: body; }
+  @media (min-width: 810px) {
+    .book {
+      grid-template-columns: minmax(15rem, 22rem) 1fr;
+      grid-template-areas: "cover head" "cover buy" "cover body";
+      align-items: start;
+      padding-top: var(--space-4);
+    }
+    .book-cover { width: 100%; position: sticky; top: 6rem; grid-row: 1 / span 3; }
+  }
+  .book-head > * + * { margin-top: var(--space-1); }
+  .series-label { color: var(--accent, var(--brass)); }
+  .hook { font-family: var(--font-display); font-size: 1.35rem; line-height: 1.4; max-width: 40rem; margin-top: var(--space-2); }
+  .status-line { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+
+  .book-body > * + * { margin-top: var(--space-4); }
+  .blurb { font-size: 1.125rem; }
+  .quotes { display: grid; gap: var(--space-3); padding-left: var(--space-3); border-left: 3px solid var(--accent, var(--brass)); }
+  .history { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: var(--space-3); }
+  .history > * + * { margin-top: var(--space-1); }
+  .details-heading { font-size: var(--h3); }
+  .details {
+    margin-top: var(--space-2);
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+    gap: var(--space-2) var(--space-3);
+  }
+  .details dt { font-size: var(--small); color: var(--ink-muted); }
+  .details dd { font-weight: 500; font-variant-numeric: tabular-nums; }
+
+  .order-wrap { margin-top: var(--space-3); }
+  .prev-next { display: flex; justify-content: space-between; gap: var(--space-2); margin-top: var(--space-4); flex-wrap: wrap; }
+  .prev-next a {
+    display: grid;
+    gap: 0.15rem;
+    min-width: 12rem;
+    padding: var(--space-2);
+    border: 1px solid var(--ink-muted);
+    border-radius: var(--radius);
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .prev-next a:hover { border-color: var(--ink); background: var(--surface); }
+  .prev-next .next { margin-left: auto; text-align: right; }
+  .prev-next span:last-child { font-family: var(--font-display); font-weight: 600; }
+  .cross .grid-books { margin-top: var(--space-3); max-width: 40rem; }
+</style>

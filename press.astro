@@ -1,0 +1,72 @@
+---
+import { getEntry, render } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import CopyBio from "../components/CopyBio.astro";
+
+const press = (await getEntry("pages", "press"))!;
+const about = (await getEntry("pages", "about"))!;
+const { Content } = await render(press);
+const p = press.data;
+---
+<BaseLayout title="Press and media · Syd Moore" description={p.description}>
+  <header class="container page-header">
+    <p class="label">Press kit</p>
+    <h1>Press and media</h1>
+    <p class="lede">Bios, facts and contacts for journalists, festivals and event organisers.</p>
+  </header>
+
+  <div class="container press">
+    <section aria-labelledby="bios-heading">
+      <h2 id="bios-heading">Bios</h2>
+      <div class="bios">
+        {about.data.shortBio && <CopyBio id="bio-short" title="Short bio (about 50 words)" text={about.data.shortBio} />}
+        {about.data.mediumBio && <CopyBio id="bio-medium" title="Medium bio (about 130 words)" text={about.data.mediumBio} />}
+      </div>
+    </section>
+
+    <section class="prose facts" aria-label="Fact sheet"><Content /></section>
+
+    <section aria-labelledby="contacts-heading">
+      <h2 id="contacts-heading">Contacts</h2>
+      <dl class="contacts">
+        {p.agentName && (
+          <div>
+            <dt>Rights and representation</dt>
+            <dd>{p.agentName}, {p.agentAgency}{p.agentUrl && <> · <a href={p.agentUrl}>Agency page</a></>}</dd>
+          </div>
+        )}
+        {p.publicistName && (
+          <div>
+            <dt>Publicity and review copies</dt>
+            <dd>{p.publicistName}{p.publicistEmail && <> · <a href={`mailto:${p.publicistEmail}`}>{p.publicistEmail}</a></>}</dd>
+          </div>
+        )}
+        <div>
+          <dt>Events and talks</dt>
+          <dd><a href="/contact?reason=event">Use the booking form</a></dd>
+        </div>
+      </dl>
+    </section>
+
+    {p.selectedPress && p.selectedPress.length > 0 && (
+      <section aria-labelledby="coverage-heading">
+        <h2 id="coverage-heading">Selected coverage</h2>
+        <ul class="coverage">
+          {p.selectedPress.map((c) => (
+            <li><a href={c.url}>{c.title}</a> <span class="muted">· {c.outlet}{c.date ? `, ${c.date}` : ""}</span></li>
+          ))}
+        </ul>
+      </section>
+    )}
+  </div>
+</BaseLayout>
+
+<style>
+  .press { display: grid; gap: var(--space-5); padding-bottom: var(--space-4); max-width: 60rem; }
+  .press h2 { font-size: var(--h2); }
+  .bios { display: grid; gap: var(--space-3); margin-top: var(--space-2); }
+  .contacts { margin-top: var(--space-2); display: grid; gap: var(--space-2); }
+  .contacts dt { font-size: var(--small); color: var(--ink-muted); }
+  .coverage { margin-top: var(--space-2); padding-left: 1.25rem; }
+  .coverage li + li { margin-top: 0.5rem; }
+</style>

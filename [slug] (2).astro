@@ -1,0 +1,41 @@
+---
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import NewsletterBand from "../../components/NewsletterBand.astro";
+import { formatDate } from "../../lib/dates";
+import { site } from "../../config/site";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("news", ({ data }) => !data.draft);
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+interface Props { post: CollectionEntry<"news"> }
+const { post } = Astro.props;
+const { Content } = await render(post);
+const ld = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: post.data.title,
+  datePublished: post.data.date.toISOString().slice(0, 10),
+  author: { "@type": "Person", name: "Syd Moore", url: site.url },
+  url: new URL(`/news/${post.id}`, site.url).toString(),
+  description: post.data.summary,
+};
+---
+<BaseLayout title={`${post.data.title} · Syd Moore`} description={post.data.summary} type="article" jsonLd={ld}>
+  <article class="container post">
+    <header class="page-header">
+      <p class="label"><a href="/news">News</a></p>
+      <h1>{post.data.title}</h1>
+      <p class="muted"><time datetime={post.data.date.toISOString().slice(0, 10)}>{formatDate(post.data.date)}</time></p>
+    </header>
+    <div class="prose"><Content /></div>
+  </article>
+  <NewsletterBand idPrefix="post-nl" />
+</BaseLayout>
+
+<style>
+  .post { max-width: calc(46rem + 2 * var(--gutter)); }
+  .page-header .label a { color: inherit; }
+  .page-header p.muted { margin-top: var(--space-1); }
+</style>

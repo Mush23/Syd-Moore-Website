@@ -1,0 +1,129 @@
+---
+import { getEntry } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { site } from "../config/site";
+
+const press = (await getEntry("pages", "press"))!;
+const p = press.data;
+const formOn = site.contact.formEnabled && Boolean(site.contact.turnstileSiteKey);
+---
+<BaseLayout title="Contact · Syd Moore" description="Contact Syd Moore about events and talks, press, rights, or just to say hello.">
+  <header class="container page-header">
+    <p class="label">Contact</p>
+    <h1>Get in touch</h1>
+    <p class="lede">
+      For rights and representation, contact {p.agentName} at {p.agentAgency}. For talks and events, use the form below.
+      Readers: say hello here too.
+    </p>
+  </header>
+
+  <div class="container contact">
+    <section aria-labelledby="who-heading" class="who">
+      <h2 id="who-heading">Who to contact</h2>
+      <dl>
+        <div>
+          <dt>Rights, translation and screen</dt>
+          <dd>{p.agentName}, {p.agentAgency}{p.agentUrl && <> · <a href={p.agentUrl}>Agency page</a></>}</dd>
+        </div>
+        {p.publicistName && (
+          <div>
+            <dt>Review copies and interviews</dt>
+            <dd>{p.publicistName}{p.publicistEmail && <> · <a href={`mailto:${p.publicistEmail}`}>{p.publicistEmail}</a></>}</dd>
+          </div>
+        )}
+        <div>
+          <dt>Press kit</dt>
+          <dd><a href="/press">Bios, facts and coverage</a></dd>
+        </div>
+      </dl>
+    </section>
+
+    {formOn ? (
+      <section aria-labelledby="form-heading">
+        <h2 id="form-heading">Send a message</h2>
+        <form class="contact-form" method="post" action="/api/contact" novalidate data-contact-form>
+          <div class="field">
+            <label for="c-name">Your name</label>
+            <input class="input" id="c-name" name="name" type="text" autocomplete="name" required />
+          </div>
+          <div class="field">
+            <label for="c-email">Email address</label>
+            <input class="input" id="c-email" name="email" type="email" autocomplete="email" required aria-describedby="c-email-hint" />
+            <p class="hint" id="c-email-hint">So Syd can reply. It won't be added to any mailing list.</p>
+          </div>
+          <div class="field">
+            <label for="c-reason">What's it about?</label>
+            <select class="input" id="c-reason" name="reason">
+              <option value="event">Booking Syd for an event or talk</option>
+              <option value="press">Press or media</option>
+              <option value="reader">A message from a reader</option>
+              <option value="other">Something else</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="c-message">Message</label>
+            <textarea class="input" id="c-message" name="message" required rows="6"></textarea>
+          </div>
+          <div class="hp-field" aria-hidden="true">
+            <label for="c-website">Leave this empty</label>
+            <input id="c-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+          </div>
+          <div class="cf-turnstile" data-sitekey={site.contact.turnstileSiteKey} data-theme="light"></div>
+          <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+          <p class="form-error" role="alert" data-form-error></p>
+          <button class="btn btn-primary" type="submit">Send message</button>
+          <p class="hint">We'll use your details only to reply. See the <a href="/privacy">privacy notice</a>.</p>
+        </form>
+      </section>
+    ) : (
+      <section aria-labelledby="events-heading">
+        <h2 id="events-heading">Events and talks</h2>
+        <p>
+          To book Syd for a festival, library, school or book group, please contact {p.agentName} at {p.agentAgency}
+          {p.agentUrl && <> via the <a href={p.agentUrl}>agency page</a></>}.
+        </p>
+      </section>
+    )}
+  </div>
+</BaseLayout>
+
+<script>
+  // Pre-select the reason from ?reason=event, and show friendly validation messages.
+  const form = document.querySelector<HTMLFormElement>("[data-contact-form]");
+  if (form) {
+    const reason = new URLSearchParams(location.search).get("reason");
+    const select = form.querySelector<HTMLSelectElement>("#c-reason");
+    if (reason && select && [...select.options].some((o) => o.value === reason)) select.value = reason;
+
+    const error = form.querySelector<HTMLElement>("[data-form-error]")!;
+    const problems: Record<string, string> = {
+      invalid: "Please add your name, a valid email address and a message.",
+      verify: "We couldn't confirm you're not a robot. Please try again.",
+      send: "Sorry, your message didn't send. Please try again in a few minutes.",
+    };
+    const problem = new URLSearchParams(location.search).get("error");
+    if (problem && problems[problem]) error.textContent = problems[problem];
+
+    form.addEventListener("submit", (e) => {
+      const invalid = [...form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>("[required]")].filter((f) => !f.checkValidity());
+      if (invalid.length) {
+        e.preventDefault();
+        const names = invalid.map((f) => form.querySelector(`label[for="${f.id}"]`)?.textContent?.toLowerCase()).join(", ");
+        error.textContent = `Please fill in: ${names}.`;
+        invalid[0].focus();
+      }
+    });
+  }
+</script>
+
+<style>
+  .contact { display: grid; gap: var(--space-5); padding-bottom: var(--space-4); }
+  @media (min-width: 810px) { .contact { grid-template-columns: 1fr 1.3fr; align-items: start; } }
+  .who dl { margin-top: var(--space-2); display: grid; gap: var(--space-2); }
+  .who dt { font-size: var(--small); color: var(--ink-muted); }
+  h2 { font-size: var(--h3); }
+  .contact-form { display: grid; gap: var(--space-3); margin-top: var(--space-2); max-width: 36rem; }
+  .form-error { color: var(--oxblood); font-weight: 600; min-height: 1em; }
+  .form-error:empty { display: none; }
+  section > p { margin-top: var(--space-1); }
+</style>

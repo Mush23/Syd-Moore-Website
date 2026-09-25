@@ -1,0 +1,68 @@
+---
+import { getCollection, getEntry } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import EventRow from "../../components/EventRow.astro";
+import { buildNow, fromLondon } from "../../lib/dates";
+import { eventLd } from "../../lib/jsonld";
+
+const now = buildNow();
+const all = (await getCollection("events", ({ data }) => !data.draft))
+  .sort((a, b) => fromLondon(a.data.start).getTime() - fromLondon(b.data.start).getTime());
+const upcoming = all.filter((e) => fromLondon(e.data.end ?? e.data.start) >= now);
+const past = all.filter((e) => fromLondon(e.data.end ?? e.data.start) < now).reverse();
+const press = await getEntry("pages", "press");
+---
+<BaseLayout
+  title="Syd Moore events and talks"
+  description="Talks, signings and workshops with Syd Moore across Essex and beyond, and how to book her for your festival, library or book group."
+  jsonLd={upcoming.map(eventLd)}
+>
+  <header class="container page-header">
+    <p class="label">Events</p>
+    <h1>Events and talks</h1>
+    <p class="lede">Talks, signings and workshops across Essex and beyond. Want Syd at your festival, library, school or book group?</p>
+    <p class="btn-row cta"><a class="btn btn-primary" href="/contact?reason=event">Book Syd for a talk</a></p>
+  </header>
+
+  <section class="container section-tight" aria-labelledby="upcoming-heading">
+    <h2 id="upcoming-heading">Coming up</h2>
+    {upcoming.length > 0 ? (
+      <div class="list">{upcoming.map((e) => <EventRow event={e} />)}</div>
+    ) : (
+      <p class="empty">New dates are announced in the newsletter first. <a href="/newsletter">Sign up to hear about them.</a></p>
+    )}
+  </section>
+
+  {press?.data.talkTopics && (
+    <section class="container section-tight" aria-labelledby="topics-heading">
+      <h2 id="topics-heading">Talk topics</h2>
+      <ul class="topics">
+        {press.data.talkTopics.map((t) => <li>{t}</li>)}
+      </ul>
+    </section>
+  )}
+
+  {past.length > 0 && (
+    <section class="container section-tight" aria-labelledby="past-heading">
+      <h2 id="past-heading" class="past-heading">Past events</h2>
+      <details class="archive">
+        <summary>Show {past.length} past {past.length === 1 ? "event" : "events"}</summary>
+        <div class="list">{past.map((e) => <EventRow event={e} past />)}</div>
+      </details>
+    </section>
+  )}
+</BaseLayout>
+
+<style>
+  .cta { margin-top: var(--space-3); }
+  .list { margin-top: var(--space-2); }
+  .empty { margin-top: var(--space-2); }
+  .topics { margin-top: var(--space-2); padding-left: 1.25rem; }
+  .topics li + li { margin-top: 0.35rem; }
+  .archive summary { cursor: pointer; display: flex; align-items: center; gap: 0.5rem; min-height: var(--tap); }
+  .past-heading { font-size: var(--h3); }
+  .archive { margin-top: var(--space-1); }
+  .archive summary::marker { content: ""; }
+  .archive summary::before { content: "▸"; font-size: 1rem; transition: transform var(--duration) ease; }
+  .archive[open] summary::before { transform: rotate(90deg); }
+</style>

@@ -1,0 +1,174 @@
+---
+import { getCollection, getEntry } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Cover from "../components/Cover.astro";
+import StatusTag from "../components/StatusTag.astro";
+import QuoteBlock from "../components/QuoteBlock.astro";
+import NewsletterBand from "../components/NewsletterBand.astro";
+import EventRow from "../components/EventRow.astro";
+import { site } from "../config/site";
+import { bookStatus, bookUrl, getBooks, getFeaturedBook, getSeries, getSeriesList, seriesPosition } from "../lib/books";
+import { formatDate, fromLondon, buildNow } from "../lib/dates";
+import { personLd, websiteLd } from "../lib/jsonld";
+
+const featured = await getFeaturedBook();
+const featuredSeries = await getSeries(featured.data.series);
+const status = bookStatus(featured);
+const books = await getBooks();
+const seriesList = (await getSeriesList()).filter((s) => s.id !== "standalones");
+
+const now = buildNow();
+const upcoming = (await getCollection("events", ({ data }) => !data.draft))
+  .filter((e) => fromLondon(e.data.end ?? e.data.start) >= now)
+  .sort((a, b) => fromLondon(a.data.start).getTime() - fromLondon(b.data.start).getTime())
+  .slice(0, 3);
+
+const about = await getEntry("pages", "about");
+
+// Praise band: the first available quote from the series lead-in books.
+const praise = ["strange-magic", "the-grand-illusion", "the-witching-hour"]
+  .map((id) => books.find((b) => b.id === id)?.data.quotes[0])
+  .find((q): q is { text: string; source: string } => Boolean(q));
+
+const label = status === "pre-order"
+  ? `New · ${seriesPosition(featured, featuredSeries)} · ${formatDate(featured.data.pubDate)}`
+  : `${status === "coming-soon" ? "Coming soon" : "Out now"} · ${seriesPosition(featured, featuredSeries)}`;
+---
+<BaseLayout jsonLd={[websiteLd(), personLd()]}>
+  <section class="hero band-night" aria-labelledby="hero-title" data-accent={featuredSeries?.data.accent}>
+    <div class="container hero-grid">
+      <div class="hero-cover">
+        <Cover book={featured} series={featuredSeries} width={320} loading="eager" />
+      </div>
+      <div class="hero-copy">
+        <p class="label hero-label">{label}</p>
+        <h1 id="hero-title">{featured.data.title}</h1>
+        <p class="hero-hook">{featured.data.hook}</p>
+        <p><StatusTag status={status} /></p>
+        <div class="btn-row">
+          <a class="btn btn-primary" href={`${bookUrl(featured)}#buy-${featured.id}`}>
+            {status === "pre-order" ? "Pre-order now" : status === "coming-soon" ? "Find out more" : "Buy now"}
+          </a>
+          {featuredSeries && featuredSeries.id !== "standalones" && (
+            <a class="btn btn-secondary" href={`/series/${featuredSeries.id}`}>Discover {featuredSeries.data.shortName}</a>
+          )}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container section-tight welcome" aria-label="Introduction">
+    <p class="lede">
+      Syd Moore writes mysteries with history in their bones: witty, spooky stories drawn from the real witch trials,
+      folklore and wartime secrets of Essex and beyond.
+    </p>
+  </section>
+
+  <section class="container section series-cards" aria-labelledby="series-heading">
+    <h2 id="series-heading" class="visually-hidden">The series</h2>
+    {seriesList.map((s) => {
+      const first = books.find((b) => b.id === s.data.startHere);
+      return (
+        <article class="series-card" data-accent={s.data.accent}>
+          {first && <div class="series-cover"><Cover book={first} series={s} width={180} decorative /></div>}
+          <div class="series-copy">
+            <p class="label accent">{s.data.label}</p>
+            <h3><a href={`/series/${s.id}`}>{s.data.name}</a></h3>
+            <p>{s.data.tagline}</p>
+            {first && <a class="btn btn-secondary" href={bookUrl(first)}>Start with {first.data.title}</a>}
+          </div>
+        </article>
+      );
+    })}
+  </section>
+
+  {praise && (
+    <section class="container section-tight praise" aria-label="Praise">
+      <QuoteBlock text={praise.text} source={praise.source} size="large" />
+    </section>
+  )}
+
+  <NewsletterBand idPrefix="home-nl" />
+
+  {upcoming.length > 0 && (
+    <section class="container section" aria-labelledby="events-heading">
+      <div class="section-head">
+        <h2 id="events-heading">Coming up</h2>
+        <a href="/events">See all events</a>
+      </div>
+      {upcoming.map((e) => <EventRow event={e} />)}
+    </section>
+  )}
+
+  <section class="container section meet" aria-labelledby="meet-heading">
+    <div class="meet-copy">
+      <p class="label accent-brass">About</p>
+      <h2 id="meet-heading">Meet Syd</h2>
+      <p>{about?.data.shortBio}</p>
+      <a class="btn btn-secondary" href="/about">More about Syd</a>
+    </div>
+    <aside class="eglf band-night" aria-labelledby="eglf-heading">
+      <p class="label accent-brass-light">Essex Girls & Witches</p>
+      <h2 id="eglf-heading">The women history called witches</h2>
+      <p>
+        The women of Essex were called witches for centuries. Now they're called something else. Syd co-founded the
+        Essex Girls Liberation Front to change that.
+      </p>
+      <a class="btn btn-primary" href="/essex-girls-and-witches">Read the story</a>
+    </aside>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero { padding-block: var(--space-5); }
+  .hero-grid {
+    display: grid;
+    gap: var(--space-4);
+    align-items: center;
+    grid-template-columns: 1fr;
+  }
+  .hero-cover { width: min(62%, 17rem); margin-inline: auto; }
+  @media (min-width: 810px) {
+    .hero { padding-block: var(--space-6); }
+    .hero-grid { grid-template-columns: minmax(14rem, 20rem) 1fr; gap: var(--space-6); }
+    .hero-cover { width: 100%; }
+  }
+  .hero-copy > * + * { margin-top: var(--space-2); }
+  .hero-label { color: var(--accent-light, var(--brass-light)); }
+  .hero-hook { font-size: 1.25rem; max-width: 36rem; color: var(--parchment); }
+  .hero .btn-row { margin-top: var(--space-3); }
+
+  .welcome { padding-top: var(--space-5); }
+  .welcome .lede { font-family: var(--font-display); font-size: clamp(1.35rem, 1.1rem + 1vw, 1.75rem); line-height: 1.4; }
+
+  .series-cards { display: grid; gap: var(--space-3); padding-top: var(--space-3); }
+  @media (min-width: 810px) { .series-cards { grid-template-columns: 1fr 1fr; } }
+  .series-card {
+    display: grid;
+    grid-template-columns: 7.5rem 1fr;
+    gap: var(--space-3);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-top: 4px solid var(--accent);
+    border-radius: var(--radius);
+    padding: var(--space-3);
+  }
+  @media (max-width: 420px) { .series-card { grid-template-columns: 5.5rem 1fr; gap: var(--space-2); } }
+  .series-copy > * + * { margin-top: var(--space-1); }
+  .series-copy h3 a { color: inherit; text-decoration: none; }
+  .series-copy h3 a:hover { text-decoration: underline; }
+  .series-copy .btn { margin-top: var(--space-2); }
+  .accent { color: var(--accent); }
+  .accent-brass { color: var(--brass); }
+  .accent-brass-light { color: var(--brass-light); }
+
+  .praise { display: flex; justify-content: center; text-align: center; padding-block: var(--space-5); }
+  .praise :global(.quote) { margin-inline: auto; }
+
+  .section-head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-2); flex-wrap: wrap; margin-bottom: var(--space-2); }
+
+  .meet { display: grid; gap: var(--space-4); }
+  @media (min-width: 810px) { .meet { grid-template-columns: 1.1fr 1fr; align-items: start; } }
+  .meet-copy > * + *, .eglf > * + * { margin-top: var(--space-2); }
+  .eglf { padding: var(--space-4); border-radius: var(--radius); }
+</style>
