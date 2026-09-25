@@ -1,6 +1,6 @@
 # Content to supply or confirm
 
-Everything below is either missing or unconfirmed. The site builds and works without these, and empty sections stay hidden. Items marked **launch** matter before 8 October 2026.
+Last reviewed 25 September 2026. Everything below is either missing or unconfirmed. The site builds and works without these, and empty sections stay hidden. Items marked **launch** matter before 8 October 2026.
 
 ## Whole site
 
@@ -18,6 +18,7 @@ Everything below is either missing or unconfirmed. The site builds and works wit
 - [ ] **launch** High-resolution covers for all 14 published titles plus *The Final Act of Daphne Devine* (upload in Pages CMS → Books → Cover)
 - [ ] **launch** Check every description against the publisher-approved blurb (drafts are in each book file)
 - [ ] **launch** Confirm the praise quotes can be used on the site (Oneworld and HarperCollins publicity)
+- [ ] *The Final Act of Daphne Devine*: a review quote of its own once reviews arrive. It currently shows Erin Kelly's quote about *The Grand Illusion*, labelled as such, as the brief suggests.
 - [ ] "The history behind the book" note for each novel, 100–200 words (start with Section W)
 - [ ] Extracts (PDF) if the publishers allow them
 - [ ] Verify the ebook ISBNs (taken from Simon & Schuster listings) and the audiobook ISBN for *The Great Deception*

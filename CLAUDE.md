@@ -4,12 +4,13 @@ Author website for novelist Syd Moore. Read `docs/brief.md` for content and desi
 
 ## Stack (decided)
 
-- **Astro 5**, static output, strict TypeScript. `build.format: "file"` and `trailingSlash: "never"` give clean URLs (`/about`) on Cloudflare Pages.
+- **Astro 7** (Zod 4 via `astro/zod`), static output, strict TypeScript. Needs Node 22.12+ (`.nvmrc` = 22). `build.format: "file"` and `trailingSlash: "never"` give clean URLs (`/about`) on Cloudflare Pages.
 - **Content collections** (`src/content.config.ts`): books, series, events, news, pages. Markdown with YAML frontmatter, one file per entry.
 - **Pages CMS** (`.pages.yml`) edits the same files. Keep `.pages.yml` and the Zod schemas in step.
 - **Plain CSS** with tokens in `src/styles/tokens.css`. No Tailwind, no UI framework.
 - **Client JS is limited to:** buy-panel tabs and mobile sheet (`BuyPanel.astro`), mobile menu (`Header.astro`), and the bio copy button (`CopyBio.astro`).
 - **Fonts** self-hosted with Fontsource (Fraunces, Inter, IBM Plex Mono). No Google Fonts requests.
+  - The Latin Fraunces and Inter files are preloaded in `BaseLayout.astro`, and `tokens.css` defines size-matched "Fraunces Fallback" and "Inter Fallback" faces (Georgia and Arial with `size-adjust`), so text doesn't shift when the fonts load. Keep both if the font files change.
 - **Hosting:** Cloudflare Pages. `public/_redirects` holds 301s from the old site; `public/_headers` holds the CSP and security headers.
 - **Newsletter:** Kit free plan via a plain HTML form (`PUBLIC_KIT_FORM_ACTION`).
 - **Contact form:** Pages Function `functions/api/contact.ts` with Turnstile, a honeypot, and email through **Resend**.
@@ -42,15 +43,28 @@ npm test          # Playwright: routes, buy panel, keyboard, axe, links, redirec
 npm run lhci      # Lighthouse budgets (perf ≥ 95, a11y 100, best practices ≥ 95, SEO 100)
 ```
 
-## Status (24 Sep 2026)
+## Status (25 Sep 2026)
 
-- All source files are written: pages, components, content for 15 books, 3 series, 2 events (1 draft) and 1 news post, plus CMS config, CI, the daily rebuild and the docs.
-- **Not yet run:** `npm install`, the build and the tests. The build environment's network blocked the npm registry.
-- **First thing to do:** run `npm install && npm run verify` and fix anything that fails. Then commit `package-lock.json`.
+- Installed, built and tested for the first time on branch `finish-and-test`.
+- `npm run check`: 0 errors, 0 warnings, 0 hints. `npm run build`: 32 pages, no warnings.
+- `npm test`: all 65 Playwright tests pass (routes, axe WCAG 2.2 AA, buy panel, keyboard tabs, phone sheet, links, redirects).
+- `npm run lhci`: 100 / 100 / 100 / 100 (mobile) on `/`, the Final Act book page and `/series/section-w`.
+- Screenshots of the four key pages at 1200px and 390px were checked against the brief: no horizontal scroll, covers at 2:3, buttons at least 44px.
+- The repo's first commit had every file flattened into the root by the browser upload. The folder structure was restored from the original zip; contents were unchanged.
+
+### Decisions made while finishing
+
+- Upgraded to Astro 7 (current) rather than staying on Astro 5. Only small code changes were needed.
+- TypeScript is pinned to 6.x because `@astrojs/check` doesn't support 7 yet.
+- Astro 7's HTML compression drops a line break between text and an inline element. Write `{" "}` where a sentence breaks onto a new line before a link.
+- `npm audit` (Sep 2026) flags:
+  - a moderate `fflate` issue via Satori, which only runs at build time on our own font files;
+  - dev-only issues in `@lhci/cli`.
+  None of them reach visitors. Recheck when Satori or LHCI release updates.
 
 ## Next steps
 
-1. `npm install && npm run verify`; fix any build or type errors.
-2. Pin the dependency versions from the resulting lockfile.
-3. Deploy to Cloudflare Pages following `docs/DEPLOY.md`.
-4. Work through `docs/CONTENT-TODO.md` with Syd, covers and the portrait first.
+1. Merge the `finish-and-test` pull request.
+2. Deploy to Cloudflare Pages following `docs/DEPLOY.md`. Check the `*.pages.dev` URL before any DNS change.
+3. Work through `docs/CONTENT-TODO.md` with Syd, covers and the portrait first.
+4. Before launch, test with VoiceOver on an iPhone. The brief's checklist asks for this and it can't be automated.
