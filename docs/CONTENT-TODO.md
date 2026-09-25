@@ -7,6 +7,8 @@ Last reviewed 25 September 2026. Everything below is either missing or unconfirm
 - [ ] **launch** Author portrait: save as `src/assets/photos/syd-moore-portrait.jpg` (2–3 options, with photographer credit and a written licence)
 - [ ] **launch** Kit newsletter form: create the form, paste its action URL into `PUBLIC_KIT_FORM_ACTION`, and set Kit's "after subscribing" redirect to `https://sydmoore.com/newsletter/thanks`
 - [ ] **launch** Read on Sea: agree to be the lead "Buy local" button, and send their Bookshop.org product links (or confirm the shop link format) for each title; say whether they'll handle signed copies
+- [ ] **launch** Syd to approve the privacy notice. It now names GitHub as the host, and there's no contact form: visitors email her or her agent instead.
+- [ ] Decide whether a contact form is wanted. GitHub Pages can't run one itself, but a hosted form service can be added.
 - [ ] Amazon Associates UK store ID → `PUBLIC_AMAZON_TAG`
 - [ ] Bookshop.org, Waterstones (Awin) and Hive (Webgains) affiliate links for each book
 - [ ] Confirm X (@SydMoore1) and Instagram (@sydmoorewriter) are active, then add them to `site.social` in `src/config/site.ts`

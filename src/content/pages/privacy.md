@@ -1,7 +1,7 @@
 ---
 title: "Privacy notice"
 description: "How sydmoore.com handles your personal information."
-updated: "2026-09-24"
+updated: "2026-09-25"
 ---
 
 This notice explains what personal information this website collects, why, and what your rights are under UK data protection law (UK GDPR and the Data Protection Act 2018).
@@ -15,15 +15,15 @@ Syd Moore is the controller of the personal information collected through this s
 | What | Why | Lawful basis | How long |
 | --- | --- | --- | --- |
 | Your name and email, if you sign up to *Strange Tidings* | To send you the newsletter | Your consent | Until you unsubscribe |
-| Your name, email and message, if you use the contact form | To reply to you | Legitimate interests (answering your enquiry) | Up to 12 months, then deleted |
+| Your name, email and message, if you email Syd or her agent | To reply to you | Legitimate interests (answering your enquiry) | Up to 12 months, then deleted |
 
 We do not sell your information or use it for advertising.
 
 ## Who processes it for us
 
 - **Kit** (the newsletter service) stores subscriber details and sends the newsletter.
-- **Cloudflare** hosts the website, protects forms from spam (Turnstile) and provides privacy-friendly visitor statistics.
-- **Resend** delivers contact-form messages to Syd's inbox.
+- **GitHub** (GitHub Pages) hosts the website. Like any web host, it briefly logs visitors' IP addresses to keep the service secure.
+- **Cloudflare** provides privacy-friendly visitor statistics (Cloudflare Web Analytics).
 
 ## Cookies
 

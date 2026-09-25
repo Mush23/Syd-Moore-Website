@@ -11,12 +11,19 @@ Author website for novelist Syd Moore. Read `docs/brief.md` for content and desi
 - **Client JS is limited to:** buy-panel tabs and mobile sheet (`BuyPanel.astro`), mobile menu (`Header.astro`), and the bio copy button (`CopyBio.astro`).
 - **Fonts** self-hosted with Fontsource (Fraunces, Inter, IBM Plex Mono). No Google Fonts requests.
   - The Latin Fraunces and Inter files are preloaded in `BaseLayout.astro`, and `tokens.css` defines size-matched "Fraunces Fallback" and "Inter Fallback" faces (Georgia and Arial with `size-adjust`), so text doesn't shift when the fonts load. Keep both if the font files change.
-- **Hosting:** Cloudflare Pages. `public/_redirects` holds 301s from the old site; `public/_headers` holds the CSP and security headers.
+- **Hosting:** GitHub Pages, published by `.github/workflows/deploy.yml` on every push to `main` and daily at 05:00 UTC. The owner chose this over Cloudflare Pages on 25 Sep 2026 to keep everything in GitHub.
+  - `integrations/github-pages.mjs` runs after the build:
+    - turns `public/_redirects` into forwarding pages (`/old.html` and `/old/index.html`);
+    - copies `x.html` to `x/index.html` where a folder `x/` exists, because GitHub Pages prefers the folder;
+    - when `SITE_BASE` is set, prefixes root-relative URLs and adds `noindex`.
+  - `SITE_BASE` comes from `actions/configure-pages`. It's `/Syd-Moore-Website` on the github.io preview and empty once sydmoore.com is attached. Write internal links as plain root-relative paths (`/books`); the integration handles the prefix.
+  - Security headers aren't possible on GitHub Pages. The CSP and referrer policy are `<meta>` tags in `BaseLayout.astro`, so update the CSP there if you add a third-party script or form.
+  - To test the preview build locally from Git Bash: `MSYS_NO_PATHCONV=1 SITE_BASE=/Syd-Moore-Website npm run build`. Without `MSYS_NO_PATHCONV`, Git Bash rewrites the path.
 - **Newsletter:** Kit free plan via a plain HTML form (`PUBLIC_KIT_FORM_ACTION`).
-- **Contact form:** Pages Function `functions/api/contact.ts` with Turnstile, a honeypot, and email through **Resend**.
-  - Deviation from the build prompt, which suggested Cloudflare's `send_email` binding. That binding's Pages Functions support was unclear and Cloudflare lists sending as a Workers Paid feature.
-  - Resend's free plan (3,000 emails a month) works from any function with a plain `fetch`.
-- **Analytics:** Cloudflare Web Analytics, which is cookieless, so there's no cookie banner.
+- **Contact form:** switched off. GitHub Pages can't run server code, so the contact page shows the agent's details (it does this whenever `PUBLIC_CONTACT_FORM` isn't `true`).
+  - `functions/api/contact.ts` (Turnstile + Resend) is kept, unused, in case the site ever moves to Cloudflare. A hosted form service could be added instead, with its domain added to the CSP `form-action`.
+- **Analytics:** Cloudflare Web Analytics (it works on any host). It's cookieless, so there's no cookie banner.
+- **Build-time settings** (`PUBLIC_KIT_FORM_ACTION`, `PUBLIC_CF_ANALYTICS_TOKEN`, `PUBLIC_AMAZON_TAG`) are GitHub repository variables, passed in by `deploy.yml`.
 - **Social images:** `src/pages/og/[slug].png.ts`, built with Satori + Resvg at build time. These use static `@fontsource/*` .woff files because Satori can't read woff2.
 
 ## Conventions
@@ -62,9 +69,11 @@ npm run lhci      # Lighthouse budgets (perf ≥ 95, a11y 100, best practices �
   - dev-only issues in `@lhci/cli`.
   None of them reach visitors. Recheck when Satori or LHCI release updates.
 
+- Switched hosting to GitHub Pages (same branch). A local crawl of the sub-folder preview build, served the way GitHub Pages serves it, found no broken links, fonts or redirects across 34 pages. Tests and Lighthouse are unchanged (65/65, 100s).
+
 ## Next steps
 
 1. Merge the `finish-and-test` pull request.
-2. Deploy to Cloudflare Pages following `docs/DEPLOY.md`. Check the `*.pages.dev` URL before any DNS change.
+2. Turn on GitHub Pages (Settings → Pages → Source: GitHub Actions) and check the github.io preview, following `docs/DEPLOY.md`. Move sydmoore.com over only once the launch content is ready.
 3. Work through `docs/CONTENT-TODO.md` with Syd, covers and the portrait first.
 4. Before launch, test with VoiceOver on an iPhone. The brief's checklist asks for this and it can't be automated.
