@@ -38,6 +38,14 @@ The owner found the first build too plain. From three mockups they chose "A's he
 - **Praise:** `QuoteBlock size="large"` is a centred italic pull quote under a big decorative quote mark, placed straight after the hero.
 - **Series panels** (`.panel-tint`, colour from `--accent-tint`): on the home page they show every cover in the series, each linking to its book. The Books page groups use them too.
 - **Background:** plain paper, with no texture outside the night bands.
+- **Site review (25 Sep 2026):** a full-site review plus research into 14 comparable author sites led to these changes:
+  - a one-line "what Syd writes" strap at the top of the home hero (it reuses `site.description` wording);
+  - book-number captions and "Start here" under the covers in the home series panels;
+  - a third home panel for the standalones;
+  - a "New to the series? Start with…" line on book pages;
+  - `/faq`, built entirely from the content collections, with FAQPage JSON-LD;
+  - Contact replaces Press in the header (Press stays in the footer and on Contact).
+  Content-dependent ideas from the research are in `docs/CONTENT-TODO.md`.
 - **Placeholder covers:** spine shading, grain, an inner frame and a book-like shadow. Title sizes scale with the cover width (container units), so small covers don't break words.
 
 - **Never invent content.** No quotes, dates, ISBNs, URLs or biographical facts beyond `docs/brief.md`. Anything missing goes in `docs/CONTENT-TODO.md`.

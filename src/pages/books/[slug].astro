@@ -28,6 +28,10 @@ const siblings = await booksInSeries(d.series);
 const idx = siblings.findIndex((b) => b.id === book.id);
 const prev = idx > 0 ? siblings[idx - 1] : undefined;
 const next = idx < siblings.length - 1 ? siblings[idx + 1] : undefined;
+// "New to the series?" pointer, shown on every series book except the recommended first one.
+const startBook = series && series.id !== "standalones" && series.data.startHere !== book.id
+  ? siblings.find((b) => b.id === series.data.startHere)
+  : undefined;
 const status = bookStatus(book);
 const { Content } = await render(book);
 // History note is plain text from the CMS: blank lines separate paragraphs.
@@ -85,6 +89,9 @@ const ogImage = `/og/${book.id}.png`;
       {d.formerTitle && <p class="muted former">Previously published as <cite>{d.formerTitle}</cite></p>}
       <p class="status-line"><StatusTag status={status} />{status === "pre-order" && <span class="muted"> Out {formatDate(d.pubDate)}</span>}</p>
       <p class="hook">{d.hook}</p>
+      {startBook && (
+        <p class="start-here">New to {series?.data.name}? <a href={bookUrl(startBook)}>Start with <cite>{startBook.data.title}</cite></a>.</p>
+      )}
     </header>
 
     <div class="book-buy">
@@ -187,6 +194,7 @@ const ogImage = `/og/${book.id}.png`;
   .book-head > * + * { margin-top: var(--space-1); }
   .series-label { color: var(--accent, var(--brass)); }
   .hook { font-family: var(--font-display); font-size: 1.35rem; line-height: 1.4; max-width: 40rem; margin-top: var(--space-2); }
+  .start-here { font-size: var(--small); color: var(--ink-muted); }
   .status-line { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
 
   .book-body > * + * { margin-top: var(--space-4); }

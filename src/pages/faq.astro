@@ -1,0 +1,167 @@
+---
+/**
+ * Frequently asked questions. Every answer is built from the content collections
+ * (books, series, press page), so it stays correct when the books change.
+ * Don't add answers that aren't backed by docs/brief.md or the content files.
+ */
+import { getEntry } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { bookStatus, bookUrl, booksInSeries, getBooks, getSeriesList, type Book } from "../lib/books";
+import { site } from "../config/site";
+
+const seriesList = (await getSeriesList()).filter((s) => s.id !== "standalones");
+const books = await getBooks();
+const press = (await getEntry("pages", "press"))!.data;
+const byId = (id: string) => books.find((b) => b.id === id);
+const strangeMagic = byId("strange-magic");
+const grandIllusion = byId("the-grand-illusion");
+
+const orders = await Promise.all(seriesList.map(async (s) => ({ s, books: await booksInSeries(s.id) })));
+// Only series notes about reading order belong in these answers.
+const orderNotes = (notes: string[]) => notes.filter((n) => /\bread\b/i.test(n));
+const position = (b: Book) => (b.data.seriesNumber ? `Book ${b.data.seriesNumber}` : b.data.seriesNote ?? "");
+const upcoming = books.filter((b) => bookStatus(b) !== "out-now");
+const audio = books.filter((b) => b.data.formats.includes("audiobook"));
+const renamed = books.filter((b) => b.data.formerTitle);
+const list = (items: string[]) => (items.length < 2 ? items.join("") : `${items.slice(0, -1).join(", ")} and ${items.at(-1)}`);
+
+// Plain-text answers for the FAQPage structured data (search engines).
+const ld = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    ...orders.map(({ s, books }) => ({
+      q: `What order should I read ${s.data.name} in?`,
+      a: books.map((b) => `${position(b)}: ${b.data.title}`).join("; ") + (orderNotes(s.data.notes).length ? `. ${orderNotes(s.data.notes).join(" ")}` : "."),
+    })),
+    strangeMagic && grandIllusion && {
+      q: "Which book should I start with?",
+      a: `Start with ${strangeMagic.data.title} for witches and wit, or ${grandIllusion.data.title} for wartime espionage.`,
+    },
+    upcoming.length > 0 && {
+      q: "What's coming next?",
+      a: upcoming.map((b) => `${b.data.title} (${bookStatus(b) === "pre-order" ? "available to pre-order" : "coming soon"})`).join("; ") + ".",
+    },
+    audio.length > 0 && { q: "Are there audiobooks?", a: `Yes: ${list(audio.map((b) => b.data.title))}.` },
+    renamed.length > 0 && {
+      q: "Have any books been published under other titles?",
+      a: renamed.map((b) => `${b.data.title} was previously published as ${b.data.formerTitle}.`).join(" "),
+    },
+    {
+      q: "Where can I buy Syd's books locally?",
+      a: "Read on Sea on Broadway in Leigh-on-Sea is Syd's local independent bookshop, and any bookshop can order her books using the ISBN on each book's page.",
+    },
+    press.agentName && {
+      q: "How do I book Syd for a talk or event?",
+      a: `Contact ${press.agentName} at ${press.agentAgency}.`,
+    },
+    {
+      q: "How can I hear about new books and events?",
+      a: `Sign up to ${site.newsletter.name}, Syd's newsletter, for new books, events and history notes from her research.`,
+    },
+  ]
+    .filter((x): x is { q: string; a: string } => Boolean(x))
+    .map(({ q, a }) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })),
+};
+---
+<BaseLayout
+  title="Frequently asked questions · Syd Moore"
+  description="Reading order for Section W and the Essex Witch Museum Mysteries, where to start, audiobooks, and how to book Syd for an event."
+  jsonLd={ld}
+>
+  <div class="container page-header">
+    <p class="label">FAQ</p>
+    <h1>Frequently asked questions</h1>
+  </div>
+
+  <div class="container faq">
+    {orders.map(({ s, books }) => (
+      <section aria-labelledby={`q-${s.id}`}>
+        <h2 id={`q-${s.id}`}>What order should I read {s.data.name} in?</h2>
+        <ul class="order-list">
+          {books.map((b) => (
+            <li><span class="pos">{position(b)}</span> <a href={bookUrl(b)}><cite>{b.data.title}</cite></a>{bookStatus(b) !== "out-now" && <span class="muted"> ({bookStatus(b) === "pre-order" ? "pre-order" : "coming soon"})</span>}</li>
+          ))}
+        </ul>
+        {orderNotes(s.data.notes).map((n) => <p>{n}</p>)}
+        <p><a href={`/series/${s.id}`}>See the {s.data.shortName} reading order with covers</a></p>
+      </section>
+    ))}
+
+    {strangeMagic && grandIllusion && (
+      <section aria-labelledby="q-start">
+        <h2 id="q-start">Which book should I start with?</h2>
+        <p>
+          Start with <a href={bookUrl(strangeMagic)}><cite>{strangeMagic.data.title}</cite></a> for witches and wit,
+          or <a href={bookUrl(grandIllusion)}><cite>{grandIllusion.data.title}</cite></a> for wartime espionage.
+        </p>
+      </section>
+    )}
+
+    {upcoming.length > 0 && (
+      <section aria-labelledby="q-next">
+        <h2 id="q-next">What's coming next?</h2>
+        <ul>
+          {upcoming.map((b) => (
+            <li><a href={bookUrl(b)}><cite>{b.data.title}</cite></a>: {bookStatus(b) === "pre-order" ? "available to pre-order now" : "coming soon"}.</li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    {audio.length > 0 && (
+      <section aria-labelledby="q-audio">
+        <h2 id="q-audio">Are there audiobooks?</h2>
+        <p>Yes. These books are available as audiobooks:</p>
+        <ul>{audio.map((b) => <li><a href={bookUrl(b)}><cite>{b.data.title}</cite></a>{b.data.narrator && <>, read by {b.data.narrator}</>}</li>)}</ul>
+      </section>
+    )}
+
+    {renamed.length > 0 && (
+      <section aria-labelledby="q-renamed">
+        <h2 id="q-renamed">Have any books been published under other titles?</h2>
+        {renamed.map((b) => (
+          <p><a href={bookUrl(b)}><cite>{b.data.title}</cite></a> was previously published as <cite>{b.data.formerTitle}</cite>.</p>
+        ))}
+      </section>
+    )}
+
+    <section aria-labelledby="q-local">
+      <h2 id="q-local">Where can I buy Syd's books locally?</h2>
+      <p>
+        <a href="https://readonsea.co.uk/">Read on Sea</a> on Broadway in Leigh-on-Sea is Syd's local independent
+        bookshop, and any bookshop can order her books using the ISBN on each book's page.
+      </p>
+    </section>
+
+    {press.agentName && (
+      <section aria-labelledby="q-events">
+        <h2 id="q-events">How do I book Syd for a talk or event?</h2>
+        <p>
+          Contact {press.agentName} at {press.agentAgency}{press.agentUrl && <> via the <a href={press.agentUrl}>agency page</a></>}.
+          See the <a href="/events">events page</a> for talk topics.
+        </p>
+      </section>
+    )}
+
+    <section aria-labelledby="q-news">
+      <h2 id="q-news">How can I hear about new books and events?</h2>
+      <p>
+        Sign up to <a href="/newsletter">{site.newsletter.name}</a>, Syd's newsletter, for new books, events and history
+        notes from her research.
+      </p>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .faq { max-width: calc(var(--measure) + 2 * var(--gutter)); margin-inline: 0; padding-bottom: var(--space-6); }
+  .faq section + section { margin-top: var(--space-5); }
+  .faq h2 { font-size: var(--h3); }
+  .faq h2 + * { margin-top: var(--space-2); }
+  .faq p + p, .faq ul + p, .faq p + ul { margin-top: var(--space-1); }
+  .faq ul { padding-left: 1.25rem; }
+  .faq .order-list { list-style: none; padding-left: 0; }
+  .order-list li + li, .faq ul li + li { margin-top: 0.35rem; }
+  .pos { font-family: var(--font-mono); font-size: var(--label); text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-muted); }
+</style>

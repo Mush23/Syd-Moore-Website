@@ -39,6 +39,7 @@ export const staticRoutes = [
   "/newsletter",
   "/privacy",
   "/accessibility",
+  "/faq",
 ];
 
 export const allRoutes = [

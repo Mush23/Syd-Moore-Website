@@ -43,6 +43,7 @@ const label = status === "pre-order"
 <BaseLayout jsonLd={[websiteLd(), personLd()]}>
   <section class="hero band-night band-candle" aria-labelledby="hero-title" data-accent={featuredSeries?.data.accent}>
     {watermark && <span class="watermark" aria-hidden="true">{watermark}</span>}
+    <p class="container strap">Syd Moore writes witty, spooky mysteries rooted in real Essex history.</p>
     <div class="container hero-grid">
       <div class:list={["fan", `fan-${fanBack.length}`]}>
         {fanBack.map((b, i) => (
@@ -79,10 +80,6 @@ const label = status === "pre-order"
 
   <section class="container section-tight series-panels" aria-labelledby="series-heading">
     <h2 id="series-heading" class="visually-hidden">The series</h2>
-    <p class="lede welcome">
-      Syd Moore writes mysteries with history in their bones: witty, spooky stories drawn from the real witch trials,
-      folklore and wartime secrets of Essex and beyond.
-    </p>
     {seriesList.map((s) => {
       const first = books.find((b) => b.id === s.data.startHere);
       const inSeries = books.filter((b) => b.data.series === s.id);
@@ -97,8 +94,13 @@ const label = status === "pre-order"
           <ul class="series-covers" aria-label={`${s.data.name} books`}>
             {inSeries.map((b) => (
               <li>
-                <a href={bookUrl(b)} aria-label={b.data.title}>
+                <a href={bookUrl(b)}>
                   <Cover book={b} series={s} width={140} decorative />
+                  <span class="cover-caption">
+                    <span class="visually-hidden">{b.data.title}, </span>
+                    {b.data.seriesNumber ? `Book ${b.data.seriesNumber}` : (b.data.seriesNote ?? (s.id === "standalones" ? "Novel" : "Also"))}
+                    {b.id === s.data.startHere && <span class="start">Start here</span>}
+                  </span>
                 </a>
               </li>
             ))}
@@ -195,6 +197,13 @@ const label = status === "pre-order"
   .frame::before { top: -0.45rem; }
   .frame::after { bottom: -0.45rem; }
   .hero-copy > * + * { margin-top: var(--space-2); }
+  .strap {
+    margin-bottom: var(--space-4);
+    font-family: var(--font-display);
+    font-size: clamp(1.05rem, 0.95rem + 0.4vw, 1.25rem);
+    color: var(--parchment-muted);
+  }
+  @media (min-width: 810px) { .strap { margin-bottom: var(--space-5); } }
   .hero-label { color: var(--accent-light, var(--brass-light)); }
   .hero-hook { font-family: var(--font-display); font-style: italic; font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem); line-height: 1.4; max-width: 36rem; color: var(--parchment); }
   .hero .btn-row { margin-top: var(--space-3); }
@@ -204,14 +213,6 @@ const label = status === "pre-order"
   .praise :global(.quote) { margin-inline: auto; }
 
   /* ---- Series: tinted panels showing every book ---- */
-  .welcome {
-    max-width: 52rem;
-    margin: 0 auto var(--space-4);
-    text-align: center;
-    font-family: var(--font-display);
-    font-size: clamp(1.25rem, 1.05rem + 0.9vw, 1.6rem);
-    line-height: 1.45;
-  }
   .series-panels { display: grid; gap: var(--space-3); }
   .series-panel { display: grid; gap: var(--space-3); align-items: center; }
   @media (min-width: 960px) { .series-panel { grid-template-columns: minmax(16rem, 22rem) 1fr; gap: var(--space-5); } }
@@ -239,6 +240,16 @@ const label = status === "pre-order"
   @media (min-width: 810px) { .series-covers { grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr)); } }
   .series-covers a { display: block; border-radius: 4px; text-decoration: none; transition: transform var(--duration) ease; }
   .series-covers a:hover { transform: translateY(-4px); }
+  .cover-caption {
+    display: block;
+    margin-top: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .cover-caption .start { display: block; color: var(--accent); font-weight: 600; }
   @media (prefers-reduced-motion: reduce) { .series-covers a { transition: none; } .series-covers a:hover { transform: none; } }
 
   .accent { color: var(--accent); }

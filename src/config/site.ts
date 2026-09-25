@@ -56,7 +56,7 @@ export const site = {
     { label: "About", href: "/about" },
     { label: "Essex Girls & Witches", href: "/essex-girls-and-witches" },
     { label: "Events", href: "/events" },
-    { label: "Press", href: "/press" },
+    { label: "Contact", href: "/contact" },
   ],
 
   disclosure:

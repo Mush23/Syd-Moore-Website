@@ -47,6 +47,20 @@ Last reviewed 25 September 2026. Everything below is either missing or unconfirm
 - [ ] **launch** *Final Act* launch: venue (ideally Read on Sea), date and time. A draft event is ready in Events.
 - [ ] All confirmed events from October 2026 onward
 
+## Ideas from the review of other author websites (25 Sep 2026)
+
+We looked at 14 comparable author sites (Ruth Ware, Val McDermid, Elly Griffiths, Ann Cleeves and others). These would add the most, roughly in order, and each needs something from Syd or her publishers:
+
+- [ ] **A reason to join the newsletter:** a free short story or a Section W "classified file" for new subscribers. Only one of the 14 sites offers a freebie, and it's the strongest of them.
+- [ ] **"Read an extract"** (first-chapter PDF) for each book. The publishers often supply these. The site already shows the button when `extract` is filled in.
+- [ ] **Audiobook samples:** links or short clips from the audio publisher.
+- [ ] **More praise per book** (3–6 quotes each) and any award or bestseller badges.
+- [ ] **Extras hub:** real Essex places behind the books (a map), "the true history" notes, deleted scenes. This builds on the Essex Girls & Witches page and the "history behind the book" notes.
+- [ ] **Press kit downloads:** credited high-resolution photos, cover files, the publicist's contact, and past interviews.
+- [ ] **Reading-group guides** (PDF) for book clubs and libraries.
+- [ ] **Signed or dedicated copies** through Read on Sea.
+- [ ] **A scam warning** if Syd wants one (e.g. "Syd will never ask readers for money"). It has to be her own words.
+
 ## Old site
 
 - [ ] Crawl the old sydmoore.com (e.g. Screaming Frog, free up to 500 URLs) and add any missing URLs to `public/_redirects`
