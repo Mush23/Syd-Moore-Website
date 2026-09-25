@@ -1,6 +1,6 @@
 /**
  * Site-wide settings. Values that differ per environment (IDs, keys) come from
- * PUBLIC_* environment variables set in Cloudflare Pages — see docs/DEPLOY.md.
+ * PUBLIC_* repository variables in GitHub (Settings → Secrets and variables → Actions → Variables) — see docs/DEPLOY.md.
  */
 const env = import.meta.env;
 

@@ -182,6 +182,20 @@ const aria = (label: string) => `${verb} ${title} from ${label} (opens retailer 
       if (!inside) sheet.close();
     });
     sheet.addEventListener("close", () => opener.focus());
+    // A modal <dialog> lets Tab leave for the browser toolbar; wrap it inside the sheet instead.
+    sheet.addEventListener("keydown", (e) => {
+      if (e.key !== "Tab") return;
+      const items = Array.from(sheet.querySelectorAll<HTMLElement>("a[href], button"));
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    });
   }
 </script>
 

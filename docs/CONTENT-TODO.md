@@ -1,12 +1,14 @@
 # Content to supply or confirm
 
-Everything below is either missing or unconfirmed. The site builds and works without these, and empty sections stay hidden. Items marked **launch** matter before 8 October 2026.
+Last reviewed 25 September 2026. Everything below is either missing or unconfirmed. The site builds and works without these, and empty sections stay hidden. Items marked **launch** matter before 8 October 2026.
 
 ## Whole site
 
 - [ ] **launch** Author portrait: save as `src/assets/photos/syd-moore-portrait.jpg` (2–3 options, with photographer credit and a written licence)
 - [ ] **launch** Kit newsletter form: create the form, paste its action URL into `PUBLIC_KIT_FORM_ACTION`, and set Kit's "after subscribing" redirect to `https://sydmoore.com/newsletter/thanks`
 - [ ] **launch** Read on Sea: agree to be the lead "Buy local" button, and send their Bookshop.org product links (or confirm the shop link format) for each title; say whether they'll handle signed copies
+- [ ] **launch** Syd to approve the privacy notice. It now names GitHub as the host, and there's no contact form: visitors email her or her agent instead.
+- [ ] Decide whether a contact form is wanted. GitHub Pages can't run one itself, but a hosted form service can be added.
 - [ ] Amazon Associates UK store ID → `PUBLIC_AMAZON_TAG`
 - [ ] Bookshop.org, Waterstones (Awin) and Hive (Webgains) affiliate links for each book
 - [ ] Confirm X (@SydMoore1) and Instagram (@sydmoorewriter) are active, then add them to `site.social` in `src/config/site.ts`
@@ -18,6 +20,7 @@ Everything below is either missing or unconfirmed. The site builds and works wit
 - [ ] **launch** High-resolution covers for all 14 published titles plus *The Final Act of Daphne Devine* (upload in Pages CMS → Books → Cover)
 - [ ] **launch** Check every description against the publisher-approved blurb (drafts are in each book file)
 - [ ] **launch** Confirm the praise quotes can be used on the site (Oneworld and HarperCollins publicity)
+- [ ] *The Final Act of Daphne Devine*: a review quote of its own once reviews arrive. It currently shows Erin Kelly's quote about *The Grand Illusion*, labelled as such, as the brief suggests.
 - [ ] "The history behind the book" note for each novel, 100–200 words (start with Section W)
 - [ ] Extracts (PDF) if the publishers allow them
 - [ ] Verify the ebook ISBNs (taken from Simon & Schuster listings) and the audiobook ISBN for *The Great Deception*

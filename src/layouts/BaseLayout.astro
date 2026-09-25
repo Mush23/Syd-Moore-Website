@@ -3,6 +3,8 @@ import "@fontsource-variable/fraunces";
 import "@fontsource-variable/inter";
 import "@fontsource/ibm-plex-mono/500.css";
 import "../styles/global.css";
+import frauncesUrl from "@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2?url";
+import interUrl from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import { site } from "../config/site";
@@ -42,11 +44,16 @@ const cfBeacon = site.analytics.cloudflareToken ? JSON.stringify({ token: site.a
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {/* GitHub Pages can't send security headers, so the CSP and referrer policy live here. */}
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; connect-src 'self' https://cloudflareinsights.com; form-action 'self' https://app.convertkit.com https://app.kit.com; base-uri 'self'; upgrade-insecure-requests" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     {noindex && <meta name="robots" content="noindex" />}
     <meta name="theme-color" content="#16141a" />
+    <link rel="preload" href={frauncesUrl} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={interUrl} as="font" type="font/woff2" crossorigin />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="alternate" type="application/rss+xml" title="Syd Moore: news" href="/rss.xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />

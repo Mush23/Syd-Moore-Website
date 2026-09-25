@@ -12,8 +12,11 @@ const formOn = site.contact.formEnabled && Boolean(site.contact.turnstileSiteKey
     <p class="label">Contact</p>
     <h1>Get in touch</h1>
     <p class="lede">
-      For rights and representation, contact {p.agentName} at {p.agentAgency}. For talks and events, use the form below.
-      Readers: say hello here too.
+      {formOn ? (
+        <>For rights and representation, contact {p.agentName} at {p.agentAgency}. For talks and events, use the form below. Readers: say hello here too.</>
+      ) : (
+        <>For rights, representation, talks and events, contact {p.agentName} at {p.agentAgency}.</>
+      )}
     </p>
   </header>
 
