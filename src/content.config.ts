@@ -2,18 +2,19 @@
  * Content schemas. Keep these in step with .pages.yml, which gives Syd the
  * editing forms for the same fields in Pages CMS.
  */
-import { defineCollection, z } from "astro:content";
+import { defineCollection } from "astro:content";
+import { z } from "astro/zod";
 import { glob } from "astro/loaders";
 
 /** Pages CMS can save untouched fields as "" or null: treat both as "not set". */
 const blank = (v: unknown) => (v === "" || v === null ? undefined : v);
-const opt = <T extends z.ZodTypeAny>(schema: T) => z.preprocess(blank, schema.optional());
+const opt = <T extends z.ZodType>(schema: T) => z.preprocess(blank, schema.optional());
 
 const isbn = opt(
   z.string().regex(/^97[89]\d{10}$/, "ISBN-13: 13 digits starting 978 or 979, no hyphens"),
 );
 
-const url = z.preprocess(blank, z.string().url().optional());
+const url = z.preprocess(blank, z.url().optional());
 
 /** A retailer link for every button the buy panel can show. Empty = hidden. */
 const links = z.preprocess(blank, z
@@ -140,11 +141,11 @@ const pages = defineCollection({
       publicistName: z.string().optional(),
       publicistEmail: z.string().optional(),
       selectedPress: z
-        .array(z.object({ title: z.string(), outlet: z.string(), date: z.string().optional(), url: z.string().url() }))
+        .array(z.object({ title: z.string(), outlet: z.string(), date: z.string().optional(), url: z.url() }))
         .optional(),
       talkTopics: z.array(z.string()).optional(),
     })
-    .passthrough(),
+    .loose(),
 });
 
 export const collections = { books, series, events, news, pages };

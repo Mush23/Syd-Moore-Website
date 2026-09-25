@@ -55,7 +55,7 @@ function placeholderCover(title: string, seriesName: string, accent: string): No
 async function render(tree: Node): Promise<Response> {
   const svg = await satori(tree as never, { width: W, height: H, fonts: await loadFonts() });
   const png = new Resvg(svg, { fitTo: { mode: "width", value: W } }).render().asPng();
-  return new Response(png, { headers: { "Content-Type": "image/png" } });
+  return new Response(new Uint8Array(png), { headers: { "Content-Type": "image/png" } });
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
