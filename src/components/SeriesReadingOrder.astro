@@ -15,7 +15,7 @@ const start = series.data.startHere;
         <a href={bookUrl(b)} aria-current={current ? "page" : undefined}>
           <Cover book={b} series={series} width={140} decorative />
           <span class="num label">
-            {b.data.seriesNumber ? `Book ${b.data.seriesNumber}` : (b.data.seriesNote ?? "Also")}
+            {b.data.seriesNumber ? `Book ${b.data.seriesNumber}` : (b.data.seriesNote ?? (series.id === "standalones" ? "Novel" : "Also"))}
           </span>
           <span class="title">{b.data.title}</span>
         </a>

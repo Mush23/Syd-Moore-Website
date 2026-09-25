@@ -14,7 +14,7 @@ const featured = await getFeaturedBook();
 const featuredSeries = await getSeries(featured.data.series);
 const status = bookStatus(featured);
 const books = await getBooks();
-const seriesList = (await getSeriesList()).filter((s) => s.id !== "standalones");
+const seriesList = await getSeriesList();
 
 // Hero fan: up to two earlier books in the same series sit behind the featured cover.
 const fanBack = featured.data.series === "standalones"

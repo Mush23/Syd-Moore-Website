@@ -1,6 +1,6 @@
 ---
 title: "Press and media"
-description: "Bios, photos, covers and contacts for journalists, festivals and event organisers."
+description: "Bios, facts and contacts for journalists, festivals and event organisers."
 agentName: "Sandra Sawicka"
 agentAgency: "Marjacq"
 agentUrl: "https://www.marjacq.com/syd-moore"
