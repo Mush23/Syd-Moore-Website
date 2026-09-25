@@ -3,6 +3,28 @@
  * Every text/background pairing used on the site passes WCAG 2.2 AA (4.5:1).
  * Ratios are documented in docs/brief.md ("Design system and accessibility").
  */
+
+/*
+ * Size-matched fallbacks: local Georgia/Arial scaled to Fraunces/Inter metrics
+ * (values from @capsizecss/metrics), so text doesn't jump when the web fonts load.
+ */
+@font-face {
+  font-family: "Fraunces Fallback";
+  src: local("Georgia");
+  size-adjust: 105.2%;
+  ascent-override: 92.96%;
+  descent-override: 24.24%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Inter Fallback";
+  src: local("Arial");
+  size-adjust: 107.12%;
+  ascent-override: 90.44%;
+  descent-override: 22.52%;
+  line-gap-override: 0%;
+}
+
 :root {
   /* Surfaces */
   --paper: #f4efe4;          /* page background */
@@ -30,8 +52,8 @@
   --line-night: #3a3541;
 
   /* Type */
-  --font-display: "Fraunces Variable", "Fraunces", Georgia, "Times New Roman", serif;
-  --font-body: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Fraunces Variable", "Fraunces", "Fraunces Fallback", Georgia, "Times New Roman", serif;
+  --font-body: "Inter Variable", "Inter", "Inter Fallback", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 
   --text-base: 1.125rem;     /* 18px */

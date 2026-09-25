@@ -3,6 +3,8 @@ import "@fontsource-variable/fraunces";
 import "@fontsource-variable/inter";
 import "@fontsource/ibm-plex-mono/500.css";
 import "../styles/global.css";
+import frauncesUrl from "@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2?url";
+import interUrl from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import { site } from "../config/site";
@@ -47,6 +49,8 @@ const cfBeacon = site.analytics.cloudflareToken ? JSON.stringify({ token: site.a
     <link rel="canonical" href={canonical} />
     {noindex && <meta name="robots" content="noindex" />}
     <meta name="theme-color" content="#16141a" />
+    <link rel="preload" href={frauncesUrl} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={interUrl} as="font" type="font/woff2" crossorigin />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="alternate" type="application/rss+xml" title="Syd Moore: news" href="/rss.xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
