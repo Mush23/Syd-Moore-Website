@@ -26,7 +26,19 @@ Author website for novelist Syd Moore. Read `docs/brief.md` for content and desi
 - **Build-time settings** (`PUBLIC_KIT_FORM_ACTION`, `PUBLIC_CF_ANALYTICS_TOKEN`, `PUBLIC_AMAZON_TAG`) are GitHub repository variables, passed in by `deploy.yml`.
 - **Social images:** `src/pages/og/[slug].png.ts`, built with Satori + Resvg at build time. These use static `@fontsource/*` .woff files because Satori can't read woff2.
 
-## Conventions
+## Design (refreshed 25 Sep 2026)
+
+The owner found the first build too plain. From three mockups they chose "A's header, B's quote and series panels, clean background". The colours, fonts and page structure from the brief are unchanged.
+
+- **Candlelit night bands** (`.band-candle` in `global.css`, used with `.band-night`): a glow in the series colour plus a film-grain texture (`--grain` in `tokens.css`). Used on the home hero and the series-page heroes.
+- **Home hero:**
+  - fanned covers (the featured book plus up to two earlier books in its series, which are decorative);
+  - a faint large series initial behind (e.g. "W");
+  - copy in a thin gold frame with ✦ ornaments, and an italic hook.
+- **Praise:** `QuoteBlock size="large"` is a centred italic pull quote under a big decorative quote mark, placed straight after the hero.
+- **Series panels** (`.panel-tint`, colour from `--accent-tint`): on the home page they show every cover in the series, each linking to its book. The Books page groups use them too.
+- **Background:** plain paper, with no texture outside the night bands.
+- **Placeholder covers:** spine shading, grain, an inner frame and a book-like shadow. Title sizes scale with the cover width (container units), so small covers don't break words.
 
 - **Never invent content.** No quotes, dates, ISBNs, URLs or biographical facts beyond `docs/brief.md`. Anything missing goes in `docs/CONTENT-TODO.md`.
 - **Book status** is computed at build time (`bookStatus` in `src/lib/books.ts`): `auto` gives Pre-order before `pubDate` and Out now after it. The daily rebuild workflow keeps this current.

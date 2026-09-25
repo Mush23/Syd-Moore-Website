@@ -40,12 +40,14 @@ const groups = seriesList.map((s) => ({ s, books: books.filter((b) => b.data.ser
 
     {groups.map(({ s, books }) => (
       <section class="container section-tight group" data-group={s.id} data-accent={s.data.accent} aria-labelledby={`g-${s.id}`}>
-        <div class="group-head">
-          <h2 id={`g-${s.id}`}><a href={`/series/${s.id}`}>{s.data.name}</a></h2>
-          <p class="muted">{s.data.tagline}</p>
-        </div>
-        <div class="grid-books">
-          {books.map((b) => <BookCard book={b} series={s} />)}
+        <div class="panel-tint">
+          <div class="group-head">
+            <h2 id={`g-${s.id}`}><a href={`/series/${s.id}`}>{s.data.name}</a></h2>
+            <p class="muted">{s.data.tagline}</p>
+          </div>
+          <div class="grid-books">
+            {books.map((b) => <BookCard book={b} series={s} />)}
+          </div>
         </div>
       </section>
     ))}
@@ -84,8 +86,8 @@ const groups = seriesList.map((s) => ({ s, books: books.filter((b) => b.data.ser
   .books-page:has(#f-essex-witch-museum-mysteries:checked) .group:not([data-group="essex-witch-museum-mysteries"]),
   .books-page:has(#f-standalones:checked) .group:not([data-group="standalones"]) { display: none; }
 
-  .group { border-top: 4px solid var(--accent); margin-top: var(--space-3); }
-  .group-head { margin-block: var(--space-3); }
+  .group { padding-block: var(--space-2); }
+  .group-head { margin-bottom: var(--space-3); }
   .group-head h2 a { color: inherit; text-decoration: none; }
   .group-head h2 a:hover { text-decoration: underline; }
   .group-head p { margin-top: 0.35rem; max-width: 46rem; }
