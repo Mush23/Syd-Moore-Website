@@ -118,6 +118,36 @@ a:hover { text-decoration-thickness: 2px; }
 .band-night .muted { color: var(--parchment-muted); }
 .band-surface { background: var(--surface); }
 
+/* Candlelit night band: a warm glow in the series colour plus film grain. Add to .band-night. */
+.band-candle {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(60% 90% at 26% 45%, color-mix(in srgb, var(--accent, var(--brass)) 42%, var(--night)) 0, transparent 70%),
+    radial-gradient(120% 100% at 100% 100%, #0e0c11 0, transparent 60%),
+    var(--night);
+}
+.band-candle::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--grain);
+  opacity: 0.45;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+/* Soft tinted panel in the series colour. */
+.panel-tint {
+  background: var(--accent-tint, var(--surface));
+  border-radius: 10px;
+  padding: var(--space-3);
+}
+@media (min-width: 810px) { .panel-tint { padding: var(--space-5); } }
+.panel-tint .muted { color: var(--ink); }
+
 .page-header { padding-block: var(--space-5) var(--space-3); }
 .page-header .label { color: var(--accent, var(--brass)); }
 .page-header h1 { margin-top: var(--space-1); }

@@ -48,6 +48,14 @@
   --focus: #1d5fd1;          /* 5.1:1 on paper */
   --focus-light: #8ab4ff;    /* 8.8:1 on night */
 
+  /* Series tints: soft panel backgrounds. Ink, ink-muted and the matching accent all pass AA on them. */
+  --oxblood-tint: #f5e6e1;
+  --witch-green-tint: #e4eee9;
+  --brass-tint: #f4eadb;
+
+  /* Film-grain texture for the candlelit night bands (decorative). */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+
   --line: #d9d0bf;           /* hairlines on paper (decorative only) */
   --line-night: #3a3541;
 
@@ -87,6 +95,6 @@
 }
 
 /* Series accents: set data-accent on any wrapper */
-[data-accent="oxblood"] { --accent: var(--oxblood); --accent-light: var(--oxblood-light); }
-[data-accent="witch-green"] { --accent: var(--witch-green); --accent-light: var(--witch-green-light); }
-[data-accent="brass"] { --accent: var(--brass); --accent-light: var(--brass-light); }
+[data-accent="oxblood"] { --accent: var(--oxblood); --accent-light: var(--oxblood-light); --accent-tint: var(--oxblood-tint); }
+[data-accent="witch-green"] { --accent: var(--witch-green); --accent-light: var(--witch-green-light); --accent-tint: var(--witch-green-tint); }
+[data-accent="brass"] { --accent: var(--brass); --accent-light: var(--brass-light); --accent-tint: var(--brass-tint); }
