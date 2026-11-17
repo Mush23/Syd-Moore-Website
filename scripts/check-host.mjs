@@ -77,17 +77,15 @@ for (const p of ["/.htaccess", "/.git/config"]) {
   ok("header Permissions-Policy", h("permissions-policy").includes("camera"), h("permissions-policy"));
   if (base.startsWith("https://")) ok("header Strict-Transport-Security", h("strict-transport-security").includes("max-age"), h("strict-transport-security"));
 
-  // 7. Search engines: only the real address may be indexed. This also proves the
-  // server applies the "only on this host" condition rather than ignoring it.
-  const robots = h("x-robots-tag");
-  const marker = h("x-canonical-host");
+  // 7. Search engines: only the real address may be crawled and indexed.
+  const robotsHeader = h("x-robots-tag");
+  const robotsTxt = await (await get("/robots.txt")).text();
+  const keepOut = /^Disallow:\s*\/\s*$/m.test(robotsTxt);
+  ok("no noindex header", !/noindex/i.test(robotsHeader), `X-Robots-Tag: ${robotsHeader || "(none)"}`);
   if (isLive) {
-    ok("live site can be indexed", !/noindex/i.test(robots), `X-Robots-Tag: ${robots || "(none)"}`);
-    ok("live site sends the canonical marker", marker === "yes", `X-Canonical-Host: ${marker || "(none)"}`);
+    ok("live site welcomes search engines", !keepOut && robotsTxt.includes("Sitemap:"), robotsTxt.slice(0, 80).replace(/\n/g, " | "));
   } else {
-    ok("staging copy is hidden from search", /noindex/i.test(robots), `X-Robots-Tag: ${robots || "(none)"}`);
-    // If this marker appears on staging, the server ignores "env=" and the live site would be hidden from search too.
-    ok("server applies host-only rules correctly", marker === "", `X-Canonical-Host: ${marker || "(none)"}`);
+    ok("staging copy tells search engines to keep out", keepOut, robotsTxt.slice(0, 80).replace(/\n/g, " | "));
   }
 }
 

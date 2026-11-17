@@ -7,8 +7,10 @@
  * - dist/.htaccess
  *     one address (www and the .co.uk domain go to https://sydmoore.com), HTTPS
  *     only, true 301 redirects built from public/_redirects, tidy addresses
- *     (/about is served from about.html), the 404 page, security headers, and
- *     "noindex" on any other host name, such as a staging subdomain.
+ *     (/about is served from about.html), the 404 page, security headers, and a
+ *     "keep out" robots.txt on any other host name, such as a staging subdomain.
+ * - dist/robots-staging.txt
+ *     that "keep out" file.
  * - dist/_astro/.htaccess
  *     a one-year cache for files whose names contain a content hash.
  * - dist/og/.htaccess
@@ -82,10 +84,15 @@ RewriteCond %{HTTPS} !=on
 RewriteCond %{HTTP:X-Forwarded-Proto} !=https
 RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 
-# 3. Addresses from the old site (public/_redirects)
+# 3. A copy on any other host name (such as a staging subdomain) tells search
+#    engines to keep out. Only ${host} serves the real robots.txt.
+RewriteCond %{HTTP_HOST} !^${hostRe}\\.?(:[0-9]+)?$ [NC]
+RewriteRule ^robots\\.txt$ /robots-staging.txt [L]
+
+# 4. Addresses from the old site (public/_redirects)
 ${redirects.map((r) => `RewriteRule ${r.pattern} ${r.to} [R=${r.status},L]`).join("\n")}
 
-# 4. Tidy addresses: no index.html, no .html, no trailing slash
+# 5. Tidy addresses: no index.html, no .html, no trailing slash
 RewriteCond %{THE_REQUEST} \\s/+index\\.html[\\s?] [NC]
 RewriteRule ^ / [R=301,L]
 RewriteCond %{THE_REQUEST} \\s/+(.+)/index\\.html[\\s?] [NC]
@@ -95,7 +102,7 @@ RewriteRule ^ /%1 [R=301,L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(.+)/$ /$1 [R=301,L]
 
-# 5. Serve /about from about.html (two ways of finding the file, for safety)
+# 6. Serve /about from about.html (two ways of finding the file, for safety)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{DOCUMENT_ROOT}/$1.html -f
 RewriteRule ^(.+)$ /$1.html [L]
@@ -111,15 +118,12 @@ Header always set Referrer-Policy "strict-origin-when-cross-origin"
 Header always set X-Frame-Options "DENY"
 Header always set Content-Security-Policy "frame-ancestors 'none'"
 Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
-Header always set Strict-Transport-Security "max-age=31536000" env=HTTPS
-
-# Only the real address may appear in search results. A staging copy on any
-# other host name tells search engines to stay away.
-SetEnvIfNoCase Host ^${hostRe}(:[0-9]+)?$ CANONICAL_HOST
-Header set X-Robots-Tag "noindex, nofollow" env=!CANONICAL_HOST
-# A marker that is only sent on the real address. scripts/check-host.mjs uses it on a
-# staging copy to prove the server honours "env=" before the site goes live.
-Header set X-Canonical-Host "yes" env=CANONICAL_HOST
+Header always set Strict-Transport-Security "max-age=31536000"
+# Do not make a Header line depend on "env=!NAME". Hostinger's LiteSpeed does
+# not honour the negated form and sends the header every time (tested 17 Nov
+# 2026: a noindex header meant only for staging was also sent on the real host
+# name). For anything that depends on the host name, use a RewriteCond on
+# %{HTTP_HOST}, as rule 3 does.
 
 # Pages are always checked for a newer version.
 <FilesMatch "\\.(html|xml|txt)$">
@@ -149,6 +153,7 @@ export default function hostinger() {
         await writeFile(path.join(dist, ".htaccess"), buildHtaccess({ host, redirects }));
         await writeFile(path.join(dist, "_astro", ".htaccess"), cacheHtaccess(31536000, true));
         await writeFile(path.join(dist, "og", ".htaccess"), cacheHtaccess(86400, false));
+        await writeFile(path.join(dist, "robots-staging.txt"), "# This is a test copy of the site. The real one is at https://" + host + "/\nUser-agent: *\nDisallow: /\n");
         // Cloudflare-format files have no meaning on Hostinger.
         await rm(path.join(dist, "_redirects"), { force: true });
         await rm(path.join(dist, "_headers"), { force: true });

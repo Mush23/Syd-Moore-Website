@@ -21,7 +21,7 @@ A spare preview copy also publishes to <https://mush23.github.io/Syd-Moore-Websi
 - permanently redirect every old address listed in `public/_redirects` (add new ones there);
 - serve tidy addresses (`/about`, not `/about.html` or `/about/`) and the site's own 404 page;
 - send security headers;
-- hide any copy on another host name, such as `new.sydmoore.com`, from search engines.
+- tell search engines to keep out of any copy on another host name, such as `new.sydmoore.com`.
 
 Never edit `.htaccess` on the server, and don't use hPanel features that rewrite it (Force HTTPS, Redirects, Hotlink protection): every publish replaces the file.
 
@@ -58,6 +58,8 @@ Hostinger also keeps its own backups, so the old site can be restored from this 
 4. Click **Create**.
 
 This creates an empty folder, `public_html/new`, for the test copy.
+
+If `new.sydmoore.com` still can't be found after 15 minutes, the address record wasn't added. Add it by hand: hPanel → **Domains** → sydmoore.com → **DNS / Nameservers** → **DNS records**. Add one record with **Type** `A`, **Name** `new`, **Points to** the same number as the existing `@` A record, and save. Don't change or delete any other record: the MX ones run Syd's email.
 
 ### Stage 3: connect Hostinger to GitHub
 
