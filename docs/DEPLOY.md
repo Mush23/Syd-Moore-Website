@@ -1,36 +1,130 @@
-# Deploying sydmoore.com (GitHub Pages)
+# Putting sydmoore.com live (Hostinger)
 
-Everything here is free except the domain renewal. The site is hosted on GitHub Pages and published by `.github/workflows/deploy.yml`.
+The live site is hosted on Hostinger, where the domain's settings and Syd's email already are. Nothing about the domain or email needs to change.
 
 ## How publishing works
 
-- Every push to `main` (including every save in Pages CMS) builds the site and publishes it within a few minutes.
-- The same workflow runs every morning at 05:00 UTC, so "Pre-order" becomes "Out now" on publication day and past events move into the archive.
-  - GitHub pauses scheduled runs after 60 days without any commits. If that happens, open **Actions → Deploy to GitHub Pages** and click **Enable workflow**.
-- `.github/workflows/ci.yml` runs the checks on every pull request and every push to `main`: type check, build, Playwright tests with axe accessibility checks, and Lighthouse budgets.
+1. Someone changes the site: a save in Pages CMS, or a code change merged into `main` on GitHub.
+2. GitHub builds the site (`.github/workflows/publish-hostinger.yml`) and saves the finished files on a branch called `live`.
+3. Hostinger notices the change to `live` and copies the files onto the server. This is Hostinger's own GitHub connection (hPanel → Advanced → Git). No password or key is stored anywhere.
 
-## 1. Turn on GitHub Pages (once)
+The same build runs every morning at about 05:10 UTC, so "Pre-order" becomes "Out now" on publication day. If nothing changed, nothing is published.
 
-1. In the repository, go to **Settings → Pages**.
-2. Under **Build and deployment → Source**, choose **GitHub Actions**.
-3. Go to **Actions → Deploy to GitHub Pages → Run workflow** (or merge anything into `main`).
-4. When it finishes, the site is at `https://mush23.github.io/Syd-Moore-Website/`.
+A spare preview copy also publishes to <https://mush23.github.io/Syd-Moore-Website/> (`.github/workflows/deploy.yml`). Search engines are told to ignore it.
 
-While the site lives at that sub-folder address, the build adds the sub-folder to every link and marks every page `noindex`, so this preview never competes with sydmoore.com in search results (see `integrations/github-pages.mjs`).
+## What the server does
 
-## 2. Settings (repository variables)
+`integrations/hostinger.mjs` writes a `.htaccess` file into every build. It makes the server:
 
-These are public values baked into the pages at build time. Add them in **Settings → Secrets and variables → Actions → Variables tab → New repository variable**, then re-run the deploy workflow.
+- send `www.sydmoore.com`, `sydmoore.co.uk` and `www.sydmoore.co.uk` to `https://sydmoore.com`;
+- always use HTTPS;
+- permanently redirect every old address listed in `public/_redirects` (add new ones there);
+- serve tidy addresses (`/about`, not `/about.html` or `/about/`) and the site's own 404 page;
+- send security headers;
+- hide any copy on another host name, such as `new.sydmoore.com`, from search engines.
+
+Never edit `.htaccess` on the server, and don't use hPanel features that rewrite it (Force HTTPS, Redirects, Hotlink protection): every publish replaces the file.
+
+## Checking a copy of the site
+
+```bash
+npm run check:host https://new.sydmoore.com   # the test copy
+npm run check:host https://sydmoore.com       # the live site
+```
+
+This checks pages, tidy addresses, every old-address redirect, the 404 page, security headers, caching and the search-engine rules. It changes nothing.
+
+---
+
+## Going live, step by step
+
+Do the stages in order. Stages 1 to 3 don't affect the current website at all.
+
+### Stage 1: back up the WordPress site
+
+1. Log in at <https://hpanel.hostinger.com>.
+2. Click **Websites**, then **Manage site** (or **Dashboard**) next to sydmoore.com.
+3. In the left menu, click **Backups** (it may be under **Files**).
+4. Under **Files backups**, pick the newest date and click **Download**. Save the `.tar.gz` file somewhere safe.
+5. Under **Database backups**, pick the database and newest date, and click **Download**. Save the `.sql.gz` file with it.
+
+Hostinger also keeps its own backups, so the old site can be restored from this same page.
+
+### Stage 2: create a test address
+
+1. Still in the sydmoore.com dashboard, click **Domains**, then **Subdomains** in the left menu.
+2. In the subdomain box, type `new` so it reads `new.sydmoore.com`.
+3. Leave **Custom folder for subdomain** unticked.
+4. Click **Create**.
+
+This creates an empty folder, `public_html/new`, for the test copy.
+
+### Stage 3: connect Hostinger to GitHub
+
+1. In the left menu, click **Advanced**, then **Git**.
+2. Click **Connect with GitHub**.
+3. A GitHub window opens. Sign in if asked, choose **Only select repositories**, pick **Syd-Moore-Website**, and click **Install & Authorize**.
+4. Back in Hostinger, select **Syd-Moore-Website** and click **Next**.
+5. Set:
+   - **Branch:** `live` (not `main`)
+   - **Root directory:** click **Change** and choose `public_html/new`
+6. Click **Deploy**.
+
+After a minute, <https://new.sydmoore.com> shows the new site. If the address shows a security warning at first, wait 15 minutes for Hostinger to issue its certificate (hPanel → **Security** → **SSL** shows the status).
+
+### Stage 4: check the test copy
+
+Run `npm run check:host https://new.sydmoore.com` and look through the site by hand. Fix anything that fails before going further.
+
+### Stage 5: switch the real address over
+
+This is the moment the old WordPress site is replaced. Choose a quiet time.
+
+1. hPanel → **Advanced** → **Git**. Open the **⋮** menu and click **Disconnect from repository** (not "Disconnect GitHub").
+2. Left menu → **Files** → **File Manager**. Open `public_html`.
+3. Select everything **except** the `new` folder and delete it. This removes WordPress (the backup from stage 1 has a copy). Old WordPress files left on a server are a security risk, so don't skip this.
+4. Back in **Advanced** → **Git**, connect **Syd-Moore-Website** again, with:
+   - **Branch:** `live`
+   - **Root directory:** `public_html`
+5. Click **Deploy**.
+6. Run `npm run check:host https://sydmoore.com`.
+7. In Google Search Console and Bing Webmaster Tools, submit `https://sydmoore.com/sitemap-index.xml`.
+
+To undo: hPanel → **Backups** → restore the files and database from before the switch.
+
+### Stage 6: sydmoore.co.uk
+
+The .co.uk is registered at OnlyDomains and needs pointing at Hostinger. The server then forwards it to `https://sydmoore.com` (with and without `www`, with and without `https`).
+
+1. In hPanel, open the sydmoore.com dashboard and click **Domains** → **Parked Domains**.
+2. Type `sydmoore.co.uk` and click **Park**. Note the two nameservers it shows (they should be `ns1.dns-parking.com` and `ns2.dns-parking.com`).
+3. Log in at <https://www.onlydomains.com>. Click **Domains** → **My Domains** → **sydmoore.co.uk**.
+4. Find **Nameservers** (or **DNS Settings**), choose custom nameservers, enter the two from step 2, and save.
+5. Wait up to 24 hours. Then run `npm run check:host https://sydmoore.com`, which also tests all four .co.uk addresses.
+
+Do **not** change the nameservers of sydmoore.com itself. They already point at Hostinger.
+
+### Afterwards
+
+- Delete the test copy: hPanel → **Domains** → **Subdomains** → delete `new`, then delete the `public_html/new` folder in File Manager.
+- The WordPress database is no longer used. It can be deleted from hPanel → **Databases** once everyone is happy with the new site.
+- Email is untouched by all of the above. It runs on the domain's mail settings, which never change.
+
+---
+
+## Settings (repository variables)
+
+These are public values baked into the pages at build time. Add them in GitHub → the repository → **Settings → Secrets and variables → Actions → Variables tab → New repository variable**. The site republishes on the next push or the next morning; to republish straight away, open **Actions → Publish to Hostinger → Run workflow**.
 
 | Name | What it is |
 | --- | --- |
-| `PUBLIC_KIT_FORM_ACTION` | Kit form action URL (step 3) |
-| `PUBLIC_CF_ANALYTICS_TOKEN` | Web Analytics token (step 4) |
+| `PUBLIC_KIT_FORM_ACTION` | Kit form action URL (see Newsletter) |
+| `PUBLIC_CF_ANALYTICS_TOKEN` | Web Analytics token (see Visitor statistics) |
 | `PUBLIC_AMAZON_TAG` | Amazon Associates UK store ID, e.g. `sydmoore-21` |
 
 Until a value is set, that feature stays hidden. For example, the newsletter page says sign-up opens soon.
 
-## 3. Newsletter (Kit, free plan)
+## Newsletter (Kit, free plan)
 
 1. Create a Kit account in Syd's name and create a form (**Grow → Landing pages & forms → Create → Form → Inline**).
 2. In the form settings, set **After subscribing → Redirect to an external page** = `https://sydmoore.com/newsletter/thanks`.
@@ -38,40 +132,20 @@ Until a value is set, that feature stays hidden. For example, the newsletter pag
 4. If that URL isn't on `app.kit.com` or `app.convertkit.com`, add its domain to `form-action` in the Content-Security-Policy `<meta>` tag in `src/layouts/BaseLayout.astro`.
 5. The free plan doesn't send automated welcome sequences; send the welcome email by hand or upgrade later.
 
-## 4. Visitor statistics (optional, cookieless)
+## Visitor statistics (optional, cookieless)
 
 Cloudflare Web Analytics works on any host and sets no cookies, so the site needs no cookie banner.
 
 1. Create a free Cloudflare account, then go to **Analytics & Logs → Web Analytics → Add a site** and enter `sydmoore.com`.
-2. Copy the token from the snippet it shows into `PUBLIC_CF_ANALYTICS_TOKEN`, then re-run the deploy workflow.
+2. Copy the token from the snippet it shows into `PUBLIC_CF_ANALYTICS_TOKEN`.
 
-## 5. Pages CMS (for Syd)
+## Pages CMS (for Syd)
 
 1. Go to <https://app.pagescms.org>, sign in with GitHub, and install the Pages CMS GitHub app on this repository.
 2. Open the repository in Pages CMS. The forms come from `.pages.yml`.
 3. Invite Syd by email from **Settings → Collaborators**. She doesn't need a GitHub account.
-4. Every save is a commit to `main`, and the site republishes in a few minutes.
+4. Every save is a commit to `main`, and the live site updates in a few minutes.
 
-## 6. Moving sydmoore.com (DNS cut-over)
+## Contact form
 
-Do this last, once the github.io preview looks right and the launch items in `docs/CONTENT-TODO.md` are done. This replaces the current live site.
-
-1. **Record the current setup first.** Note where sydmoore.com's DNS is managed (usually the domain registrar), and screenshot every existing record, especially **MX** and **TXT** records if Syd has email on the domain. Leave those alone.
-2. **Verify the domain with GitHub** (stops anyone else claiming it): your GitHub profile picture → **Settings → Pages → Add a domain**, enter `sydmoore.com`, and add the TXT record it shows at the registrar.
-3. **Point the domain at GitHub** at the registrar:
-   - Replace the bare domain's **A** records with these four: `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`.
-   - Optionally add **AAAA** records: `2606:50c0:8000::153`, `2606:50c0:8001::153`, `2606:50c0:8002::153`, `2606:50c0:8003::153`.
-   - Set **www** as a **CNAME** to `mush23.github.io`.
-4. **Attach the domain.** Repository **Settings → Pages → Custom domain** → `sydmoore.com` → **Save**. When the DNS check passes (minutes to a few hours), tick **Enforce HTTPS**.
-5. **Republish.** Run **Actions → Deploy to GitHub Pages → Run workflow**. The build now sees the custom domain, drops the sub-folder and the `noindex` tags, and the site goes live at `https://sydmoore.com`.
-6. **Check it.** Test `/biography`, `/syd-moore-strange-magic` and the other old URLs in `public/_redirects`; each should forward to its new page.
-7. **Submit the sitemap.** In Google Search Console and Bing Webmaster Tools, submit `https://sydmoore.com/sitemap-index.xml`.
-
-## What GitHub Pages can't do (and what we do instead)
-
-| Cloudflare feature in the original plan | On GitHub Pages |
-| --- | --- |
-| `_redirects` 301s from old URLs | Forwarding pages built from `public/_redirects` (keep adding rules there). Each has a canonical link to the new page, which search engines follow, though a true 301 is slightly stronger. |
-| `_headers` security headers | CSP and referrer policy are `<meta>` tags in `BaseLayout.astro`. HTTPS is enforced by GitHub. Anti-framing and HSTS headers aren't available. |
-| Contact form (Pages Function + Turnstile + Resend) | Not possible without a server. The contact page lists the agent's details instead. `functions/api/contact.ts` is kept but unused. A hosted form service (e.g. Formspree) could be added later. |
-| Long cache headers on `/_astro/*` | GitHub sets its own caching (10 minutes). Lighthouse still scores 100. |
+The site has no contact form: the Contact page gives the agent's details. Hostinger can run one (a small PHP script), so it can be added later if Syd wants it. `functions/api/contact.ts` is an unused Cloudflare version kept for reference.

@@ -60,8 +60,7 @@ const stats = [
 ---
 <BaseLayout jsonLd={[websiteLd(), personLd()]}>
   <section class="hero band-night band-candle" aria-labelledby="hero-title" data-accent={featuredSeries?.data.accent}>
-    {/* Drawn with CSS generated content so this huge decorative letter isn't measured as the page's main content. */}
-    {watermark && <span class="watermark" aria-hidden="true" data-letter={watermark}></span>}
+    {watermark && <span class="watermark" aria-hidden="true">{watermark}</span>}
     <div class="container hero-grid">
       <div class:list={["fan", `fan-${fanBack.length}`]}>
         {fanBack.map((b, i) => (
@@ -227,7 +226,10 @@ const stats = [
 <style>
   /* ---- Hero: candlelit band, 3D book in front of a fan, oversized title ---- */
   .hero { padding-block: var(--space-5) 0; }
-  .watermark::before { content: attr(data-letter); }
+  /* Wide screens only. On a phone the letter is mostly cut off, and as the largest thing on screen it
+     made the browser treat a decoration (which waits for the display font) as the page's main content. */
+  .watermark { display: none; }
+  @media (min-width: 900px) { .watermark { display: block; } }
   .watermark {
     position: absolute;
     z-index: -1;
