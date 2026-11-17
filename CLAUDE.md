@@ -129,7 +129,13 @@ npm run lhci      # Lighthouse budgets (perf â‰¥ 95, a11y 100, best practices â‰
 - A spare preview copy still publishes to https://mush23.github.io/Syd-Moore-Website/ (noindex).
 - `npm run check` is clean, `npm test` passes (66, with 1 skipped while no book is "coming soon"), and Lighthouse scores 96 to 99 for performance on CI and 100 for accessibility, best practices and SEO.
 - Review quotes: 20 added on 17 Nov 2026. Each was checked against its source page, and the link is stored in the quote's `url` field (not displayed). See `docs/CONTENT-TODO.md` for what still needs Syd's or the publisher's approval.
-- **The About page is first-person text drafted from the brief, not written or approved by Syd.** It is live. The owner was offered a third-person rewrite and has not yet decided.
+- **Syd's feedback, 17 Nov 2026** (relayed by the owner; it overrides `docs/brief.md` where they differ):
+  - The About page is in the third person. The hospice line is Syd's wording with the programme name as The Bookseller prints it (the owner's choice): "leads on the RLF's Reading Round in Hospices programme". Enquiries about it go to the RLF address in `readingRoundEmail` (`press.md`), shown on About and Contact.
+  - Read on Sea has closed. Its links, the `readOnSea` buy button and `site.localShop` were removed. Don't add them back.
+  - *The Witching Hour* has its own cover (`the-witching-hour.jpg`, from the Amazon listing Syd pointed to).
+  - Articles and interviews Syd supplied are in `selectedPress` in `press.md`. `src/lib/press.ts` explains where each `kind` and `book` shows (Press, About, book pages). Titles, dates and bylines were checked against each page.
+  - Menu icons show on desktop as well as in the phone menu.
+- Lighthouse locally: Astro 7 refuses to start a second preview server, so stop any running preview before `npm run lhci`.
 - Local tooling notes (Windows, Git Bash):
   - Tests and LHCI reuse whatever is on port 4321, so stop the dev server first or they test unbuilt pages.
   - Don't export `MSYS_NO_PATHCONV` when running LHCI: it stops `CHROME_PATH` being converted.
@@ -139,9 +145,9 @@ npm run lhci      # Lighthouse budgets (perf â‰¥ 95, a11y 100, best practices â‰
 - sydmoore.com: registered at OnlyDomains, nameservers at Hostinger (`ns1/ns2.dns-parking.com`), website and email at Hostinger (MX `mx1/mx2.hostinger.co.uk`). Email must never be disturbed.
 - Hostinger's GitHub connection deploys the `live` branch into `public_html`. The deploy lays the build over the folder; it did not remove the staging folder beside it.
 - www.sydmoore.com already redirects to the bare domain. Over plain http it takes two hops, because Hostinger forces HTTPS before `.htaccess` runs.
-- sydmoore.co.uk: registered at OnlyDomains and still on OnlyDomains' nameservers on 17 Nov 2026. The bare name showed OnlyDomains' parking page, `www` forwarded over http only, and https didn't connect. The fix is to park it on Hostinger and move its nameservers there (`docs/DEPLOY.md`, stage 6); `.htaccess` then redirects all four forms.
+- sydmoore.co.uk: registered at OnlyDomains. On 17 Nov 2026 the owner parked it on Hostinger and moved its nameservers to `solar/lunar.dns-parking.com` (the pair Hostinger gave, not ns1/ns2). Hostinger serves it through its CDN (`*.cdn.hstgr.net`, not 77.37.37.196). Tested at those addresses the same day: all four forms (http/https, with/without www) reach `https://sydmoore.com` with valid certificates. Before that it was on OnlyDomains' forwarder, where https didn't connect, so old DNS caches may show that for up to a day.
 - The owner has the Hostinger and OnlyDomains logins. Never ask for them. They carry out the hPanel steps themselves.
-- Still to tidy on the server: the staging copy in `public_html/new` (reachable at /new/), the `new` subdomain, any WordPress files left in `public_html`, and the unused WordPress database.
+- Server tidied on 17 Nov 2026: the staging folder and the `new` subdomain are gone and WordPress addresses are refused. Still optional: delete the unused WordPress database (hPanel â†’ Databases).
 - A DNS record the owner added for `new.sydmoore.com` never reached Hostinger's nameservers (the zone serial didn't change). Unexplained. If DNS edits are needed again, check that first.
 
 ### CI
@@ -164,9 +170,9 @@ npm run lhci      # Lighthouse budgets (perf â‰¥ 95, a11y 100, best practices â‰
 
 ## Next steps
 
-1. Server tidy-up with the owner: delete `public_html/new`, the `new` subdomain and any WordPress leftovers, then re-run `npm run check:host https://sydmoore.com`.
-2. Connect sydmoore.co.uk (`docs/DEPLOY.md`, stage 6) and re-run the check: all six .co.uk and www forms should pass.
-3. Settle the About page wording with the owner or Syd.
+1. Once DNS caches have caught up (by 18 Nov 2026), run `npm run check:host https://sydmoore.com`: all 115 checks should pass, including the four .co.uk forms.
+2. Optional: delete the unused WordPress database in hPanel.
+3. Syd to read the third-person About page and correct anything she'd put differently.
 4. Work through `docs/CONTENT-TODO.md` with Syd: higher-resolution covers, photo credits, quote approvals, the privacy notice.
 5. Set up Kit so newsletter sign-up works (`docs/DEPLOY.md`, Newsletter).
 6. Submit `https://sydmoore.com/sitemap-index.xml` in Google Search Console and Bing Webmaster Tools.

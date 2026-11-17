@@ -34,9 +34,6 @@ export const site = {
     amazonTag: (env.PUBLIC_AMAZON_TAG as string | undefined) ?? "",
   },
 
-  /** The lead "buy local" shop. Book pages link to it when a readOnSea URL is set. */
-  localShop: { name: "Read on Sea", town: "Leigh-on-Sea", url: "https://readonsea.co.uk/" },
-
   /** Syd's social accounts. `icon` is a Simple Icons name (see src/components/Icon.astro). */
   social: [
     { label: "Facebook", url: "https://www.facebook.com/SydMooreWriter/", icon: "simple-icons:facebook" },

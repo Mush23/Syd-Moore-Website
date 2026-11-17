@@ -3,11 +3,14 @@ import { getEntry, render } from "astro:content";
 import Icon from "../components/Icon.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import CopyBio from "../components/CopyBio.astro";
+import PressList from "../components/PressList.astro";
+import { groupPress } from "../lib/press";
 
 const press = (await getEntry("pages", "press"))!;
 const about = (await getEntry("pages", "about"))!;
 const { Content } = await render(press);
 const p = press.data;
+const coverage = groupPress(p.selectedPress);
 ---
 <BaseLayout title="Press and media · Syd Moore" description={p.description}>
   <header class="container page-header">
@@ -49,14 +52,15 @@ const p = press.data;
       </dl>
     </section>
 
-    {p.selectedPress && p.selectedPress.length > 0 && (
+    {coverage.length > 0 && (
       <section aria-labelledby="coverage-heading">
-        <h2 id="coverage-heading">Selected coverage</h2>
-        <ul class="coverage">
-          {p.selectedPress.map((c) => (
-            <li><a href={c.url}>{c.title}<Icon name="external-link" size="0.9em" class="icon-trail" /></a> <span class="muted">· {c.outlet}{c.date ? `, ${c.date}` : ""}</span></li>
-          ))}
-        </ul>
+        <h2 id="coverage-heading">Articles, interviews and coverage</h2>
+        {coverage.map((g) => (
+          <div class="coverage-group">
+            <h3><Icon name={g.icon} class="icon-lead icon-accent" />{g.heading}</h3>
+            <PressList items={g.items} />
+          </div>
+        ))}
       </section>
     )}
   </div>
@@ -68,6 +72,6 @@ const p = press.data;
   .bios { display: grid; gap: var(--space-3); margin-top: var(--space-2); }
   .contacts { margin-top: var(--space-2); display: grid; gap: var(--space-2); }
   .contacts dt { font-size: var(--small); color: var(--ink-muted); }
-  .coverage { margin-top: var(--space-2); padding-left: 1.25rem; }
-  .coverage li + li { margin-top: 0.5rem; }
+  .coverage-group { margin-top: var(--space-3); }
+  .coverage-group h3 { font-size: var(--h3); margin-bottom: var(--space-2); }
 </style>

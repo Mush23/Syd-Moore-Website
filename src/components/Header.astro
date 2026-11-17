@@ -111,8 +111,8 @@ const isCurrent = (href: string) => current === href || current.startsWith(`${hr
     font-weight: 600;
   }
   .menu-toggle[hidden] { display: none; }
-  /* Menu icons only show in the collapsed (phone and tablet) menu. */
-  .site-nav :global(.nav-icon) { display: none; margin-right: 0.75rem; color: var(--brass-light); }
+  /* Every menu link has its icon, on desktop and in the collapsed (phone and tablet) menu. */
+  .site-nav :global(.nav-icon) { margin-right: 0.45rem; color: var(--brass-light); }
 
   /* Below 1000px, collapse the menu once JS is available */
   @media (max-width: 999px) {
@@ -121,7 +121,7 @@ const isCurrent = (href: string) => current === href || current.startsWith(`${hr
     .site-header[data-js] .site-nav ul { flex-direction: column; align-items: stretch; gap: 0; }
     .site-header[data-js] .site-nav li { border-top: 1px solid var(--line-night); }
     .site-header[data-js] .site-nav a:not(.btn) { width: 100%; }
-    .site-header[data-js] .site-nav :global(.nav-icon) { display: inline-block; }
+    .site-header[data-js] .site-nav :global(.nav-icon) { margin-right: 0.75rem; }
     .nav-cta { padding-top: var(--space-2); }
     .nav-cta .btn { width: 100%; }
   }

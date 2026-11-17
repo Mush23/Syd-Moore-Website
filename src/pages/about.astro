@@ -6,10 +6,15 @@ import { Image } from "astro:assets";
 import type { ImageMetadata } from "astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import NewsletterBand from "../components/NewsletterBand.astro";
+import PressList from "../components/PressList.astro";
 import { personLd } from "../lib/jsonld";
+import { groupPress } from "../lib/press";
 
 const page = (await getEntry("pages", "about"))!;
 const { Content } = await render(page);
+// Pieces Syd has written and interviews she has given, from the press page's list.
+const press = (await getEntry("pages", "press"))!.data;
+const reading = groupPress(press.selectedPress, ["by-syd", "interview"]);
 
 // Author portrait: drop a file named "syd-moore-portrait.(jpg|png|webp)" into src/assets/photos.
 const photos = import.meta.glob<{ default: ImageMetadata }>("../assets/photos/syd-moore-portrait.{jpg,jpeg,png,webp}", { eager: true });
@@ -24,7 +29,23 @@ const factIcon = (label: string) =>
   </header>
 
   <div class="container about">
-    <div class="prose story"><Content /></div>
+    <div class="main-col">
+      <div class="prose story"><Content /></div>
+
+      {reading.length > 0 && (
+        <section class="reading" aria-labelledby="reading-heading">
+          <p class="eyebrow"><Icon name="book-open-text" />In her own words</p>
+          <h2 id="reading-heading">Read more from Syd</h2>
+          {reading.map((g) => (
+            <div class="reading-group">
+              <h3><Icon name={g.icon} class="icon-lead icon-accent" />{g.heading}</h3>
+              <PressList items={g.items} />
+            </div>
+          ))}
+          <p><a class="btn btn-secondary" href="/press#coverage-heading"><Icon name="newspaper" />More features and reviews</a></p>
+        </section>
+      )}
+    </div>
 
     <aside class="facts" aria-labelledby="facts-heading">
       {portrait && (
@@ -34,7 +55,7 @@ const factIcon = (label: string) =>
       <dl>
         {page.data.quickFacts?.map((f) => (<div><dt><Icon name={factIcon(f.label)} class="icon-lead icon-accent" />{f.label}</dt><dd>{f.value}</dd></div>))}
       </dl>
-      <p><a class="btn btn-secondary" href="/press"><Icon name="newspaper" />Bios and photos for press</a></p>
+      <p><a class="btn btn-secondary" href="/press"><Icon name="newspaper" />Press kit and bios</a></p>
       <SocialLinks tone="light" />
     </aside>
   </div>
@@ -46,13 +67,21 @@ const factIcon = (label: string) =>
   .about { display: grid; gap: var(--space-5); padding-bottom: var(--space-4); }
   @media (min-width: 810px) { .about { grid-template-columns: 1fr 20rem; align-items: start; } }
   .story :global(p:first-child) { font-family: var(--font-display); font-size: 1.4rem; line-height: 1.4; }
+  .main-col { min-width: 0; }
+  .reading { margin-top: var(--space-5); padding-top: var(--space-4); border-top: 1px solid var(--line); max-width: 44rem; }
+  .reading .eyebrow { color: var(--brass); }
+  .reading h2 { font-size: var(--h2); margin-top: var(--space-1); }
+  .reading h3 { font-size: var(--h3); margin-bottom: var(--space-2); }
+  .reading-group { margin-top: var(--space-3); }
+  .reading > p:last-child { margin-top: var(--space-4); }
   .facts {
     background: var(--surface);
     border: 1px solid var(--line);
     border-radius: var(--radius);
     padding: var(--space-3);
   }
-  .facts > * + * { margin-top: var(--space-2); }
+  /* :global so the gap also applies to the social links, which come from another component. */
+  .facts > :global(* + *) { margin-top: var(--space-2); }
   .facts :global(.portrait) { border-radius: var(--radius); width: 100%; height: auto; }
   .facts-heading { font-size: var(--h3); }
   dl > div + div { margin-top: var(--space-1); }

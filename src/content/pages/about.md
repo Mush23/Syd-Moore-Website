@@ -14,12 +14,12 @@ quickFacts:
     value: "Sandra Sawicka at Marjacq"
 ---
 
-I was named after Samantha in *Bewitched*, so perhaps witches were always going to find me.
+Syd Moore was named after Samantha in *Bewitched*, so perhaps witches were always going to find her.
 
-I grew up in Leigh-on-Sea, where the legend of a local "sea witch" called Sarah Moore became the seed of my first novel, *The Drowning Pool*, now published as *The Witching Hour*. Before that I spent thirteen years in London working in publishing, taught publishing and writing, and presented Channel 4's books programme *Pulp*.
+She grew up in Leigh-on-Sea, where the legend of a local "sea witch" called Sarah Moore became the seed of her first novel, *The Drowning Pool*, now published as *The Witching Hour*. Before that she spent thirteen years in London working in publishing, taught publishing and writing, and presented Channel 4's books programme *Pulp*.
 
-My books start in the archive. I research at the Essex Record Office and at the Museum of Witchcraft and Magic in Boscastle. An exhibit there about a 1940 coven ritual against invasion became the Section W trilogy.
+Her books start in the archive. She researches at the Essex Record Office and at the Museum of Witchcraft and Magic in Boscastle. An exhibit there about a 1940 coven ritual against invasion became the Section W trilogy.
 
-The Essex witch trials were real, and so were the women accused in them. The way people still talk about "Essex girls" has roots in that history. That's why I co-founded the Essex Girls Liberation Front.
+The Essex witch trials were real, and so were the women accused in them. The way people still talk about "Essex girls" has roots in that history. That's why she co-founded the Essex Girls Liberation Front.
 
-I live in Westcliff-on-Sea. As a Royal Literary Fund Fellow, I also lead the RLF Reading Round, which takes reading groups into hospices.
+Syd lives in Westcliff-on-Sea. As a Royal Literary Fund Fellow, she also leads on the RLF's Reading Round in Hospices programme. She has written about it for [The Bookseller](https://www.thebookseller.com/comment/adult-reading-communities-hospices). To get in touch about the programme, email [syd.moore@rlf.org.uk](mailto:syd.moore@rlf.org.uk).

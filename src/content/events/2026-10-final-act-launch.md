@@ -8,4 +8,4 @@ book: "the-final-act-of-daphne-devine"
 draft: true
 ---
 
-Draft: confirm the venue (ideally Read on Sea), date and time, then untick Draft to publish.
+Draft: confirm the venue, date and time, then untick Draft to publish.

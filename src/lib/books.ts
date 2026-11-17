@@ -86,12 +86,13 @@ export interface Retailer {
   key: RetailerKey;
   label: string;
   tab: FormatTab;
-  primary?: boolean;
 }
 
-/** Display order is the brief's local-first order. */
+/**
+ * Display order: Bookshop.org (which shares its income with independent shops) first, Amazon last in print.
+ * (The brief's lead "buy local" shop, Read on Sea, closed in 2026 and was removed.)
+ */
 export const RETAILERS: Retailer[] = [
-  { key: "readOnSea", label: "Read on Sea, Leigh-on-Sea", tab: "print", primary: true },
   { key: "bookshop", label: "Bookshop.org", tab: "print" },
   { key: "waterstones", label: "Waterstones", tab: "print" },
   { key: "hive", label: "Hive", tab: "print" },

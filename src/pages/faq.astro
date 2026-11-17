@@ -49,8 +49,8 @@ const ld = {
       a: renamed.map((b) => `${b.data.title} was previously published as ${b.data.formerTitle}.`).join(" "),
     },
     {
-      q: "Where can I buy Syd's books locally?",
-      a: "Read on Sea on Broadway in Leigh-on-Sea is Syd's local independent bookshop, and any bookshop can order her books using the ISBN on each book's page.",
+      q: "Can I buy Syd's books from my local bookshop?",
+      a: "Yes. Any bookshop can order her books using the ISBN on each book's page.",
     },
     press.agentName && {
       q: "How do I book Syd for a talk or event?",
@@ -128,11 +128,8 @@ const ld = {
     )}
 
     <section aria-labelledby="q-local">
-      <h2 id="q-local"><Icon name="circle-help" class="icon-lead icon-accent" />Where can I buy Syd's books locally?</h2>
-      <p>
-        <a href="https://readonsea.co.uk/">Read on Sea</a> on Broadway in Leigh-on-Sea is Syd's local independent
-        bookshop, and any bookshop can order her books using the ISBN on each book's page.
-      </p>
+      <h2 id="q-local"><Icon name="circle-help" class="icon-lead icon-accent" />Can I buy Syd's books from my local bookshop?</h2>
+      <p>Yes. Any bookshop can order her books using the ISBN on each book's page.</p>
     </section>
 
     {press.agentName && (
