@@ -37,10 +37,9 @@ Last reviewed 17 November 2026. Everything below is either missing or unconfirme
 - [ ] "The history behind the book" note for each novel, 100–200 words (start with Section W)
 - [ ] Extracts (PDF) if the publishers allow them
 - [ ] Verify the ebook ISBNs (taken from Simon & Schuster listings) and the audiobook ISBN for *The Great Deception*
-- [ ] *Strange Maven*: confirm the date and a description. The sources disagree:
-  - Waterstones says 6 January 2028 and Fantastic Fiction says 2027;
-  - Oneworld's own page (seen 17 November 2026) shows "January 14, 2027" beside US prices, and a caption on the same page says "Out on 20th May 2027".
-  The site still says "Coming soon" with no date until Syd confirms.
+- [x] *Strange Maven*: release date 6 January 2028, confirmed by the site owner on 17 November 2026 from Amazon UK's listing (it matches Waterstones). The book is now open for pre-order on the site, with Waterstones and Amazon UK buttons.
+  - Oneworld's own page showed other dates on the same day ("January 14, 2027" beside US prices, and "Out on 20th May 2027" in a caption). If the publisher confirms a different UK date, change "Publication date" in Pages CMS.
+- [ ] *Strange Maven*: a proper description. The page currently says only "The sixth Essex Witch Museum mystery."
 - [ ] Series numbering for the Christmas collections and *The Strange Casebook* (retailers number them differently)
 - [ ] *If on a Winter's Night a Traveller Passes By* (2013 Kindle story): keep or drop? It is saved as a draft; add a description and link, then untick Draft to publish
 - [ ] Kindle, Apple Books, Kobo, Google Play, Hive and Libro.fm links where available

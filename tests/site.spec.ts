@@ -90,10 +90,29 @@ test("format tabs work from the keyboard", async ({ page }) => {
   await expect(tabs.nth(n - 1)).toHaveAttribute("aria-selected", "true");
 });
 
+// These two tests find their books from the content files, so they keep working
+// when a book moves from "coming soon" to pre-order to published.
+const comingSoon = books.filter((b) => b.data.status === "coming-soon");
+const preOrder = books.filter((b) => b.data.status !== "coming-soon" && new Date(b.data.pubDate) > new Date());
+
 test("coming-soon books have no buy buttons", async ({ page }) => {
-  await page.goto("/books/strange-maven");
-  await expect(page.locator("[data-buy-panel] a[rel~='sponsored']")).toHaveCount(0);
-  await expect(page.locator("[data-buy-panel]")).toContainText("Coming soon");
+  test.skip(comingSoon.length === 0, "No book is marked coming soon at the moment.");
+  for (const book of comingSoon) {
+    await page.goto(`/books/${book.slug}`);
+    await expect(page.locator("[data-buy-panel] a[rel~='sponsored']")).toHaveCount(0);
+    await expect(page.locator("[data-buy-panel]")).toContainText("Coming soon");
+  }
+});
+
+test("pre-order books show pre-order buttons and their publication date", async ({ page }) => {
+  test.skip(preOrder.length === 0, "No book is on pre-order at the moment.");
+  for (const book of preOrder) {
+    await page.goto(`/books/${book.slug}`);
+    const panel = page.locator("[data-buy-panel]");
+    await expect(panel.locator("h2")).toContainText("Pre-order");
+    expect(await panel.locator("a[rel~='sponsored']").count()).toBeGreaterThan(0);
+    await expect(page.locator(".status-line")).toContainText("Out ");
+  }
 });
 
 test("404 page", async ({ page }) => {

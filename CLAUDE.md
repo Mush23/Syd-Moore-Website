@@ -127,6 +127,11 @@ The owner learned that the existing sydmoore.com is a WordPress site on Hostinge
 - the site served by Hostinger (LiteSpeed, WordPress);
 - MX records pointing at `mx1/mx2.hostinger.co.uk`, so email on the domain is hosted there and must not be disturbed.
 
+The owner has also bought **sydmoore.co.uk** (registered at OnlyDomains and using OnlyDomains' own nameservers). It should always forward to https://sydmoore.com:
+- now: a 301 "web redirection" set in OnlyDomains (My Domains → the domain → DNS Settings);
+- if the site moves onto Hostinger: add it there as an extra domain instead, so https://sydmoore.co.uk forwards too, and redirect every non-canonical host to https://sydmoore.com in `.htaccess`.
+Canonical tags, the sitemap and structured data already use https://sydmoore.com only, so the second domain needs no site changes.
+
 Nothing has been changed yet. The site still publishes to GitHub Pages. Two routes were put to the owner: host the built site on Hostinger (true 301s and headers through `.htaccess`, no DNS change), or keep GitHub Pages and point the domain's A records at it from Hostinger's DNS. Record the choice here when it is made.
 
 ### Decisions made while finishing
