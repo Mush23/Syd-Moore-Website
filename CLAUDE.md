@@ -18,10 +18,11 @@ Author website for novelist Syd Moore. Read `docs/brief.md` for content and desi
     - www and the .co.uk domain redirect to `https://sydmoore.com`, and HTTP to HTTPS;
     - true 301s from `public/_redirects` (a trailing `/*` is a catch-all, Hostinger only);
     - tidy URLs (`/about` from `about.html`), the 404 page, security headers and cache headers;
+    - every `.php` request and the old WordPress folders are refused, and LiteSpeed's page cache is switched off, so nothing left from the WordPress site can run or be served;
     - a "keep out" `robots.txt` on every host except sydmoore.com (a `RewriteCond` on the host name swaps in `robots-staging.txt`), so a staging copy isn't crawled.
   - **LiteSpeed quirk:** `Header ... env=!NAME` is not honoured on Hostinger; the header is sent every time. A first version used it to send `noindex` on staging only, and the staging test showed it would have gone out on the live host too. Never use negated `env=` on a Header line; use `RewriteCond %{HTTP_HOST}`.
   - **Never edit `.htaccess` on the server** or use hPanel features that rewrite it. Every deploy replaces it.
-  - **`npm run check:host <url>`** (`scripts/check-host.mjs`) checks a deployed copy: pages, redirects, headers, caching, noindex rules. Run it after any change to the `.htaccess` rules. The rules can't be tested locally, because nothing here runs LiteSpeed.
+  - **`npm run check:host <url>`** (`scripts/check-host.mjs`) checks a deployed copy: pages, redirects, headers, caching, robots rules and that WordPress addresses are refused. Add `-- --ip=77.37.37.196` to ask the server directly when a copy has no DNS record or certificate. Run it after any change to the `.htaccess` rules. The rules can't be tested locally, because nothing here runs LiteSpeed.
   - **`live` is a build output branch.** Never edit it by hand, and never merge it anywhere. CI ignores it.
 - **Preview copy:** GitHub Pages at `mush23.github.io/Syd-Moore-Website`, published by `.github/workflows/deploy.yml`. This is also what a plain `npm run build` produces, and what the tests run against.
   - `integrations/github-pages.mjs` runs after that build:
@@ -139,9 +140,9 @@ Go-live is staged (`docs/DEPLOY.md`, "Going live, step by step"):
 
 1. back up WordPress;
 2. create `new.sydmoore.com`;
-3. connect Hostinger to the `live` branch, deploying into `public_html/new` (done 17 Nov 2026: the files deploy and the rules pass when the server is asked directly, but `new.sydmoore.com` had no DNS record yet);
-4. `npm run check:host https://new.sydmoore.com`;
-5. empty `public_html`, redeploy there, check again;
+3. connect Hostinger to the `live` branch, deploying into `public_html/new` (done 17 Nov 2026);
+4. check the test copy (done 17 Nov 2026: 102 of 102 with `--ip`, and a browser crawl of 30 pages. `new.sydmoore.com` never got a public DNS record even after the owner added one in hPanel; the zone's serial didn't change. Unexplained, and not needed for go-live);
+5. reconnect the Git deploy to `public_html`, check again, then delete the WordPress files;
 6. park `sydmoore.co.uk` on Hostinger and point its nameservers there from OnlyDomains.
 
 Update this list as stages are completed. The old WordPress site had one page and two posts; every address in its sitemap has a redirect in `public/_redirects`.

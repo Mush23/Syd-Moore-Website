@@ -20,7 +20,7 @@ A spare preview copy also publishes to <https://mush23.github.io/Syd-Moore-Websi
 - always use HTTPS;
 - permanently redirect every old address listed in `public/_redirects` (add new ones there);
 - serve tidy addresses (`/about`, not `/about.html` or `/about/`) and the site's own 404 page;
-- send security headers;
+- send security headers, and refuse every `.php` address and the old WordPress folders, so nothing left over from WordPress can run;
 - tell search engines to keep out of any copy on another host name, such as `new.sydmoore.com`.
 
 Never edit `.htaccess` on the server, and don't use hPanel features that rewrite it (Force HTTPS, Redirects, Hotlink protection): every publish replaces the file.
@@ -31,6 +31,8 @@ Never edit `.htaccess` on the server, and don't use hPanel features that rewrite
 npm run check:host https://new.sydmoore.com   # the test copy
 npm run check:host https://sydmoore.com       # the live site
 ```
+
+Add `-- --ip=77.37.37.196` (the server's address, the same number as the domain's A record) to ask the server directly. Use it when a copy has no address record or certificate yet.
 
 This checks pages, tidy addresses, every old-address redirect, the 404 page, security headers, caching and the search-engine rules. It changes nothing.
 
@@ -78,21 +80,31 @@ After a minute, <https://new.sydmoore.com> shows the new site. If the address sh
 
 Run `npm run check:host https://new.sydmoore.com` and look through the site by hand. Fix anything that fails before going further.
 
+On 17 November 2026 the test copy passed every check when the server was asked directly (`--ip`), and a real browser loaded all 30 pages from it. The public address `new.sydmoore.com` never appeared, because no address record reached Hostinger's name servers. That doesn't block going live: the real address already has its record and certificate.
+
 ### Stage 5: switch the real address over
 
-This is the moment the old WordPress site is replaced. Choose a quiet time.
+This is the moment the old WordPress site is replaced. Choose a quiet time. Nothing is deleted first, so there is no gap with a broken site.
 
 1. hPanel → **Advanced** → **Git**. Open the **⋮** menu and click **Disconnect from repository** (not "Disconnect GitHub").
-2. Left menu → **Files** → **File Manager**. Open `public_html`.
-3. Select everything **except** the `new` folder and delete it. This removes WordPress (the backup from stage 1 has a copy). Old WordPress files left on a server are a security risk, so don't skip this.
-4. Back in **Advanced** → **Git**, connect **Syd-Moore-Website** again, with:
+2. Connect **Syd-Moore-Website** again, with:
    - **Branch:** `live`
    - **Root directory:** `public_html`
-5. Click **Deploy**.
-6. Run `npm run check:host https://sydmoore.com`.
-7. In Google Search Console and Bing Webmaster Tools, submit `https://sydmoore.com/sitemap-index.xml`.
+3. Click **Deploy**. If Hostinger says the folder must be empty, stop and follow "If the folder must be empty" below.
+4. Run `npm run check:host https://sydmoore.com`. It checks that the new site is being served and that every old WordPress address is refused.
+5. In Google Search Console and Bing Webmaster Tools, submit `https://sydmoore.com/sitemap-index.xml`.
 
 To undo: hPanel → **Backups** → restore the files and database from before the switch.
+
+**Tidy up afterwards.** The WordPress files are still in `public_html`. They can't run any more (the server refuses them), but remove them within a few days:
+
+1. hPanel → **Files** → **File Manager** → `public_html`.
+2. Delete the folders `wp-admin`, `wp-content` and `wp-includes`, every file whose name starts with `wp-`, plus `index.php`, `xmlrpc.php`, `license.txt` and `readme.html`.
+3. Delete the `new` folder, then delete the `new` subdomain under **Domains** → **Subdomains**.
+4. Don't delete `.htaccess`, `index.html`, `_astro`, `books`, `og` or anything else the new site put there. If unsure, leave it and ask.
+5. Run the check again.
+
+**If the folder must be empty.** In File Manager, open `public_html`, select everything and delete it (the stage 1 backup has a copy), then go back to step 2. The site shows an error for the minute or two in between.
 
 ### Stage 6: sydmoore.co.uk
 
@@ -108,7 +120,6 @@ Do **not** change the nameservers of sydmoore.com itself. They already point at 
 
 ### Afterwards
 
-- Delete the test copy: hPanel → **Domains** → **Subdomains** → delete `new`, then delete the `public_html/new` folder in File Manager.
 - The WordPress database is no longer used. It can be deleted from hPanel → **Databases** once everyone is happy with the new site.
 - Email is untouched by all of the above. It runs on the domain's mail settings, which never change.
 
