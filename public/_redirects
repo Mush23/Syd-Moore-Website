@@ -15,3 +15,22 @@
 /noirwich-the-witching-hour       /news                                    301
 /noirwich-the-witching-hour/      /news                                    301
 /books/the-drowning-pool          /books/the-witching-hour                 301
+
+# Every address in the WordPress site's sitemap on 17 November 2026 (the site on Hostinger that this one replaces).
+/hello-world                      /news                                    301
+/the-final-act-of-daphne-devine   /books/the-final-act-of-daphne-devine    301
+/category/blog                    /news                                    301
+/category/books                   /books                                   301
+/tag/the-grand-illusion           /books/the-grand-illusion                301
+/tag/the-great-deception          /books/the-great-deception               301
+/tag/the-final-act-of-daphne-devine /books/the-final-act-of-daphne-devine  301
+/tag/daphne-devine                /series/section-w                        301
+/author/miranda                   /about                                   301
+/author/sydx                      /about                                   301
+/feed                             /rss.xml                                 301
+
+# Catch-alls for anything else in those WordPress sections. A trailing /* only
+# works on Hostinger (integrations/hostinger.mjs); the GitHub preview skips these lines.
+/category/*                       /news                                    301
+/tag/*                            /books                                   301
+/author/*                         /about                                   301

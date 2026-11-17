@@ -60,16 +60,17 @@ const stats = [
 ---
 <BaseLayout jsonLd={[websiteLd(), personLd()]}>
   <section class="hero band-night band-candle" aria-labelledby="hero-title" data-accent={featuredSeries?.data.accent}>
-    {watermark && <span class="watermark" aria-hidden="true">{watermark}</span>}
+    {/* Drawn with CSS generated content so this huge decorative letter isn't measured as the page's main content. */}
+    {watermark && <span class="watermark" aria-hidden="true" data-letter={watermark}></span>}
     <div class="container hero-grid">
       <div class:list={["fan", `fan-${fanBack.length}`]}>
         {fanBack.map((b, i) => (
           <div class={`fan-back fan-back-${fanBack.length - i}`} aria-hidden="true">
-            <Cover book={b} series={featuredSeries} width={220} decorative />
+            <Cover book={b} series={featuredSeries} width={140} decorative />
           </div>
         ))}
         <div class="fan-front">
-          <Book3D book={featured} series={featuredSeries} width={320} loading="eager" float />
+          <Book3D book={featured} series={featuredSeries} width={320} loading="eager" float sizes="(min-width: 900px) 19rem, 13.5rem" />
         </div>
       </div>
       <div class="hero-copy">
@@ -226,6 +227,7 @@ const stats = [
 <style>
   /* ---- Hero: candlelit band, 3D book in front of a fan, oversized title ---- */
   .hero { padding-block: var(--space-5) 0; }
+  .watermark::before { content: attr(data-letter); }
   .watermark {
     position: absolute;
     z-index: -1;

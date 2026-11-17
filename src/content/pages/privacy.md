@@ -1,7 +1,7 @@
 ---
 title: "Privacy notice"
 description: "How sydmoore.com handles your personal information."
-updated: "2026-09-25"
+updated: "2026-11-17"
 ---
 
 This notice explains what personal information this website collects, why, and what your rights are under UK data protection law (UK GDPR and the Data Protection Act 2018).
@@ -22,7 +22,7 @@ We do not sell your information or use it for advertising.
 ## Who processes it for us
 
 - **Kit** (the newsletter service) stores subscriber details and sends the newsletter.
-- **GitHub** (GitHub Pages) hosts the website. Like any web host, it briefly logs visitors' IP addresses to keep the service secure.
+- **Hostinger** hosts the website. Like any web host, it briefly logs visitors' IP addresses to keep the service secure.
 - **Cloudflare** provides privacy-friendly visitor statistics (Cloudflare Web Analytics).
 
 ## Cookies

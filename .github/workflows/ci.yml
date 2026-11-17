@@ -1,9 +1,10 @@
 name: CI
 
+# Runs on every push to any branch except the built "live" branch. A pull request
+# shows the result of the push to its branch, so there is no separate PR trigger.
 on:
   push:
-    branches: [main]
-  pull_request:
+    branches-ignore: [live]
 
 jobs:
   verify:
@@ -34,6 +35,29 @@ jobs:
 
       - name: Lighthouse (mobile budgets)
         run: npx lhci autorun
+
+      # The detailed log is only visible to signed-in users, so repeat the scores as
+      # notices, which anyone (and the GitHub API) can read on the run page.
+      - name: Report Lighthouse scores
+        if: always()
+        run: |
+          node -e '
+            const fs = require("fs");
+            if (!fs.existsSync(".lighthouseci")) process.exit(0);
+            const files = fs.readdirSync(".lighthouseci").filter((f) => f.startsWith("lhr-") && f.endsWith(".json"));
+            const byUrl = {};
+            for (const f of files) {
+              const r = JSON.parse(fs.readFileSync(".lighthouseci/" + f, "utf8"));
+              const url = r.finalUrl.replace("http://localhost:4321", "") || "/";
+              const scores = Object.values(r.categories).map((c) => Math.round(c.score * 100)).join("/");
+              const m = (id) => r.audits[id].displayValue;
+              const detail = "FCP " + m("first-contentful-paint") + ", LCP " + m("largest-contentful-paint") + ", TBT " + m("total-blocking-time") + ", SI " + m("speed-index") + ", CLS " + m("cumulative-layout-shift");
+              (byUrl[url] ??= []).push(scores + " (" + detail + ")");
+            }
+            for (const [url, runs] of Object.entries(byUrl)) {
+              console.log("::notice title=Lighthouse " + url + "::perf/a11y/best/seo per run: " + runs.join("  |  "));
+            }
+          '
 
       - name: Upload reports
         if: failure()

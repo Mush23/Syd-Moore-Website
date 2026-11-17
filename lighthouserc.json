@@ -8,7 +8,7 @@
         "http://localhost:4321/books/the-final-act-of-daphne-devine",
         "http://localhost:4321/series/section-w"
       ],
-      "numberOfRuns": 1,
+      "numberOfRuns": 3,
       "settings": { "formFactor": "mobile", "screenEmulation": { "mobile": true } }
     },
     "assert": {
