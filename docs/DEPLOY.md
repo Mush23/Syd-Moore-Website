@@ -1,6 +1,8 @@
 # Putting sydmoore.com live (Hostinger)
 
-The live site is hosted on Hostinger, where the domain's settings and Syd's email already are. Nothing about the domain or email needs to change.
+The site has been live at <https://sydmoore.com> on Hostinger since 17 November 2026. Hostinger is also where the domain's settings and Syd's email are, so nothing about the domain or email changed.
+
+Stages 1 to 5 below are done and kept as a record. Still to do: the tidy-up at the end of stage 5, and stage 6 (sydmoore.co.uk).
 
 ## How publishing works
 

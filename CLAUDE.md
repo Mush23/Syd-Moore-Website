@@ -124,28 +124,25 @@ npm run lhci      # Lighthouse budgets (perf â‰¥ 95, a11y 100, best practices â‰
 
 ## Status (17 Nov 2026)
 
-- Live at https://mush23.github.io/Syd-Moore-Website/ (GitHub Pages preview; sydmoore.com not yet moved). `main` has the first design refresh.
-- Branch `modern-redesign` (built on `review-improvements`, which was never merged) holds the site-review changes, the modern design layer and the extra review quotes. One pull request covers all three.
-- On that branch: `npm run check` is clean, `npm test` passes 66 of 66, and `npm run lhci` scores 100 / 100 / 100 / 100 with CLS 0.
+- **Live at https://sydmoore.com on Hostinger since 17 Nov 2026.** It replaced a small WordPress site (one page, two posts). `npm run check:host https://sydmoore.com` passed 112 of 115 that day; the three misses were the .co.uk not yet connected and a redirect-chain check that has since been corrected.
+- The switch happened earlier than the owner intended: they followed the "switch" steps straight after a merge. The owner then chose to keep the new site live. Lesson: never put go-live steps in the same message as routine steps. Give them only after the owner says they are ready.
+- A spare preview copy still publishes to https://mush23.github.io/Syd-Moore-Website/ (noindex).
+- `npm run check` is clean, `npm test` passes (66, with 1 skipped while no book is "coming soon"), and Lighthouse scores 96 to 99 for performance on CI and 100 for accessibility, best practices and SEO.
 - Review quotes: 20 added on 17 Nov 2026. Each was checked against its source page, and the link is stored in the quote's `url` field (not displayed). See `docs/CONTENT-TODO.md` for what still needs Syd's or the publisher's approval.
+- **The About page is first-person text drafted from the brief, not written or approved by Syd.** It is live. The owner was offered a third-person rewrite and has not yet decided.
 - Local tooling notes (Windows, Git Bash):
   - Tests and LHCI reuse whatever is on port 4321, so stop the dev server first or they test unbuilt pages.
   - Don't export `MSYS_NO_PATHCONV` when running LHCI: it stops `CHROME_PATH` being converted.
 
-### Hosting: moving to Hostinger (decided 17 Nov 2026)
+### Hosting facts
 
-Public records on 17 Nov 2026: sydmoore.com uses Hostinger's nameservers (`ns1/ns2.dns-parking.com`), the old WordPress site is on Hostinger, and MX records point at `mx1/mx2.hostinger.co.uk`. So nothing about the domain's DNS changes, and email must not be disturbed. The owner has the Hostinger and OnlyDomains logins; never ask for them. They carry out the hPanel steps themselves.
-
-Go-live is staged (`docs/DEPLOY.md`, "Going live, step by step"):
-
-1. back up WordPress;
-2. create `new.sydmoore.com`;
-3. connect Hostinger to the `live` branch, deploying into `public_html/new` (done 17 Nov 2026);
-4. check the test copy (done 17 Nov 2026: 102 of 102 with `--ip`, and a browser crawl of 30 pages. `new.sydmoore.com` never got a public DNS record even after the owner added one in hPanel; the zone's serial didn't change. Unexplained, and not needed for go-live);
-5. reconnect the Git deploy to `public_html`, check again, then delete the WordPress files;
-6. park `sydmoore.co.uk` on Hostinger and point its nameservers there from OnlyDomains.
-
-Update this list as stages are completed. The old WordPress site had one page and two posts; every address in its sitemap has a redirect in `public/_redirects`.
+- sydmoore.com: registered at OnlyDomains, nameservers at Hostinger (`ns1/ns2.dns-parking.com`), website and email at Hostinger (MX `mx1/mx2.hostinger.co.uk`). Email must never be disturbed.
+- Hostinger's GitHub connection deploys the `live` branch into `public_html`. The deploy lays the build over the folder; it did not remove the staging folder beside it.
+- www.sydmoore.com already redirects to the bare domain. Over plain http it takes two hops, because Hostinger forces HTTPS before `.htaccess` runs.
+- sydmoore.co.uk: registered at OnlyDomains and still on OnlyDomains' nameservers on 17 Nov 2026. The bare name showed OnlyDomains' parking page, `www` forwarded over http only, and https didn't connect. The fix is to park it on Hostinger and move its nameservers there (`docs/DEPLOY.md`, stage 6); `.htaccess` then redirects all four forms.
+- The owner has the Hostinger and OnlyDomains logins. Never ask for them. They carry out the hPanel steps themselves.
+- Still to tidy on the server: the staging copy in `public_html/new` (reachable at /new/), the `new` subdomain, any WordPress files left in `public_html`, and the unused WordPress database.
+- A DNS record the owner added for `new.sydmoore.com` never reached Hostinger's nameservers (the zone serial didn't change). Unexplained. If DNS edits are needed again, check that first.
 
 ### CI
 
@@ -167,7 +164,10 @@ Update this list as stages are completed. The old WordPress site had one page an
 
 ## Next steps
 
-1. Go live on Hostinger: follow the stages above with the owner, running `npm run check:host` after stages 3 and 5.
-2. Work through `docs/CONTENT-TODO.md` with Syd: higher-resolution covers, photo credits, quote approvals, the privacy notice.
-3. Set up Kit so newsletter sign-up works (`docs/DEPLOY.md`, Newsletter).
-4. Before launch, test with VoiceOver on an iPhone. The brief's checklist asks for this and it can't be automated.
+1. Server tidy-up with the owner: delete `public_html/new`, the `new` subdomain and any WordPress leftovers, then re-run `npm run check:host https://sydmoore.com`.
+2. Connect sydmoore.co.uk (`docs/DEPLOY.md`, stage 6) and re-run the check: all six .co.uk and www forms should pass.
+3. Settle the About page wording with the owner or Syd.
+4. Work through `docs/CONTENT-TODO.md` with Syd: higher-resolution covers, photo credits, quote approvals, the privacy notice.
+5. Set up Kit so newsletter sign-up works (`docs/DEPLOY.md`, Newsletter).
+6. Submit `https://sydmoore.com/sitemap-index.xml` in Google Search Console and Bing Webmaster Tools.
+7. Test with VoiceOver on an iPhone. The brief's checklist asks for this and it can't be automated.
