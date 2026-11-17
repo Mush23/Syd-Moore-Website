@@ -142,7 +142,7 @@ const pages = defineCollection({
       agentUrl: url,
       publicistName: z.string().optional(),
       publicistEmail: z.string().optional(),
-      /** Where to write about the RLF Reading Round in Hospice programme (Contact page). */
+      /** Where to write about the RLF Reading Round in Hospices programme (Contact page). */
       readingRoundEmail: opt(z.email()),
       /** Articles, interviews and coverage: see src/lib/press.ts for where each entry is shown. */
       selectedPress: z

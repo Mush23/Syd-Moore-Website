@@ -328,7 +328,7 @@ content:
         label: Publicist email
         type: string
       - name: readingRoundEmail
-        label: Reading Round in Hospice programme email
+        label: Reading Round in Hospices programme email
         description: "Shown on the Contact page."
         type: string
       - name: selectedPress

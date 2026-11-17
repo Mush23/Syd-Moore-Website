@@ -97,4 +97,4 @@ talkTopics:
 - **Residencies:** Essex Book Festival Writer in Residence 2018; first Author in Residence for Essex Libraries, 2023.
 - **Television:** presenter of Channel 4's books programme *Pulp*.
 - **Campaigning:** co-founder of the Essex Girls Liberation Front (2017).
-- **Writing community:** Royal Literary Fund Writing for Life Fellow; leads on the RLF's Reading Round in Hospice programme.
+- **Writing community:** Royal Literary Fund Writing for Life Fellow; leads on the RLF's Reading Round in Hospices programme.

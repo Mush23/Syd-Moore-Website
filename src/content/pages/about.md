@@ -22,4 +22,4 @@ Her books start in the archive. She researches at the Essex Record Office and at
 
 The Essex witch trials were real, and so were the women accused in them. The way people still talk about "Essex girls" has roots in that history. That's why she co-founded the Essex Girls Liberation Front.
 
-Syd lives in Westcliff-on-Sea. As a Royal Literary Fund Fellow, she also leads on the RLF's Reading Round in Hospice programme. She has written about it for [The Bookseller](https://www.thebookseller.com/comment/adult-reading-communities-hospices). To get in touch about the programme, email [syd.moore@rlf.org.uk](mailto:syd.moore@rlf.org.uk).
+Syd lives in Westcliff-on-Sea. As a Royal Literary Fund Fellow, she also leads on the RLF's Reading Round in Hospices programme. She has written about it for [The Bookseller](https://www.thebookseller.com/comment/adult-reading-communities-hospices). To get in touch about the programme, email [syd.moore@rlf.org.uk](mailto:syd.moore@rlf.org.uk).

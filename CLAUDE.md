@@ -130,7 +130,7 @@ npm run lhci      # Lighthouse budgets (perf â‰¥ 95, a11y 100, best practices â‰
 - `npm run check` is clean, `npm test` passes (66, with 1 skipped while no book is "coming soon"), and Lighthouse scores 96 to 99 for performance on CI and 100 for accessibility, best practices and SEO.
 - Review quotes: 20 added on 17 Nov 2026. Each was checked against its source page, and the link is stored in the quote's `url` field (not displayed). See `docs/CONTENT-TODO.md` for what still needs Syd's or the publisher's approval.
 - **Syd's feedback, 17 Nov 2026** (relayed by the owner; it overrides `docs/brief.md` where they differ):
-  - The About page is in the third person. The hospice line is Syd's own wording: "leads on the RLF's Reading Round in Hospice programme". Enquiries about it go to the RLF address in `readingRoundEmail` (`press.md`), shown on About and Contact.
+  - The About page is in the third person. The hospice line is Syd's wording with the programme name as The Bookseller prints it (the owner's choice): "leads on the RLF's Reading Round in Hospices programme". Enquiries about it go to the RLF address in `readingRoundEmail` (`press.md`), shown on About and Contact.
   - Read on Sea has closed. Its links, the `readOnSea` buy button and `site.localShop` were removed. Don't add them back.
   - *The Witching Hour* has its own cover (`the-witching-hour.jpg`, from the Amazon listing Syd pointed to).
   - Articles and interviews Syd supplied are in `selectedPress` in `press.md`. `src/lib/press.ts` explains where each `kind` and `book` shows (Press, About, book pages). Titles, dates and bylines were checked against each page.
@@ -172,7 +172,7 @@ npm run lhci      # Lighthouse budgets (perf â‰¥ 95, a11y 100, best practices â‰
 
 1. Server tidy-up with the owner: delete `public_html/new`, the `new` subdomain and any WordPress leftovers, then re-run `npm run check:host https://sydmoore.com`.
 2. Connect sydmoore.co.uk (`docs/DEPLOY.md`, stage 6) and re-run the check: all six .co.uk and www forms should pass.
-3. Settle the About page wording with the owner or Syd.
+3. Syd to read the third-person About page and correct anything she'd put differently.
 4. Work through `docs/CONTENT-TODO.md` with Syd: higher-resolution covers, photo credits, quote approvals, the privacy notice.
 5. Set up Kit so newsletter sign-up works (`docs/DEPLOY.md`, Newsletter).
 6. Submit `https://sydmoore.com/sitemap-index.xml` in Google Search Console and Bing Webmaster Tools.
