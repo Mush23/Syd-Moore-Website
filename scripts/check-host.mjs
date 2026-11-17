@@ -158,16 +158,30 @@ try {
   ok("http goes to https", false, String(e.cause?.code ?? e.message ?? e));
 }
 
-// 10. On the live site, the other host names all lead to it.
+/** Follow up to three redirects. Returns the final address and whether every hop was permanent. */
+async function follow(url) {
+  let permanent = true;
+  for (let hop = 0; hop < 3; hop++) {
+    const r = await request(url);
+    const loc = r.headers.get("location");
+    if (r.status < 300 || r.status >= 400 || !loc) return { url, status: r.status, permanent };
+    if (r.status !== 301 && r.status !== 308) permanent = false;
+    url = new URL(loc, url).toString();
+  }
+  return { url, status: 0, permanent };
+}
+
+// 10. On the live site, the other host names all lead to it. Two hops are fine
+// (Hostinger turns http into https before this site's rules run), as long as
+// each hop is permanent and the last stop is the real address.
 if (isLive) {
   const aliases = ip
     ? ["https://www.sydmoore.com", "https://sydmoore.co.uk", "https://www.sydmoore.co.uk"]
     : ["https://www.sydmoore.com", "http://www.sydmoore.com", "http://sydmoore.co.uk", "http://www.sydmoore.co.uk", "https://sydmoore.co.uk", "https://www.sydmoore.co.uk"];
   for (const alias of aliases) {
     try {
-      const r = await request(`${alias}/books`);
-      const loc = r.headers.get("location") ?? "";
-      ok(`${alias} -> https://${CANONICAL}`, r.status === 301 && loc === `https://${CANONICAL}/books`, `status ${r.status} location ${loc}`);
+      const end = await follow(`${alias}/books`);
+      ok(`${alias} -> https://${CANONICAL}`, end.url === `https://${CANONICAL}/books` && end.status === 200 && end.permanent, `ended at ${end.url} (status ${end.status}${end.permanent ? "" : ", not permanent"})`);
     } catch (e) {
       ok(`${alias} -> https://${CANONICAL}`, false, String(e.cause?.code ?? e.message ?? e));
     }

@@ -1,6 +1,6 @@
 # sydmoore.com
 
-The official website of novelist Syd Moore: static Astro site, edited with Pages CMS, hosted free on GitHub Pages.
+The official website of novelist Syd Moore: static Astro site, edited with Pages CMS, hosted on Hostinger at https://sydmoore.com (a preview copy also publishes to GitHub Pages).
 
 - **Brief and source of truth for content:** [`docs/brief.md`](docs/brief.md)
 - **Going live:** [`docs/DEPLOY.md`](docs/DEPLOY.md)
