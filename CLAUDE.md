@@ -145,9 +145,9 @@ npm run lhci      # Lighthouse budgets (perf â‰¥ 95, a11y 100, best practices â‰
 - sydmoore.com: registered at OnlyDomains, nameservers at Hostinger (`ns1/ns2.dns-parking.com`), website and email at Hostinger (MX `mx1/mx2.hostinger.co.uk`). Email must never be disturbed.
 - Hostinger's GitHub connection deploys the `live` branch into `public_html`. The deploy lays the build over the folder; it did not remove the staging folder beside it.
 - www.sydmoore.com already redirects to the bare domain. Over plain http it takes two hops, because Hostinger forces HTTPS before `.htaccess` runs.
-- sydmoore.co.uk: registered at OnlyDomains and still on OnlyDomains' nameservers on 17 Nov 2026. The bare name showed OnlyDomains' parking page, `www` forwarded over http only, and https didn't connect. The fix is to park it on Hostinger and move its nameservers there (`docs/DEPLOY.md`, stage 6); `.htaccess` then redirects all four forms.
+- sydmoore.co.uk: registered at OnlyDomains. On 17 Nov 2026 the owner parked it on Hostinger and moved its nameservers to `solar/lunar.dns-parking.com` (the pair Hostinger gave, not ns1/ns2). Hostinger serves it through its CDN (`*.cdn.hstgr.net`, not 77.37.37.196). Tested at those addresses the same day: all four forms (http/https, with/without www) reach `https://sydmoore.com` with valid certificates. Before that it was on OnlyDomains' forwarder, where https didn't connect, so old DNS caches may show that for up to a day.
 - The owner has the Hostinger and OnlyDomains logins. Never ask for them. They carry out the hPanel steps themselves.
-- Still to tidy on the server: the staging copy in `public_html/new` (reachable at /new/), the `new` subdomain, any WordPress files left in `public_html`, and the unused WordPress database.
+- Server tidied on 17 Nov 2026: the staging folder and the `new` subdomain are gone and WordPress addresses are refused. Still optional: delete the unused WordPress database (hPanel â†’ Databases).
 - A DNS record the owner added for `new.sydmoore.com` never reached Hostinger's nameservers (the zone serial didn't change). Unexplained. If DNS edits are needed again, check that first.
 
 ### CI
@@ -170,8 +170,8 @@ npm run lhci      # Lighthouse budgets (perf â‰¥ 95, a11y 100, best practices â‰
 
 ## Next steps
 
-1. Server tidy-up with the owner: delete `public_html/new`, the `new` subdomain and any WordPress leftovers, then re-run `npm run check:host https://sydmoore.com`.
-2. Connect sydmoore.co.uk (`docs/DEPLOY.md`, stage 6) and re-run the check: all six .co.uk and www forms should pass.
+1. Once DNS caches have caught up (by 18 Nov 2026), run `npm run check:host https://sydmoore.com`: all 115 checks should pass, including the four .co.uk forms.
+2. Optional: delete the unused WordPress database in hPanel.
 3. Syd to read the third-person About page and correct anything she'd put differently.
 4. Work through `docs/CONTENT-TODO.md` with Syd: higher-resolution covers, photo credits, quote approvals, the privacy notice.
 5. Set up Kit so newsletter sign-up works (`docs/DEPLOY.md`, Newsletter).
