@@ -1,0 +1,4 @@
+# Written at build time by integrations/hostinger.mjs.
+<IfModule mod_headers.c>
+Header set Cache-Control "public, max-age=86400"
+</IfModule>

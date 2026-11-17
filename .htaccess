@@ -1,0 +1,94 @@
+# Written at build time by integrations/hostinger.mjs. Do not edit on the server:
+# every deploy replaces this file. Old-address redirects come from public/_redirects.
+
+Options -Indexes -MultiViews
+DirectorySlash Off
+DirectoryIndex index.html
+ErrorDocument 404 /404.html
+AddDefaultCharset UTF-8
+AddType image/avif .avif
+AddType font/woff2 .woff2
+AddType text/calendar .ics
+
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+
+# Leave certificate checks alone, then keep every other dot file (.git, .htaccess) private.
+RewriteRule ^\.well-known/ - [L]
+RewriteRule (^|/)\. - [F,L]
+
+# 1. One address: www and the .co.uk domain go to https://sydmoore.com
+RewriteCond %{HTTP_HOST} ^(www\.sydmoore\.com|sydmoore\.co\.uk|www\.sydmoore\.co\.uk)\.?(:[0-9]+)?$ [NC]
+RewriteRule ^ https://sydmoore.com%{REQUEST_URI} [R=301,L]
+
+# 2. Always HTTPS
+RewriteCond %{HTTPS} !=on
+RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+# 3. Addresses from the old site (public/_redirects)
+RewriteRule ^biography/?$ /about [R=301,L]
+RewriteRule ^blog/?$ /news [R=301,L]
+RewriteRule ^essex-witch-museum/?$ /series/essex-witch-museum-mysteries [R=301,L]
+RewriteRule ^syd-moore-strange-magic/?$ /books/strange-magic [R=301,L]
+RewriteRule ^syd-moore-strange-fascination/?$ /books/strange-fascination [R=301,L]
+RewriteRule ^syd-moore-the-drowning-pool/?$ /books/the-witching-hour [R=301,L]
+RewriteRule ^noirwich-the-witching-hour/?$ /news [R=301,L]
+RewriteRule ^books/the-drowning-pool/?$ /books/the-witching-hour [R=301,L]
+RewriteRule ^hello-world/?$ /news [R=301,L]
+RewriteRule ^the-final-act-of-daphne-devine/?$ /books/the-final-act-of-daphne-devine [R=301,L]
+RewriteRule ^category/blog/?$ /news [R=301,L]
+RewriteRule ^category/books/?$ /books [R=301,L]
+RewriteRule ^tag/the-grand-illusion/?$ /books/the-grand-illusion [R=301,L]
+RewriteRule ^tag/the-great-deception/?$ /books/the-great-deception [R=301,L]
+RewriteRule ^tag/the-final-act-of-daphne-devine/?$ /books/the-final-act-of-daphne-devine [R=301,L]
+RewriteRule ^tag/daphne-devine/?$ /series/section-w [R=301,L]
+RewriteRule ^author/miranda/?$ /about [R=301,L]
+RewriteRule ^author/sydx/?$ /about [R=301,L]
+RewriteRule ^feed/?$ /rss.xml [R=301,L]
+RewriteRule ^category(/.*)?$ /news [R=301,L]
+RewriteRule ^tag(/.*)?$ /books [R=301,L]
+RewriteRule ^author(/.*)?$ /about [R=301,L]
+
+# 4. Tidy addresses: no index.html, no .html, no trailing slash
+RewriteCond %{THE_REQUEST} \s/+index\.html[\s?] [NC]
+RewriteRule ^ / [R=301,L]
+RewriteCond %{THE_REQUEST} \s/+(.+)/index\.html[\s?] [NC]
+RewriteRule ^ /%1 [R=301,L]
+RewriteCond %{THE_REQUEST} \s/+(.+)\.html[\s?] [NC]
+RewriteRule ^ /%1 [R=301,L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.+)/$ /$1 [R=301,L]
+
+# 5. Serve /about from about.html (two ways of finding the file, for safety)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+RewriteRule ^(.+)$ /$1.html [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^(.+)$ /$1.html [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+# Security headers. The rest of the content policy is a <meta> tag in each page.
+Header always set X-Content-Type-Options "nosniff"
+Header always set Referrer-Policy "strict-origin-when-cross-origin"
+Header always set X-Frame-Options "DENY"
+Header always set Content-Security-Policy "frame-ancestors 'none'"
+Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+Header always set Strict-Transport-Security "max-age=31536000" env=HTTPS
+
+# Only the real address may appear in search results. A staging copy on any
+# other host name tells search engines to stay away.
+SetEnvIfNoCase Host ^sydmoore\.com(:[0-9]+)?$ CANONICAL_HOST
+Header set X-Robots-Tag "noindex, nofollow" env=!CANONICAL_HOST
+# A marker that is only sent on the real address. scripts/check-host.mjs uses it on a
+# staging copy to prove the server honours "env=" before the site goes live.
+Header set X-Canonical-Host "yes" env=CANONICAL_HOST
+
+# Pages are always checked for a newer version.
+<FilesMatch "\.(html|xml|txt)$">
+Header set Cache-Control "public, max-age=0, must-revalidate"
+</FilesMatch>
+</IfModule>
