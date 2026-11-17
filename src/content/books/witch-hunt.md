@@ -15,6 +15,9 @@ isbn:
   paperback: "9781847562692"
 hook: "Research the witch trials. Bring something home."
 quotes:
+  - text: "Moore's merging of horror, ghost story, detective fiction and psychogeography is a heady addition…"
+    source: "Cathi Unsworth, The Guardian"
+    url: "https://www.theguardian.com/books/2012/oct/16/witch-hunt-syd-moore-review"
   - text: "Thrilling, chilling …"
     source: "Lancashire Evening Post"
 links:

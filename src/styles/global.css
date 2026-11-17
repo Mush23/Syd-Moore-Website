@@ -346,6 +346,10 @@ textarea.input { min-height: 9rem; resize: vertical; }
 .icon-trail { margin-left: 0.4em; }
 .icon-accent { color: var(--accent, var(--brass)); }
 .eyebrow:has(> .icon)::before { content: none; }
+/* When an eyebrow wraps onto two lines, its icon stays level with the first line. */
+@supports (margin-top: 1lh) {
+  .eyebrow > .icon { align-self: flex-start; margin-top: calc((1lh - 1.15em) / 2); }
+}
 .status-tag { display: inline-flex; align-items: center; gap: 0.3rem; }
 
 /* A fixed-height slot for a cover in a row or grid. Covers stand on its bottom edge, like books on a shelf. */

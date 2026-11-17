@@ -36,6 +36,12 @@ const formOn = site.contact.formEnabled && Boolean(site.contact.turnstileSiteKey
             <dd>{p.publicistName}{p.publicistEmail && <> · <a href={`mailto:${p.publicistEmail}`}>{p.publicistEmail}</a></>}</dd>
           </div>
         )}
+        {p.readingRoundEmail && (
+          <div>
+            <dt><Icon name="book-heart" class="icon-lead icon-accent" />RLF Reading Round in Hospice programme</dt>
+            <dd>Syd Moore · <a href={`mailto:${p.readingRoundEmail}`}>{p.readingRoundEmail}</a></dd>
+          </div>
+        )}
         <div>
           <dt><Icon name="newspaper" class="icon-lead icon-accent" />Press kit</dt>
           <dd><a href="/press">Bios, facts and coverage</a></dd>

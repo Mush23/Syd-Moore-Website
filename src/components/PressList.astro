@@ -1,0 +1,30 @@
+---
+/**
+ * A list of links to articles, interviews and coverage on other websites.
+ * Items come from `selectedPress` in src/content/pages/press.md (see src/lib/press.ts).
+ */
+import Icon from "./Icon.astro";
+import type { PressItem } from "../lib/press";
+
+interface Props { items: PressItem[] }
+const { items } = Astro.props;
+// A word joiner (an invisible character that forbids a line break) keeps the
+// "opens another site" icon on the same line as the title's last word.
+const joiner = "⁠";
+---
+<ul class="press-list">
+  {items.map((c) => (
+    <li>
+      <a href={c.url}>{c.title}{joiner}<Icon name="external-link" size="0.9em" class="ext" /></a>
+      <span class="meta">{c.outlet}{c.date ? ` · ${c.date}` : ""}</span>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .press-list { list-style: none; padding: 0; display: grid; gap: 0.85rem; }
+  .press-list li { line-height: 1.4; }
+  .press-list a { font-weight: 500; }
+  .press-list :global(.ext) { margin-left: 0.35em; }
+  .meta { display: block; margin-top: 0.1rem; font-size: var(--small); color: var(--ink-muted); }
+</style>

@@ -1,6 +1,6 @@
 ---
 /**
- * Buy panel: format tabs (WAI-ARIA tabs pattern), local-first retailer buttons,
+ * Buy panel: format tabs (WAI-ARIA tabs pattern), retailer buttons,
  * the affiliate disclosure above the buttons, and on phones a sticky "Buy" bar
  * that opens a bottom-sheet <dialog>.
  *
@@ -63,11 +63,11 @@ const aria = (label: string) => `${verb} ${title} from ${label} (opens retailer 
             {t.links.map((l) => (
               <li>
                 <a
-                  class:list={["btn", l.retailer.primary ? "btn-primary" : "btn-retailer"]}
+                  class="btn btn-retailer"
                   href={l.url}
                   rel="sponsored noopener"
                   aria-label={aria(l.retailer.label)}
-                >{l.retailer.primary && <Icon name="store" />}{l.retailer.primary ? `Buy local: ${l.retailer.label}` : l.retailer.label}<Icon name="external-link" size="0.9em" class="ext" /></a>
+                >{l.retailer.label}<Icon name="external-link" size="0.9em" class="ext" /></a>
               </li>
             ))}
           </ul>
@@ -105,11 +105,11 @@ const aria = (label: string) => `${verb} ${title} from ${label} (opens retailer 
             {t.links.map((l) => (
               <li>
                 <a
-                  class:list={["btn", l.retailer.primary ? "btn-primary" : "btn-retailer"]}
+                  class="btn btn-retailer"
                   href={l.url}
                   rel="sponsored noopener"
                   aria-label={aria(l.retailer.label)}
-                >{l.retailer.primary && <Icon name="store" />}{l.retailer.primary ? `Buy local: ${l.retailer.label}` : l.retailer.label}<Icon name="external-link" size="0.9em" class="ext" /></a>
+                >{l.retailer.label}<Icon name="external-link" size="0.9em" class="ext" /></a>
               </li>
             ))}
           </ul>
@@ -252,7 +252,6 @@ const aria = (label: string) => `${verb} ${title} from ${label} (opens retailer 
     gap: 0.5rem;
     grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
   }
-  .retailers li:has(.btn-primary) { grid-column: 1 / -1; }
   .retailers .btn { width: 100%; }
   .retailers :global(.ext) { opacity: 0.6; }
   .btn-retailer { background: var(--paper); color: var(--ink); border-color: var(--ink-muted); border-width: 1px; }

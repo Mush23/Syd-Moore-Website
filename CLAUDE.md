@@ -129,7 +129,13 @@ npm run lhci      # Lighthouse budgets (perf â‰¥ 95, a11y 100, best practices â‰
 - A spare preview copy still publishes to https://mush23.github.io/Syd-Moore-Website/ (noindex).
 - `npm run check` is clean, `npm test` passes (66, with 1 skipped while no book is "coming soon"), and Lighthouse scores 96 to 99 for performance on CI and 100 for accessibility, best practices and SEO.
 - Review quotes: 20 added on 17 Nov 2026. Each was checked against its source page, and the link is stored in the quote's `url` field (not displayed). See `docs/CONTENT-TODO.md` for what still needs Syd's or the publisher's approval.
-- **The About page is first-person text drafted from the brief, not written or approved by Syd.** It is live. The owner was offered a third-person rewrite and has not yet decided.
+- **Syd's feedback, 17 Nov 2026** (relayed by the owner; it overrides `docs/brief.md` where they differ):
+  - The About page is in the third person. The hospice line is Syd's own wording: "leads on the RLF's Reading Round in Hospice programme". Enquiries about it go to the RLF address in `readingRoundEmail` (`press.md`), shown on About and Contact.
+  - Read on Sea has closed. Its links, the `readOnSea` buy button and `site.localShop` were removed. Don't add them back.
+  - *The Witching Hour* has its own cover (`the-witching-hour.jpg`, from the Amazon listing Syd pointed to).
+  - Articles and interviews Syd supplied are in `selectedPress` in `press.md`. `src/lib/press.ts` explains where each `kind` and `book` shows (Press, About, book pages). Titles, dates and bylines were checked against each page.
+  - Menu icons show on desktop as well as in the phone menu.
+- Lighthouse locally: Astro 7 refuses to start a second preview server, so stop any running preview before `npm run lhci`.
 - Local tooling notes (Windows, Git Bash):
   - Tests and LHCI reuse whatever is on port 4321, so stop the dev server first or they test unbuilt pages.
   - Don't export `MSYS_NO_PATHCONV` when running LHCI: it stops `CHROME_PATH` being converted.

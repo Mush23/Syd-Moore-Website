@@ -19,7 +19,6 @@ const url = z.preprocess(blank, z.url().optional());
 /** A retailer link for every button the buy panel can show. Empty = hidden. */
 const links = z.preprocess(blank, z
   .object({
-    readOnSea: url,
     bookshop: url,
     waterstones: url,
     hive: url,
@@ -143,8 +142,21 @@ const pages = defineCollection({
       agentUrl: url,
       publicistName: z.string().optional(),
       publicistEmail: z.string().optional(),
+      /** Where to write about the RLF Reading Round in Hospice programme (Contact page). */
+      readingRoundEmail: opt(z.email()),
+      /** Articles, interviews and coverage: see src/lib/press.ts for where each entry is shown. */
       selectedPress: z
-        .array(z.object({ title: z.string(), outlet: z.string(), date: z.string().optional(), url: z.url() }))
+        .array(
+          z.object({
+            title: z.string(),
+            outlet: z.string(),
+            date: opt(z.string()),
+            url: z.url(),
+            kind: z.preprocess(blank, z.enum(["by-syd", "interview", "feature", "news"]).default("feature")),
+            /** A book's file name without .md. The entry is then also listed on that book's page. */
+            book: opt(z.string()),
+          }),
+        )
         .optional(),
       talkTopics: z.array(z.string()).optional(),
     })

@@ -1,6 +1,8 @@
 ---
-import { render } from "astro:content";
+import { getEntry, render } from "astro:content";
 import Icon from "../../components/Icon.astro";
+import PressList from "../../components/PressList.astro";
+import { pressForBook } from "../../lib/press";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Book3D from "../../components/Book3D.astro";
 import StatusTag from "../../components/StatusTag.astro";
@@ -37,6 +39,8 @@ const status = bookStatus(book);
 const { Content } = await render(book);
 // History note is plain text from the CMS: blank lines separate paragraphs.
 const historyParas = (d.historyNote ?? "").split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+// Articles and interviews about this book, from the press page's list.
+const readMore = pressForBook((await getEntry("pages", "press"))?.data.selectedPress, book.id);
 
 // "If you liked this": the first book of each other series.
 const otherSeries = (await getSeriesList()).filter((s) => s.id !== d.series);
@@ -124,6 +128,13 @@ const ogImage = `/og/${book.id}.png`;
 
       {d.extract && (
         <p><a class="btn btn-secondary" href={d.extract}><Icon name="file-text" />Read an extract (PDF)</a></p>
+      )}
+
+      {readMore.length > 0 && (
+        <section class="read-more" aria-labelledby="read-more-heading">
+          <h2 id="read-more-heading" class="details-heading"><Icon name="book-open-text" class="icon-lead icon-accent" />Read more about this book</h2>
+          <PressList items={readMore} />
+        </section>
       )}
 
       {details.length > 0 && (
@@ -219,6 +230,7 @@ const ogImage = `/og/${book.id}.png`;
   .history { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: var(--space-3); }
   .history > * + * { margin-top: var(--space-1); }
   .details-heading { font-size: var(--h3); }
+  .read-more :global(.press-list) { margin-top: var(--space-2); }
   .details {
     margin-top: var(--space-2);
     display: grid;

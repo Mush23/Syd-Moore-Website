@@ -157,7 +157,6 @@ content:
         label: Where to buy (leave any empty to hide that button)
         type: object
         fields:
-          - { name: readOnSea, label: "Read on Sea (local shop)", type: string }
           - { name: bookshop, label: "Bookshop.org", type: string }
           - { name: waterstones, label: "Waterstones", type: string }
           - { name: hive, label: "Hive", type: string }
@@ -313,12 +312,51 @@ content:
         fields:
           - { name: label, label: Label, type: string }
           - { name: value, label: Value, type: string }
+      - name: agentName
+        label: Agent name
+        type: string
+      - name: agentAgency
+        label: Agency
+        type: string
+      - name: agentUrl
+        label: Agency web page
+        type: string
       - name: publicistName
         label: Publicist name
         type: string
       - name: publicistEmail
         label: Publicist email
         type: string
+      - name: readingRoundEmail
+        label: Reading Round in Hospice programme email
+        description: "Shown on the Contact page."
+        type: string
+      - name: selectedPress
+        label: Articles, interviews and coverage
+        description: "Fill this in on the Press page only. Every entry shows on the Press page. Pieces by Syd and interviews also show on the About page. An entry with a related book also shows on that book's page."
+        type: object
+        list:
+          collapsible:
+            summary: "{fields.title}"
+        fields:
+          - { name: title, label: Title, type: string, required: true }
+          - { name: outlet, label: "Where it appeared", type: string, required: true }
+          - { name: date, label: "Date (e.g. \"May 2017\")", type: string }
+          - { name: url, label: "Web link", type: string, required: true }
+          - name: kind
+            label: Type
+            type: select
+            default: feature
+            options:
+              values:
+                - { name: by-syd, label: "Written by Syd" }
+                - { name: interview, label: "Interview" }
+                - { name: feature, label: "Feature or review" }
+                - { name: news, label: "News" }
+          - name: book
+            label: Related book (optional)
+            description: "The book's file name without .md, e.g. the-witching-hour"
+            type: string
       - name: talkTopics
         label: Talk topics
         type: string

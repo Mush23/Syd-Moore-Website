@@ -120,7 +120,7 @@ const stats = [
             <p class="label accent">{s.data.label}</p>
             <h3 id={`sp-${s.id}`}><a href={`/series/${s.id}`}>{s.data.name}</a></h3>
             <p>{s.data.tagline}</p>
-            {first && <a class="btn btn-accent" href={bookUrl(first)}>Start with {first.data.title} <Icon name="arrow-right" class="arrow" /></a>}
+            {first && <a class="btn btn-accent" href={bookUrl(first)}>Start with {first.data.title}{" "}<Icon name="arrow-right" class="arrow" /></a>}
           </div>
           <ul class="series-covers" aria-label={`${s.data.name} books`}>
             {inSeries.map((b) => (
@@ -363,6 +363,14 @@ const stats = [
   .series-copy h3 a:hover { text-decoration: underline; text-decoration-thickness: 2px; }
   .btn-accent { margin-top: var(--space-2); background: var(--accent); color: #fffcf5; box-shadow: 0 10px 24px -10px var(--accent); }
   .btn-accent:hover { background: color-mix(in srgb, var(--accent) 85%, #000); }
+  /* The title ends with a no-break space, which glues the arrow to its last word.
+     Take that space's width back off the gap so this button matches the others. */
+  .btn-accent :global(.arrow) { margin-left: -0.25em; }
+  /* Phones: a full-width button whose arrow stays beside the title, even if a long title wraps. */
+  @media (max-width: 480px) {
+    .btn-accent { display: block; width: 100%; padding-inline: 1rem; text-wrap: balance; }
+    .btn-accent :global(.arrow) { margin-left: 0.2em; vertical-align: -0.2em; }
+  }
   .series-covers {
     list-style: none;
     padding: 0;

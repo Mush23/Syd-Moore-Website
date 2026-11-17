@@ -22,3 +22,10 @@ Syd led the creative-writing workshops for Manningtree's twelve-stop *Revisiting
 - [Witch Hunt](/books/witch-hunt): a journalist researching the 1640s trials finds the past following her home.
 - [The Witching Hour](/books/the-witching-hour): a séance, a coastal town and a "witch" who shared the heroine's name.
 - [Strange Magic](/books/strange-magic): the Essex Witch Museum and the bones of Ursula Cadence.
+
+## Further reading
+
+- [How I learned to love being an Essex girl](https://www.theguardian.com/books/2020/oct/02/how-i-learned-to-love-being-an-essex-girl-sarah-perry): Sarah Perry in The Guardian (October 2020), with Syd on the stereotype and the witch trials.
+- [Essex and Strange Magic](https://bluebookballoon.blogspot.com/2017/05/blogtour-essex-and-strange-magic-by-syd.html): Syd's guest post for Blue Book Balloon (May 2017) on the Essex witch hunts and the "Essex girl".
+- [The strange case of Sarah Moore](https://www.essexrecordofficeblog.co.uk/the-strange-case-of-sarah-moore/): Syd on the Essex Record Office blog (October 2018), tracing the real woman behind Leigh-on-Sea's "sea witch".
+- [The Only Way Is Witchcraft](https://sheffieldgothic.home.blog/2018/08/21/the-only-way-is-witchcraft/): Sheffield Gothic (August 2018) on witches and Essex girls in Syd's novels.
