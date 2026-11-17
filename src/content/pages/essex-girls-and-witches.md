@@ -25,6 +25,7 @@ Syd led the creative-writing workshops for Manningtree's twelve-stop *Revisiting
 
 ## Further reading
 
+- [Were women accused of witchcraft the first Essex Girls?](https://web.archive.org/web/20190201230443/https://www.the-pool.com/news-views/opinion/2017/18/syd-moore-on-witchcraft-and-the-first-essex-girls): Syd's essay for The Pool (1 May 2017), setting out her theory that the "Essex girl" stereotype grew out of the county's witch trials. The Pool has since closed, so the link opens the copy kept by the Internet Archive.
 - [How I learned to love being an Essex girl](https://www.theguardian.com/books/2020/oct/02/how-i-learned-to-love-being-an-essex-girl-sarah-perry): Sarah Perry in The Guardian (October 2020), with Syd on the stereotype and the witch trials.
 - [Essex and Strange Magic](https://bluebookballoon.blogspot.com/2017/05/blogtour-essex-and-strange-magic-by-syd.html): Syd's guest post for Blue Book Balloon (May 2017) on the Essex witch hunts and the "Essex girl".
 - [The strange case of Sarah Moore](https://www.essexrecordofficeblog.co.uk/the-strange-case-of-sarah-moore/): Syd on the Essex Record Office blog (October 2018), tracing the real woman behind Leigh-on-Sea's "sea witch".
