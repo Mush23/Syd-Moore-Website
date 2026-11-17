@@ -33,6 +33,7 @@ links:
   waterstones: "https://www.waterstones.com/book/strange-sight/syd-moore/9781786072054"
   bookshop: "https://uk.bookshop.org/p/books/strange-sight-an-essex-witch-museum-mystery-syd-moore/2225270"
   audible: "https://www.audible.co.uk/pd/Strange-Sight-Audiobook/B078XKN87T"
+cover: "/covers/strange-sight.png"
 draft: false
 ---
 

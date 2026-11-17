@@ -32,6 +32,7 @@ quotes:
 links:
   waterstones: "https://www.waterstones.com/book/strange-magic/syd-moore/9781786070982"
   audible: "https://www.audible.co.uk/pd/Strange-Magic-Audiobook/B0753M5SLM"
+cover: "/covers/strange-magic.png"
 draft: false
 ---
 

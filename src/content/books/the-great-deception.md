@@ -30,6 +30,7 @@ quotes:
 links:
   waterstones: "https://www.waterstones.com/book/the-great-deception/syd-moore/9780861549658"
   bookshop: "https://uk.bookshop.org/p/books/the-great-deception-syd-moore/7857523"
+cover: "/covers/the-great-deception.png"
 draft: false
 ---
 

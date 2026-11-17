@@ -33,6 +33,7 @@ links:
   waterstones: "https://www.waterstones.com/book/the-grand-illusion/syd-moore/9780861546978"
   bookshop: "https://uk.bookshop.org/p/books/the-grand-illusion-syd-moore/7621442"
   audible: "https://www.audible.co.uk/pd/The-Grand-Illusion-Audiobook/B0CTTSHN8L"
+cover: "/covers/the-grand-illusion.png"
 draft: false
 ---
 

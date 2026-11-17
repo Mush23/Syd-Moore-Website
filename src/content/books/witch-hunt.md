@@ -20,6 +20,7 @@ quotes:
 links:
   waterstones: "https://www.waterstones.com/book/witch-hunt/syd-moore/9781847562692"
   blackwells: "https://blackwells.co.uk/bookshop/product/Witch-Hunt-by-Syd-Moore/9781847562692"
+cover: "/covers/witch-hunt.png"
 draft: false
 ---
 

@@ -29,6 +29,7 @@ quotes:
 links:
   waterstones: "https://www.waterstones.com/book/strange-tombs-an-essex-witch-museum-mystery/syd-moore/9781786074485"
   bookshop: "https://uk.bookshop.org/p/books/strange-tombs-an-essex-witch-museum-mystery-syd-moore/20716d91c6548368"
+cover: "/covers/strange-tombs.png"
 draft: false
 ---
 

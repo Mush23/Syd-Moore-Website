@@ -25,6 +25,7 @@ quotes:
     url: "https://oneworld-publications.com/work/the-twelve-strange-days-of-christmas/"
 links:
   waterstones: "https://www.waterstones.com/book/the-twelve-strange-days-of-christmas/syd-moore/9781786076809"
+cover: "/covers/the-twelve-strange-days-of-christmas.png"
 draft: false
 ---
 

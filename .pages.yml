@@ -144,6 +144,10 @@ content:
         type: image
         options:
           media: covers
+      - name: coverAlt
+        label: Cover description (only if the cover shows a different title)
+        description: "Read out by screen readers. Leave empty unless the cover is for an earlier edition or title."
+        type: string
       - name: extract
         label: Extract (PDF)
         type: file

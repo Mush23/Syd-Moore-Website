@@ -74,7 +74,7 @@ export function coverImage(book: Book): ImageMetadata | undefined {
 }
 
 export function coverAlt(book: Book): string {
-  return `Cover of ${book.data.title} by Syd Moore`;
+  return book.data.coverAlt ?? `Cover of ${book.data.title} by Syd Moore`;
 }
 
 /* ---------------- Retailers ---------------- */

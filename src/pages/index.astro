@@ -1,5 +1,7 @@
 ---
 import { getCollection, getEntry } from "astro:content";
+import { Image } from "astro:assets";
+import sydWoodland from "../assets/photos/syd-moore-woodland.jpg";
 import Icon from "../components/Icon.astro";
 import SocialLinks from "../components/SocialLinks.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
@@ -124,7 +126,7 @@ const stats = [
             {inSeries.map((b) => (
               <li>
                 <a href={bookUrl(b)} style={`view-transition-name: cover-${b.id}`}>
-                  <Cover book={b} series={s} width={140} decorative />
+                  <span class="cover-slot"><Cover book={b} series={s} width={140} decorative /></span>
                   <span class="cover-caption">
                     <span class="visually-hidden">{b.data.title}, </span>
                     {b.data.seriesNumber ? `Book ${b.data.seriesNumber}` : (b.data.seriesNote ?? (s.id === "standalones" ? "Novel" : "Also"))}
@@ -155,12 +157,21 @@ const stats = [
 
   <section class="container section bento" aria-labelledby="meet-heading">
     <article class="tile tile-meet reveal">
-      <p class="eyebrow accent-brass"><Icon name="user-round" />About</p>
-      <h2 id="meet-heading" class="display">Meet Syd</h2>
-      <p class="tile-text">{about?.data.shortBio}</p>
-      <div class="tile-actions">
-        <a class="btn btn-secondary" href="/about">More about Syd <Icon name="arrow-right" class="arrow" /></a>
-        <SocialLinks tone="light" />
+      <Image
+        src={sydWoodland}
+        alt="Syd Moore in autumn woodland"
+        widths={[320, 640, 768]}
+        sizes="(min-width: 640px) 16rem, 100vw"
+        class="meet-photo"
+      />
+      <div class="meet-copy">
+        <p class="eyebrow accent-brass"><Icon name="user-round" />About</p>
+        <h2 id="meet-heading" class="display">Meet Syd</h2>
+        <p class="tile-text">{about?.data.shortBio}</p>
+        <div class="tile-actions">
+          <a class="btn btn-secondary" href="/about">More about Syd <Icon name="arrow-right" class="arrow" /></a>
+          <SocialLinks tone="light" />
+        </div>
       </div>
     </article>
 
@@ -411,7 +422,21 @@ const stats = [
     .tile:hover { transform: translateY(-4px); box-shadow: 0 30px 50px -30px rgb(28 26 31 / 0.55); }
   }
   .tile h2:not(.display) { font-size: var(--h3); }
-  .tile-meet { background: linear-gradient(135deg, var(--surface), var(--brass-tint)); }
+  .tile-meet { background: linear-gradient(135deg, var(--surface), var(--brass-tint)); gap: var(--space-3); }
+  .tile-meet :global(.meet-photo) {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    object-position: 50% 30%;
+    border-radius: 18px;
+  }
+  .meet-copy { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-2); }
+  @media (min-width: 640px) {
+    .tile-meet { flex-direction: row; align-items: stretch; gap: var(--space-4); }
+    .tile-meet :global(.meet-photo) { flex: none; width: 16rem; height: auto; aspect-ratio: auto; align-self: stretch; min-height: 18rem; }
+    .meet-copy { flex: 1; justify-content: center; }
+  }
   .tile-text { max-width: 44rem; font-size: 1.125rem; }
   .tile-eglf {
     border: 0;

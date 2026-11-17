@@ -1,10 +1,12 @@
 # Content to supply or confirm
 
-Last reviewed 25 September 2026. Everything below is either missing or unconfirmed. The site builds and works without these, and empty sections stay hidden. Items marked **launch** matter before 8 October 2026.
+Last reviewed 17 November 2026. Everything below is either missing or unconfirmed. The site builds and works without these, and empty sections stay hidden. Items marked **launch** matter before 8 October 2026.
 
 ## Whole site
 
-- [ ] **launch** Author portrait: save as `src/assets/photos/syd-moore-portrait.jpg` (2–3 options, with photographer credit and a written licence)
+- [x] Two photos of Syd supplied by the site owner on 17 November 2026: the bookshelf portrait (About page) and the woodland photo (home page, "Meet Syd").
+- [ ] **launch** For both photos: who took them, and written permission to use them on the site and in press material. A credit line can then be added.
+- [ ] A larger copy of the bookshelf portrait. The supplied file is only 317 pixels wide, so it can't be shown any bigger than it is now or offered to the press.
 - [ ] **launch** Kit newsletter form: create the form, paste its action URL into `PUBLIC_KIT_FORM_ACTION`, and set Kit's "after subscribing" redirect to `https://sydmoore.com/newsletter/thanks`
 - [ ] **launch** Read on Sea: agree to be the lead "Buy local" button, and send their Bookshop.org product links (or confirm the shop link format) for each title; say whether they'll handle signed copies
 - [ ] **launch** Syd to approve the privacy notice. It now names GitHub as the host, and there's no contact form: visitors email her or her agent instead.
@@ -17,7 +19,10 @@ Last reviewed 25 September 2026. Everything below is either missing or unconfirm
 
 ## Books
 
-- [ ] **launch** High-resolution covers for all 14 published titles plus *The Final Act of Daphne Devine* (upload in Pages CMS → Books → Cover)
+- [x] Covers supplied by the site owner on 17 November 2026 for all 13 published books.
+- [ ] **launch** Higher-resolution covers. Twelve of the thirteen are only about 260 to 320 pixels wide, so they look slightly soft on the book pages and on high-resolution screens. Only *The Final Act of Daphne Devine* is full size. The publishers can supply files at least 1000 pixels tall (upload in Pages CMS → Books → Cover).
+- [ ] **launch** *The Witching Hour*: the cover supplied is for the earlier edition, titled *The Drowning Pool*. The page explains this, but the current *Witching Hour* cover should replace it.
+- [ ] *Strange Maven*: cover, once the publisher releases it. It shows a typeset placeholder until then.
 - [ ] **launch** Check every description against the publisher-approved blurb (drafts are in each book file)
 - [ ] **launch** Confirm the praise quotes can be used on the site (Oneworld and HarperCollins publicity). On 17 November 2026, 20 more quotes were added across ten books.
   - Each was checked word for word against the page it came from, and that page's link is saved with the quote (the "Where it was published" field in Pages CMS).

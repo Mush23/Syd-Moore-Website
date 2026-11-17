@@ -28,6 +28,7 @@ quotes:
     url: "https://oneworld-publications.com/work/strange-fascination/"
 links:
   waterstones: "https://www.waterstones.com/book/strange-fascination/syd-moore/9781786072573"
+cover: "/covers/strange-fascination.png"
 draft: false
 ---
 

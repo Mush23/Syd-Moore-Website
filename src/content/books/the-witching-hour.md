@@ -29,6 +29,8 @@ quotes:
 links:
   waterstones: "https://www.waterstones.com/book/the-witching-hour/syd-moore/9781847562661"
   audible: "https://www.audible.co.uk/pd/The-Witching-Hour-Audiobook/B0D5ZM93D5"
+cover: "/covers/the-drowning-pool.png"
+coverAlt: "Cover of The Drowning Pool, the earlier edition of The Witching Hour, by Syd Moore"
 draft: false
 ---
 

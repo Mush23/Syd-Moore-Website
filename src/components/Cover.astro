@@ -20,7 +20,7 @@ const img = coverImage(book);
 const accent = series?.data.accent ?? "brass";
 const alt = decorative ? "" : coverAlt(book);
 ---
-<div class="cover" data-accent={accent}>
+<div class:list={["cover", { "has-image": Boolean(img) }]} data-accent={accent}>
   {img ? (
     <Image
       src={img}
@@ -49,7 +49,9 @@ const alt = decorative ? "" : coverAlt(book);
     box-shadow: 0 1px 2px rgb(0 0 0 / 0.2), 0 18px 36px -10px rgb(0 0 0 / 0.4);
     background: var(--accent);
   }
-  .cover :global(img) { width: 100%; height: 100%; object-fit: contain; background: var(--surface); }
+  /* Real covers vary a little in shape (about 1.53 to 1.61 tall), so the box takes the image's own ratio. */
+  .cover.has-image { aspect-ratio: auto; background: none; }
+  .cover :global(img) { display: block; width: 100%; height: auto; }
   .placeholder {
     position: relative;
     height: 100%;

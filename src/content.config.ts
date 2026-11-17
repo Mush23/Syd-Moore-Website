@@ -72,6 +72,8 @@ const books = defineCollection({
     historyNote: opt(z.string()),
     /** Cover file name inside src/assets/covers (Pages CMS writes /covers/<file>). */
     cover: opt(z.string()),
+    /** Only when the cover shows something other than this title (e.g. an earlier edition). */
+    coverAlt: opt(z.string()),
     /** PDF extract path inside /public, e.g. /extracts/strange-magic.pdf */
     extract: opt(z.string()),
     links,

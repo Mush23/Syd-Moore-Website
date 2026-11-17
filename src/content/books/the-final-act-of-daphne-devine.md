@@ -27,6 +27,7 @@ quotes:
     url: "https://oneworld-publications.com/work/the-final-act-of-daphne-devine/"
 links:
   waterstones: "https://www.waterstones.com/book/the-final-act-of-daphne-devine/syd-moore/9780861541645"
+cover: "/covers/the-final-act-of-daphne-devine.webp"
 draft: false
 ---
 

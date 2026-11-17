@@ -92,6 +92,10 @@ The owner asked for icons to be used wherever possible, through one standard sys
   - Amazon print links are generated from the ISBN (ISBN-10 = ASIN), and the Associates tag comes from `PUBLIC_AMAZON_TAG`.
   - The "Ad" disclosure must stay above the buttons (CAP Code).
 - **Covers:** files go in `src/assets/covers/`. A book's `cover` field holds the file name (Pages CMS writes `/covers/<file>`). Missing covers render a typographic placeholder.
+  - Real covers vary in shape (about 1.53 to 1.61 tall), so `Cover.astro` shows an image at its own ratio: never cropped, never padded. The 2:3 box is only for placeholders.
+  - In rows and grids, wrap the cover in `.cover-slot` (see `global.css`). It is a fixed-height slot with the cover standing on its bottom edge, so a row shares a baseline like books on a shelf.
+  - `coverAlt` is optional alt text for a cover that shows a different title (e.g. *The Witching Hour* currently uses the earlier *Drowning Pool* cover).
+- **Photos of Syd:** `src/assets/photos/syd-moore-portrait.jpg` (About page; the file name is what `about.astro` looks for) and `syd-moore-woodland.jpg` (home "Meet Syd" tile). Re-encode any new photo before committing so no camera or location data goes into the public repository (`sharp(file).rotate().jpeg()` drops it).
 - **Accessibility:** WCAG 2.2 AA. Colour pairs in `tokens.css` are pre-checked; don't add new text colours without checking contrast.
 - **Spelling:** en-GB throughout.
 
@@ -114,6 +118,16 @@ npm run lhci      # Lighthouse budgets (perf â‰¥ 95, a11y 100, best practices â‰
 - Local tooling notes (Windows, Git Bash):
   - Tests and LHCI reuse whatever is on port 4321, so stop the dev server first or they test unbuilt pages.
   - Don't export `MSYS_NO_PATHCONV` when running LHCI: it stops `CHROME_PATH` being converted.
+
+### Hosting: decision pending (17 Nov 2026)
+
+The owner learned that the existing sydmoore.com is a WordPress site on Hostinger, with the domain registered at OnlyDomains, and wants to go live there instead of on a github.io address. Public records on 17 Nov 2026 showed:
+
+- nameservers `ns1/ns2.dns-parking.com` (Hostinger), so DNS is managed in Hostinger, not OnlyDomains;
+- the site served by Hostinger (LiteSpeed, WordPress);
+- MX records pointing at `mx1/mx2.hostinger.co.uk`, so email on the domain is hosted there and must not be disturbed.
+
+Nothing has been changed yet. The site still publishes to GitHub Pages. Two routes were put to the owner: host the built site on Hostinger (true 301s and headers through `.htaccess`, no DNS change), or keep GitHub Pages and point the domain's A records at it from Hostinger's DNS. Record the choice here when it is made.
 
 ### Decisions made while finishing
 

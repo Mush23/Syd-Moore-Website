@@ -26,6 +26,7 @@ quotes:
 links:
   waterstones: "https://www.waterstones.com/book/strange-tricks/syd-moore/9781786075482"
   bookshop: "https://uk.bookshop.org/p/books/strange-tricks-an-essex-witch-museum-mystery-syd-moore/6025102"
+cover: "/covers/strange-tricks.png"
 draft: false
 ---
 

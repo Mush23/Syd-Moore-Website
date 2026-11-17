@@ -347,3 +347,7 @@ textarea.input { min-height: 9rem; resize: vertical; }
 .icon-accent { color: var(--accent, var(--brass)); }
 .eyebrow:has(> .icon)::before { content: none; }
 .status-tag { display: inline-flex; align-items: center; gap: 0.3rem; }
+
+/* A fixed-height slot for a cover in a row or grid. Covers stand on its bottom edge, like books on a shelf. */
+.cover-slot { display: flex; align-items: flex-end; aspect-ratio: 1 / 1.62; }
+.cover-slot > .cover { width: 100%; }
