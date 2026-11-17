@@ -75,6 +75,12 @@ RewriteBase /
 RewriteRule ^\\.well-known/ - [L]
 RewriteRule (^|/)\\. - [F,L]
 
+# This site has no PHP. Refuse every .php request and the old WordPress folders, so
+# files left behind by the WordPress site it replaced can never run or be read.
+# (If a PHP contact form is ever added, exempt that one file above these lines.)
+RewriteRule \\.php$ - [F,L]
+RewriteRule ^(wp-admin|wp-includes|wp-content|wp-json)(/|$) - [F,L]
+
 # 1. One address: www and the .co.uk domain go to https://${host}
 RewriteCond %{HTTP_HOST} ^(${aliasRe})\\.?(:[0-9]+)?$ [NC]
 RewriteRule ^ https://${host}%{REQUEST_URI} [R=301,L]
@@ -109,6 +115,11 @@ RewriteRule ^(.+)$ /$1.html [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME}.html -f
 RewriteRule ^(.+)$ /$1.html [L]
+</IfModule>
+
+# The WordPress site used LiteSpeed's page cache. Never answer from it.
+<IfModule LiteSpeed>
+CacheLookup off
 </IfModule>
 
 <IfModule mod_headers.c>
