@@ -38,7 +38,50 @@ The owner found the first build too plain. From three mockups they chose "A's he
 - **Praise:** `QuoteBlock size="large"` is a centred italic pull quote under a big decorative quote mark, placed straight after the hero.
 - **Series panels** (`.panel-tint`, colour from `--accent-tint`): on the home page they show every cover in the series, each linking to its book. The Books page groups use them too.
 - **Background:** plain paper, with no texture outside the night bands.
+- **Site review (25 Sep 2026):** a full-site review plus research into 14 comparable author sites led to these changes:
+  - a one-line "what Syd writes" strap at the top of the home hero (it reuses `site.description` wording);
+  - book-number captions and "Start here" under the covers in the home series panels;
+  - a third home panel for the standalones;
+  - a "New to the series? Start with…" line on book pages;
+  - `/faq`, built entirely from the content collections, with FAQPage JSON-LD;
+  - Contact replaces Press in the header (Press stays in the footer and on Contact).
+  Content-dependent ideas from the research are in `docs/CONTENT-TODO.md`.
 - **Placeholder covers:** spine shading, grain, an inner frame and a book-like shadow. Title sizes scale with the cover width (container units), so small covers don't break words.
+
+### Modern layer (17 Nov 2026)
+
+The owner still found the site "a bit plain" and asked for a modern, fancy look. Colours and typefaces are unchanged; depth, scale and motion were added. This supersedes the gold frame around the hero copy.
+
+- **Motion is CSS-only** (end of `global.css`) and all of it is inside `prefers-reduced-motion: no-preference`:
+  - `.reveal` rises in on scroll (`animation-timeline: view()`; browsers without it just show the content);
+  - cross-page view transitions, with covers morphing between a card and its book page. The shared name is `cover-<book id>`, set in `BookCard.astro`, the home series panels and `Book3D` with `morph`. A name must be unique on a page, so don't add it to a second copy of the same cover.
+- **`Book3D.astro`:** a CSS 3D book (page block, floor shadow, straightens on hover). Used in the home hero and as the main cover on book pages.
+- **Header:** dark glass. `body` is night and `<main>` carries the paper colour, so the header blends with the top of every page.
+- **Page headers:** `.page-header` paints a full-width night band with the border-image trick. Keep its `background-color` as well: axe can't see border-image and would fail the contrast check. `.bleed-night` does the same for an element inside `.container` (the book-page title block).
+- **Home:** gradient display title, status pill, a figures strip, series showcases with a ghost book count, `PraiseWall.astro`, and a bento grid.
+  - The figures are counts from the book files, plus "2× CWA Short Story Dagger shortlists" from the press fact sheet. Update that one by hand if the fact sheet changes.
+  - The praise wall reads `quotes` from the book files (one per book first, repeats removed). On phones it is a swipeable row; nothing auto-rotates.
+- **Buttons** are pills; `--radius` is 14px; cards use 18–24px.
+- **Screenshots:** full-page captures must emulate reduced motion, otherwise `.reveal` blocks below the fold are captured at opacity 0.
+
+### Icons (17 Nov 2026)
+
+The owner asked for icons to be used wherever possible, through one standard system.
+
+- **One component:** `src/components/Icon.astro`. It wraps Astro Icon (`astro-icon`, registered in `astro.config.mjs`), which writes SVG into the page at build time. There is no icon font and no extra JavaScript.
+  - UI icons are Lucide: `<Icon name="calendar" />`.
+  - Brand logos are Simple Icons: `<Icon name="simple-icons:instagram" />`.
+  - Custom SVGs can go in `src/icons/` (Astro Icon's default folder).
+- **Don't add icons any other way** (no pasted SVG, emoji or icon fonts). The ✦ ornament on eyebrows and quote cards is the one exception; an eyebrow that contains an `<Icon>` drops the ✦ automatically.
+- **Accessibility:** icons are decorative (`aria-hidden`) because text sits beside them. An icon-only control needs its own accessible name: see `SocialLinks.astro`, which uses `aria-label` and a 44px target.
+- **Helper classes** (in `global.css`): `.icon-lead` and `.icon-trail` for spacing in running text, `.icon-accent` for the series or brass colour. Flex containers such as `.btn` and `.eyebrow` space icons with `gap`.
+- **Where icon names live:**
+  - menu items and social accounts: `site.nav` and `site.social` in `src/config/site.ts`;
+  - book-detail labels, quick facts and buy-panel format tabs: small lookup maps in their own files, with `info` as the fallback.
+- **Social links:** `SocialLinks.astro` renders `site.social` in the footer, the Contact and About pages and the home "Meet Syd" tile. The same list feeds `sameAs` structured data, so update both when an account changes.
+- Icons are always written inline (`is:inline`), not shared through a sprite: several first appear inside elements that start hidden, where a sprite is unreliable.
+
+## Conventions
 
 - **Never invent content.** No quotes, dates, ISBNs, URLs or biographical facts beyond `docs/brief.md`. Anything missing goes in `docs/CONTENT-TODO.md`.
 - **Book status** is computed at build time (`bookStatus` in `src/lib/books.ts`): `auto` gives Pre-order before `pubDate` and Out now after it. The daily rebuild workflow keeps this current.
@@ -49,6 +92,10 @@ The owner found the first build too plain. From three mockups they chose "A's he
   - Amazon print links are generated from the ISBN (ISBN-10 = ASIN), and the Associates tag comes from `PUBLIC_AMAZON_TAG`.
   - The "Ad" disclosure must stay above the buttons (CAP Code).
 - **Covers:** files go in `src/assets/covers/`. A book's `cover` field holds the file name (Pages CMS writes `/covers/<file>`). Missing covers render a typographic placeholder.
+  - Real covers vary in shape (about 1.53 to 1.61 tall), so `Cover.astro` shows an image at its own ratio: never cropped, never padded. The 2:3 box is only for placeholders.
+  - In rows and grids, wrap the cover in `.cover-slot` (see `global.css`). It is a fixed-height slot with the cover standing on its bottom edge, so a row shares a baseline like books on a shelf.
+  - `coverAlt` is optional alt text for a cover that shows a different title (e.g. *The Witching Hour* currently uses the earlier *Drowning Pool* cover).
+- **Photos of Syd:** `src/assets/photos/syd-moore-portrait.jpg` (About page; the file name is what `about.astro` looks for) and `syd-moore-woodland.jpg` (home "Meet Syd" tile). Re-encode any new photo before committing so no camera or location data goes into the public repository (`sharp(file).rotate().jpeg()` drops it).
 - **Accessibility:** WCAG 2.2 AA. Colour pairs in `tokens.css` are pre-checked; don't add new text colours without checking contrast.
 - **Spelling:** en-GB throughout.
 
@@ -62,14 +109,30 @@ npm test          # Playwright: routes, buy panel, keyboard, axe, links, redirec
 npm run lhci      # Lighthouse budgets (perf ≥ 95, a11y 100, best practices ≥ 95, SEO 100)
 ```
 
-## Status (25 Sep 2026)
+## Status (17 Nov 2026)
 
-- Installed, built and tested for the first time on branch `finish-and-test`.
-- `npm run check`: 0 errors, 0 warnings, 0 hints. `npm run build`: 32 pages, no warnings.
-- `npm test`: all 65 Playwright tests pass (routes, axe WCAG 2.2 AA, buy panel, keyboard tabs, phone sheet, links, redirects).
-- `npm run lhci`: 100 / 100 / 100 / 100 (mobile) on `/`, the Final Act book page and `/series/section-w`.
-- Screenshots of the four key pages at 1200px and 390px were checked against the brief: no horizontal scroll, covers at 2:3, buttons at least 44px.
-- The repo's first commit had every file flattened into the root by the browser upload. The folder structure was restored from the original zip; contents were unchanged.
+- Live at https://mush23.github.io/Syd-Moore-Website/ (GitHub Pages preview; sydmoore.com not yet moved). `main` has the first design refresh.
+- Branch `modern-redesign` (built on `review-improvements`, which was never merged) holds the site-review changes, the modern design layer and the extra review quotes. One pull request covers all three.
+- On that branch: `npm run check` is clean, `npm test` passes 66 of 66, and `npm run lhci` scores 100 / 100 / 100 / 100 with CLS 0.
+- Review quotes: 20 added on 17 Nov 2026. Each was checked against its source page, and the link is stored in the quote's `url` field (not displayed). See `docs/CONTENT-TODO.md` for what still needs Syd's or the publisher's approval.
+- Local tooling notes (Windows, Git Bash):
+  - Tests and LHCI reuse whatever is on port 4321, so stop the dev server first or they test unbuilt pages.
+  - Don't export `MSYS_NO_PATHCONV` when running LHCI: it stops `CHROME_PATH` being converted.
+
+### Hosting: decision pending (17 Nov 2026)
+
+The owner learned that the existing sydmoore.com is a WordPress site on Hostinger, with the domain registered at OnlyDomains, and wants to go live there instead of on a github.io address. Public records on 17 Nov 2026 showed:
+
+- nameservers `ns1/ns2.dns-parking.com` (Hostinger), so DNS is managed in Hostinger, not OnlyDomains;
+- the site served by Hostinger (LiteSpeed, WordPress);
+- MX records pointing at `mx1/mx2.hostinger.co.uk`, so email on the domain is hosted there and must not be disturbed.
+
+The owner has also bought **sydmoore.co.uk** (registered at OnlyDomains and using OnlyDomains' own nameservers). It should always forward to https://sydmoore.com:
+- now: a 301 "web redirection" set in OnlyDomains (My Domains → the domain → DNS Settings);
+- if the site moves onto Hostinger: add it there as an extra domain instead, so https://sydmoore.co.uk forwards too, and redirect every non-canonical host to https://sydmoore.com in `.htaccess`.
+Canonical tags, the sitemap and structured data already use https://sydmoore.com only, so the second domain needs no site changes.
+
+Nothing has been changed yet. The site still publishes to GitHub Pages. Two routes were put to the owner: host the built site on Hostinger (true 301s and headers through `.htaccess`, no DNS change), or keep GitHub Pages and point the domain's A records at it from Hostinger's DNS. Record the choice here when it is made.
 
 ### Decisions made while finishing
 
@@ -85,7 +148,8 @@ npm run lhci      # Lighthouse budgets (perf ≥ 95, a11y 100, best practices �
 
 ## Next steps
 
-1. Merge the `finish-and-test` pull request.
-2. Turn on GitHub Pages (Settings → Pages → Source: GitHub Actions) and check the github.io preview, following `docs/DEPLOY.md`. Move sydmoore.com over only once the launch content is ready.
-3. Work through `docs/CONTENT-TODO.md` with Syd, covers and the portrait first.
-4. Before launch, test with VoiceOver on an iPhone. The brief's checklist asks for this and it can't be automated.
+1. Merge the `modern-redesign` pull request and check the live preview.
+2. Work through `docs/CONTENT-TODO.md` with Syd: covers and the portrait first, then quote approvals.
+3. Set up Kit so newsletter sign-up works (`docs/DEPLOY.md`, step 3).
+4. Move sydmoore.com over only once the launch content is ready (`docs/DEPLOY.md`, step 6).
+5. Before launch, test with VoiceOver on an iPhone. The brief's checklist asks for this and it can't be automated.

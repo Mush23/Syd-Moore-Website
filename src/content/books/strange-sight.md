@@ -19,10 +19,21 @@ hook: "A haunted restaurant, a murdered chef, and a witness who swears a ghost d
 quotes:
   - text: "Forget Essex, Rosie Strange should be declared a national treasure."
     source: "Starburst"
+    url: "https://oneworld-publications.com/work/strange-sight/"
+  - text: "…50% Jonathan Creek, 50% Moonlighting, and 100% bloody brilliant…"
+    source: "The Bookbag"
+    url: "https://oneworld-publications.com/work/strange-sight/"
+  - text: "…Moore pulls off the trick of combining incisive wit and spellbinding atmosphere…"
+    source: "Crimesquad"
+    url: "https://oneworld-publications.com/work/strange-sight/"
+  - text: "A fun and thrilling read…"
+    source: "Cathi Unsworth, author of Weirdo"
+    url: "https://oneworld-publications.com/work/strange-sight/"
 links:
   waterstones: "https://www.waterstones.com/book/strange-sight/syd-moore/9781786072054"
   bookshop: "https://uk.bookshop.org/p/books/strange-sight-an-essex-witch-museum-mystery-syd-moore/2225270"
   audible: "https://www.audible.co.uk/pd/Strange-Sight-Audiobook/B078XKN87T"
+cover: "/covers/strange-sight.png"
 draft: false
 ---
 

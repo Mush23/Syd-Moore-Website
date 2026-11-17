@@ -22,10 +22,18 @@ hook: "London, 1940. A magician's assistant is recruited into Britain's stranges
 quotes:
   - text: "A breathtaking historical thriller."
     source: "Erin Kelly"
+    url: "https://oneworld-publications.com/work/the-great-deception/"
+  - text: "Vivid and thoroughly entertaining... More, please."
+    source: "The Guardian"
+    url: "https://oneworld-publications.com/work/the-great-deception/"
+  - text: "Quirky, clever and compelling."
+    source: "Anna Mazzola, author of The Clockwork Girl"
+    url: "https://oneworld-publications.com/work/the-great-deception/"
 links:
   waterstones: "https://www.waterstones.com/book/the-grand-illusion/syd-moore/9780861546978"
   bookshop: "https://uk.bookshop.org/p/books/the-grand-illusion-syd-moore/7621442"
   audible: "https://www.audible.co.uk/pd/The-Grand-Illusion-Audiobook/B0CTTSHN8L"
+cover: "/covers/the-grand-illusion.png"
 draft: false
 ---
 

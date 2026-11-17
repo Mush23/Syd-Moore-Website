@@ -1,7 +1,8 @@
 ---
 import { render } from "astro:content";
+import Icon from "../../components/Icon.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import Cover from "../../components/Cover.astro";
+import Book3D from "../../components/Book3D.astro";
 import StatusTag from "../../components/StatusTag.astro";
 import BuyPanel from "../../components/BuyPanel.astro";
 import QuoteBlock from "../../components/QuoteBlock.astro";
@@ -28,6 +29,10 @@ const siblings = await booksInSeries(d.series);
 const idx = siblings.findIndex((b) => b.id === book.id);
 const prev = idx > 0 ? siblings[idx - 1] : undefined;
 const next = idx < siblings.length - 1 ? siblings[idx + 1] : undefined;
+// "New to the series?" pointer, shown on every series book except the recommended first one.
+const startBook = series && series.id !== "standalones" && series.data.startHere !== book.id
+  ? siblings.find((b) => b.id === series.data.startHere)
+  : undefined;
 const status = bookStatus(book);
 const { Content } = await render(book);
 // History note is plain text from the CMS: blank lines separate paragraphs.
@@ -52,6 +57,10 @@ if (d.isbn.ebook) details.push(["ISBN (ebook)", d.isbn.ebook]);
 if (d.isbn.audio) details.push(["ISBN (audiobook)", d.isbn.audio]);
 if (d.narrator) details.push(["Audiobook narrator", d.narrator]);
 
+const detailIcon = (label: string) =>
+  label.startsWith("ISBN") ? "barcode"
+    : ({ "UK publication": "calendar", "First published": "calendar", Publisher: "building-2", Formats: "layers", Pages: "file-text", "Audiobook narrator": "mic" } as Record<string, string>)[label] ?? "info";
+
 const position = seriesPosition(book, series);
 const title = d.seoTitle ?? `${d.title} by Syd Moore${d.seriesNumber && series ? ` · ${series.data.shortName} book ${d.seriesNumber}` : ""}`;
 const description = d.seoDescription ?? d.hook;
@@ -66,25 +75,27 @@ const ogImage = `/og/${book.id}.png`;
   accent={series?.data.accent}
   jsonLd={bookLd(book, series, new URL(ogImage, site.url).toString())}
 >
-  <nav class="container crumbs" aria-label="Breadcrumb">
-    <ol>
-      <li><a href="/books">Books</a></li>
-      {series && <li><a href={`/series/${series.id}`}>{series.data.name}</a></li>}
-      <li aria-current="page">{d.title}</li>
-    </ol>
-  </nav>
-
   <article class="container book" aria-labelledby="book-title">
     <div class="book-cover">
-      <Cover book={book} series={series} width={360} loading="eager" />
+      <Book3D book={book} series={series} width={360} loading="eager" morph />
     </div>
 
-    <header class="book-head">
+    <header class="book-head band-night bleed-night">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <ol>
+          <li><a href="/books">Books</a></li>
+          {series && <li><a href={`/series/${series.id}`}>{series.data.name}</a></li>}
+          <li aria-current="page">{d.title}</li>
+        </ol>
+      </nav>
       <p class="label series-label">{position}</p>
       <h1 id="book-title">{d.title}</h1>
       {d.formerTitle && <p class="muted former">Previously published as <cite>{d.formerTitle}</cite></p>}
       <p class="status-line"><StatusTag status={status} />{status === "pre-order" && <span class="muted"> Out {formatDate(d.pubDate)}</span>}</p>
       <p class="hook">{d.hook}</p>
+      {startBook && (
+        <p class="start-here">New to {series?.data.name}? <a href={bookUrl(startBook)}>Start with <cite>{startBook.data.title}</cite></a>.</p>
+      )}
     </header>
 
     <div class="book-buy">
@@ -99,27 +110,27 @@ const ogImage = `/og/${book.id}.png`;
       {d.quotes.length > 0 && (
         <section class="quotes" aria-labelledby="praise-heading">
           <h2 id="praise-heading" class="visually-hidden">Praise</h2>
-          {d.quotes.map((q) => <QuoteBlock text={q.text} source={q.source} />)}
+          {d.quotes.map((q) => <div class="quote-card"><QuoteBlock text={q.text} source={q.source} /></div>)}
         </section>
       )}
 
       {historyParas.length > 0 && (
         <section class="history" aria-labelledby="history-heading">
-          <p class="label series-label">From Syd's research</p>
+          <p class="label series-label"><Icon name="landmark" class="icon-lead" />From Syd's research</p>
           <h2 id="history-heading">The history behind the book</h2>
           <div class="prose">{historyParas.map((p) => <p>{p}</p>)}</div>
         </section>
       )}
 
       {d.extract && (
-        <p><a class="btn btn-secondary" href={d.extract}>Read an extract (PDF)</a></p>
+        <p><a class="btn btn-secondary" href={d.extract}><Icon name="file-text" />Read an extract (PDF)</a></p>
       )}
 
       {details.length > 0 && (
         <section aria-labelledby="details-heading">
           <h2 id="details-heading" class="details-heading">Details</h2>
           <dl class="details">
-            {details.map(([k, v]) => (<div><dt>{k}</dt><dd>{v}</dd></div>))}
+            {details.map(([k, v]) => (<div><dt><Icon name={detailIcon(k)} class="icon-lead icon-accent" />{k}</dt><dd>{v}</dd></div>))}
           </dl>
         </section>
       )}
@@ -128,20 +139,22 @@ const ogImage = `/og/${book.id}.png`;
 
   {series && series.id !== "standalones" && siblings.length > 1 && (
     <section class="container section" aria-labelledby="order-heading">
-      <h2 id="order-heading">{series.data.name}: reading order</h2>
+      <p class="eyebrow series-label"><Icon name="list-ordered" />Reading order</p>
+      <h2 id="order-heading" class="display">{series.data.name}</h2>
       <div class="order-wrap">
         <SeriesReadingOrder books={siblings} series={series} currentId={book.id} headingId="order-heading" />
       </div>
       <nav class="prev-next" aria-label="Series navigation">
-        {prev && <a href={bookUrl(prev)} rel="prev"><span class="label">Previous</span><span>{prev.data.title}</span></a>}
-        {next && <a href={bookUrl(next)} rel="next" class="next"><span class="label">Next</span><span>{next.data.title}</span></a>}
+        {prev && <a href={bookUrl(prev)} rel="prev"><span class="label"><Icon name="arrow-left" class="icon-lead" />Previous</span><span>{prev.data.title}</span></a>}
+        {next && <a href={bookUrl(next)} rel="next" class="next"><span class="label">Next<Icon name="arrow-right" class="icon-trail" /></span><span>{next.data.title}</span></a>}
       </nav>
     </section>
   )}
 
   {crossLinks.length > 0 && (
     <section class="container section cross" aria-labelledby="cross-heading">
-      <h2 id="cross-heading">If you liked this</h2>
+      <p class="eyebrow series-label"><Icon name="library" />More from Syd</p>
+      <h2 id="cross-heading" class="display">If you liked this</h2>
       <div class="grid-books">
         {crossLinks.map(({ s, b }) => <BookCard book={b} series={s} />)}
       </div>
@@ -154,25 +167,25 @@ const ogImage = `/og/${book.id}.png`;
 <style>
   .crumbs ol {
     list-style: none;
-    padding: var(--space-2) 0 0;
+    padding: 0 0 var(--space-3);
     display: flex;
     flex-wrap: wrap;
     gap: 0.25rem 0.5rem;
     font-size: var(--small);
-    color: var(--ink-muted);
+    color: var(--parchment-muted);
   }
-  .crumbs li + li::before { content: "/"; margin-right: 0.5rem; color: var(--ink-muted); }
+  .crumbs li + li::before { content: "/"; margin-right: 0.5rem; color: var(--parchment-muted); }
   .crumbs a { display: inline-flex; align-items: center; min-height: 1.5rem; }
 
   .book {
     display: grid;
     gap: var(--space-3) var(--space-5);
-    padding-block: var(--space-3) var(--space-4);
+    padding-block: 0 var(--space-4);
     grid-template-columns: 1fr;
     grid-template-areas: "head" "cover" "buy" "body";
   }
-  .book-head { grid-area: head; }
-  .book-cover { grid-area: cover; width: min(70%, 18rem); margin-inline: auto; }
+  .book-head { grid-area: head; padding-block: var(--space-3) var(--space-4); }
+  .book-cover { grid-area: cover; width: min(62%, 16rem); margin-inline: auto; padding-right: 4%; }
   .book-buy { grid-area: buy; }
   .book-body { grid-area: body; }
   @media (min-width: 810px) {
@@ -180,19 +193,30 @@ const ogImage = `/og/${book.id}.png`;
       grid-template-columns: minmax(15rem, 22rem) 1fr;
       grid-template-areas: "cover head" "cover buy" "cover body";
       align-items: start;
-      padding-top: var(--space-4);
     }
-    .book-cover { width: 100%; position: sticky; top: 6rem; grid-row: 1 / span 3; }
+    .book-head { padding-block: var(--space-4) var(--space-5); min-height: 17rem; }
+    .book-cover { width: 100%; position: sticky; top: 6rem; grid-row: 1 / span 3; margin-top: var(--space-4); padding-right: 8%; z-index: 1; }
   }
   .book-head > * + * { margin-top: var(--space-1); }
   .series-label { color: var(--accent, var(--brass)); }
-  .hook { font-family: var(--font-display); font-size: 1.35rem; line-height: 1.4; max-width: 40rem; margin-top: var(--space-2); }
+  .book-head .series-label { color: var(--accent-light, var(--brass-light)); }
+  .book-head h1 { font-size: clamp(2.5rem, 1.6rem + 3.6vw, 4.5rem); line-height: 1; letter-spacing: -0.025em; }
+  .hook { font-family: var(--font-display); font-style: italic; font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem); line-height: 1.4; max-width: 40rem; margin-top: var(--space-2); }
+  .start-here { font-size: var(--small); color: var(--parchment-muted); }
   .status-line { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
 
   .book-body > * + * { margin-top: var(--space-4); }
   .blurb { font-size: 1.125rem; }
-  .quotes { display: grid; gap: var(--space-3); padding-left: var(--space-3); border-left: 3px solid var(--accent, var(--brass)); }
-  .history { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: var(--space-3); }
+  .quotes { display: grid; gap: var(--space-2); grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); }
+  .quote-card {
+    position: relative;
+    padding: var(--space-3);
+    border-radius: 18px;
+    background: linear-gradient(135deg, var(--surface), var(--accent-tint, var(--surface)));
+    border: 1px solid color-mix(in srgb, var(--accent, var(--brass)) 20%, transparent);
+  }
+  .quote-card::before { content: "✦"; display: block; margin-bottom: 0.4rem; font-size: 0.8rem; color: var(--accent, var(--brass)); }
+  .history { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: var(--space-3); }
   .history > * + * { margin-top: var(--space-1); }
   .details-heading { font-size: var(--h3); }
   .details {
@@ -212,7 +236,7 @@ const ogImage = `/og/${book.id}.png`;
     min-width: 12rem;
     padding: var(--space-2);
     border: 1px solid var(--ink-muted);
-    border-radius: var(--radius);
+    border-radius: 16px;
     color: var(--ink);
     text-decoration: none;
   }

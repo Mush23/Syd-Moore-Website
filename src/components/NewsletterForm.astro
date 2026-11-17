@@ -4,6 +4,7 @@
  * Set Kit's form "After subscribing" option to redirect to https://sydmoore.com/newsletter/thanks
  */
 import { site } from "../config/site";
+import Icon from "./Icon.astro";
 interface Props { compact?: boolean; idPrefix?: string }
 const { compact = false, idPrefix = "nl" } = Astro.props;
 const action = site.newsletter.kitFormAction;
@@ -19,7 +20,7 @@ const action = site.newsletter.kitFormAction;
         <label for={`${idPrefix}-email`}>Email address</label>
         <input class="input" id={`${idPrefix}-email`} name="email_address" type="email" autocomplete="email" required />
       </div>
-      <button class="btn btn-primary" type="submit">Sign me up</button>
+      <button class="btn btn-primary" type="submit"><Icon name="send" />Sign me up</button>
     </div>
     <p class="consent">
       You'll get emails from Syd Moore about books and events. Unsubscribe any time. See the <a href="/privacy">privacy notice</a>.

@@ -1,5 +1,7 @@
 ---
 import { getEntry } from "astro:content";
+import Icon from "../components/Icon.astro";
+import SocialLinks from "../components/SocialLinks.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { site } from "../config/site";
 
@@ -22,20 +24,20 @@ const formOn = site.contact.formEnabled && Boolean(site.contact.turnstileSiteKey
 
   <div class="container contact">
     <section aria-labelledby="who-heading" class="who">
-      <h2 id="who-heading">Who to contact</h2>
+      <h2 id="who-heading"><Icon name="users" class="icon-lead icon-accent" />Who to contact</h2>
       <dl>
         <div>
-          <dt>Rights, translation and screen</dt>
+          <dt><Icon name="briefcase" class="icon-lead icon-accent" />Rights, translation and screen</dt>
           <dd>{p.agentName}, {p.agentAgency}{p.agentUrl && <> · <a href={p.agentUrl}>Agency page</a></>}</dd>
         </div>
         {p.publicistName && (
           <div>
-            <dt>Review copies and interviews</dt>
+            <dt><Icon name="megaphone" class="icon-lead icon-accent" />Review copies and interviews</dt>
             <dd>{p.publicistName}{p.publicistEmail && <> · <a href={`mailto:${p.publicistEmail}`}>{p.publicistEmail}</a></>}</dd>
           </div>
         )}
         <div>
-          <dt>Press kit</dt>
+          <dt><Icon name="newspaper" class="icon-lead icon-accent" />Press kit</dt>
           <dd><a href="/press">Bios, facts and coverage</a></dd>
         </div>
       </dl>
@@ -80,13 +82,18 @@ const formOn = site.contact.formEnabled && Boolean(site.contact.turnstileSiteKey
       </section>
     ) : (
       <section aria-labelledby="events-heading">
-        <h2 id="events-heading">Events and talks</h2>
+        <h2 id="events-heading"><Icon name="calendar" class="icon-lead icon-accent" />Events and talks</h2>
         <p>
           To book Syd for a festival, library, school or book group, please contact {p.agentName} at {p.agentAgency}
           {p.agentUrl && <> via the <a href={p.agentUrl}>agency page</a></>}.
         </p>
       </section>
     )}
+
+    <section class="follow" aria-labelledby="follow-heading">
+      <h2 id="follow-heading"><Icon name="at-sign" class="icon-lead icon-accent" />Follow Syd</h2>
+      <SocialLinks tone="light" />
+    </section>
   </div>
 </BaseLayout>
 
@@ -122,6 +129,7 @@ const formOn = site.contact.formEnabled && Boolean(site.contact.turnstileSiteKey
 <style>
   .contact { display: grid; gap: var(--space-5); padding-bottom: var(--space-4); }
   @media (min-width: 810px) { .contact { grid-template-columns: 1fr 1.3fr; align-items: start; } }
+  .follow :global(.social) { margin-top: var(--space-2); }
   .who dl { margin-top: var(--space-2); display: grid; gap: var(--space-2); }
   .who dt { font-size: var(--small); color: var(--ink-muted); }
   h2 { font-size: var(--h3); }

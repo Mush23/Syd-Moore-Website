@@ -17,6 +17,7 @@ hook: "Six supernatural stories from Adders Fork, across the centuries."
 quotes:
   - text: "A creepy collection of short stories perfect for darkening evenings."
     source: "Sarah Ward"
+cover: "/covers/the-strange-casebook.png"
 draft: false
 ---
 

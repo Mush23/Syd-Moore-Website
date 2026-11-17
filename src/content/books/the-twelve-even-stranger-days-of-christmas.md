@@ -22,6 +22,7 @@ quotes:
 links:
   waterstones: "https://www.waterstones.com/book/the-twelve-even-stranger-days-of-christmas/syd-moore/9781786079794"
   audible: "https://www.audible.co.uk/pd/The-Twelve-Even-Stranger-Days-of-Christmas-Audiobook/B09D4N3TMK"
+cover: "/covers/the-twelve-even-stranger-days-of-christmas.png"
 draft: false
 ---
 

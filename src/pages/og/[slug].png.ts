@@ -27,13 +27,13 @@ async function loadFonts() {
   return fonts;
 }
 
-async function coverDataUri(book: Book): Promise<string | undefined> {
+async function coverDataUri(book: Book): Promise<{ uri: string; width: number } | undefined> {
   const file = book.data.cover?.split("/").pop();
   if (!file) return undefined;
   const full = path.join(process.cwd(), "src", "assets", "covers", file);
   if (!existsSync(full)) return undefined;
-  const png = await sharp(full).resize({ height: 500 }).png().toBuffer();
-  return `data:image/png;base64,${png.toString("base64")}`;
+  const { data, info } = await sharp(full).resize({ height: 500 }).png().toBuffer({ resolveWithObject: true });
+  return { uri: `data:image/png;base64,${data.toString("base64")}`, width: info.width };
 }
 
 type Node = { type: string; props: Record<string, unknown> };
@@ -85,7 +85,7 @@ export const GET: APIRoute = async ({ props }) => {
   const accent = series?.data.accent ?? "brass";
   const cover = await coverDataUri(book);
   const coverNode: Node = cover
-    ? { type: "img", props: { src: cover, width: 333, height: 500, style: { borderRadius: 4, boxShadow: "0 20px 50px rgba(0,0,0,0.45)" } } }
+    ? { type: "img", props: { src: cover.uri, width: cover.width, height: 500, style: { borderRadius: 4, boxShadow: "0 20px 50px rgba(0,0,0,0.45)" } } }
     : placeholderCover(book.data.title, series?.data.shortName ?? "", accent);
 
   return render(el("div", {

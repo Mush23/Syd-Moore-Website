@@ -1,5 +1,7 @@
 ---
 import { site } from "../config/site";
+import Icon from "./Icon.astro";
+import SocialLinks from "./SocialLinks.astro";
 import NewsletterForm from "./NewsletterForm.astro";
 const year = new Date().getFullYear();
 ---
@@ -8,24 +10,19 @@ const year = new Date().getFullYear();
     <div class="footer-brand">
       <p class="wordmark">Syd Moore</p>
       <p class="muted">Mysteries with history in their bones.</p>
-      {site.social.length > 0 && (
-        <ul class="social" aria-label="Syd Moore on social media">
-          {site.social.map((s) => (
-            <li><a href={s.url} rel="me noopener">{s.label}</a></li>
-          ))}
-        </ul>
-      )}
+      <div class="follow"><SocialLinks tone="dark" /></div>
     </div>
 
     <nav aria-label="Footer">
       <ul class="footer-links">
-        <li><a href="/books">Books</a></li>
-        <li><a href="/events">Events</a></li>
-        <li><a href="/news">News</a></li>
-        <li><a href="/press">Press</a></li>
-        <li><a href="/contact">Contact</a></li>
-        <li><a href="/privacy">Privacy</a></li>
-        <li><a href="/accessibility">Accessibility</a></li>
+        <li><a href="/books"><Icon name="library" />Books</a></li>
+        <li><a href="/events"><Icon name="calendar" />Events</a></li>
+        <li><a href="/news"><Icon name="newspaper" />News</a></li>
+        <li><a href="/faq"><Icon name="circle-help" />FAQ</a></li>
+        <li><a href="/press"><Icon name="megaphone" />Press</a></li>
+        <li><a href="/contact"><Icon name="mail" />Contact</a></li>
+        <li><a href="/privacy"><Icon name="shield-check" />Privacy</a></li>
+        <li><a href="/accessibility"><Icon name="accessibility" />Accessibility</a></li>
       </ul>
     </nav>
 
@@ -41,10 +38,25 @@ const year = new Date().getFullYear();
     <p>{site.amazonStatement} Some other book links are affiliate links too; see the <a href="/privacy#links-to-shops">privacy notice</a>.</p>
     <p>© {year} Syd Moore</p>
   </div>
+  <p class="giant" aria-hidden="true">Syd Moore</p>
 </footer>
 
 <style>
-  .site-footer { margin-top: var(--space-6); }
+  .site-footer { position: relative; overflow: hidden; border-top: 1px solid rgb(255 255 255 / 0.08); }
+  .giant {
+    margin: 0 0 -0.16em;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(4.5rem, 19vw, 19rem);
+    line-height: 0.85;
+    letter-spacing: -0.04em;
+    white-space: nowrap;
+    text-align: center;
+    color: transparent;
+    -webkit-text-stroke: 1px rgb(239 232 218 / 0.24);
+    user-select: none;
+    pointer-events: none;
+  }
   .footer-grid {
     display: grid;
     gap: var(--space-4);
@@ -55,9 +67,10 @@ const year = new Date().getFullYear();
   }
   .wordmark { font-family: var(--font-display); font-size: 1.75rem; font-weight: 650; }
   .footer-heading { font-size: 1.25rem; }
-  .social, .footer-links { list-style: none; padding: 0; }
-  .social { display: flex; flex-wrap: wrap; gap: 0.25rem 1.25rem; margin-top: var(--space-2); }
-  .social a, .footer-links a {
+  .footer-links { list-style: none; padding: 0; }
+  .follow { margin-top: var(--space-2); }
+  .footer-links a { gap: 0.55rem; }
+  .footer-links a {
     display: inline-flex;
     align-items: center;
     min-height: var(--tap);

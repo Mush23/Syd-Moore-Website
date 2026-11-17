@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import Icon from "../../components/Icon.astro";
 import BookCard from "../../components/BookCard.astro";
 import { getBooks, getSeriesList } from "../../lib/books";
 
@@ -53,7 +54,7 @@ const groups = seriesList.map((s) => ({ s, books: books.filter((b) => b.data.ser
     ))}
 
     <section class="container section-tight local" aria-labelledby="local-heading">
-      <h2 id="local-heading">Find Syd's books in Essex</h2>
+      <h2 id="local-heading"><Icon name="map-pin" class="icon-lead icon-accent" />Find Syd's books in Essex</h2>
       <p>
         Prefer to browse in person? <a href="https://readonsea.co.uk/">Read on Sea</a> on Broadway in Leigh-on-Sea is
         Syd's local independent bookshop, and any bookshop can order her books using the ISBN on each book's page.

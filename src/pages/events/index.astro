@@ -1,5 +1,6 @@
 ---
 import { getCollection, getEntry } from "astro:content";
+import Icon from "../../components/Icon.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import EventRow from "../../components/EventRow.astro";
 import { buildNow, fromLondon } from "../../lib/dates";
@@ -21,24 +22,25 @@ const press = await getEntry("pages", "press");
     <p class="label">Events</p>
     <h1>Events and talks</h1>
     <p class="lede">Talks, signings and workshops across Essex and beyond. Want Syd at your festival, library, school or book group?</p>
-    <p class="btn-row cta"><a class="btn btn-primary" href="/contact?reason=event">Book Syd for a talk</a></p>
+    <p class="btn-row cta"><a class="btn btn-primary" href="/contact?reason=event"><Icon name="mic" />Book Syd for a talk</a></p>
   </header>
 
   <section class="container section-tight" aria-labelledby="upcoming-heading">
-    <h2 id="upcoming-heading">Coming up</h2>
+    <h2 id="upcoming-heading" class="display">Coming up</h2>
     {upcoming.length > 0 ? (
       <div class="list">{upcoming.map((e) => <EventRow event={e} />)}</div>
     ) : (
-      <p class="empty">New dates are announced in the newsletter first. <a href="/newsletter">Sign up to hear about them.</a></p>
+      <p class="empty"><Icon name="mail" class="icon-lead icon-accent" />New dates are announced in the newsletter first. <a href="/newsletter">Sign up to hear about them.</a></p>
     )}
   </section>
 
   {press?.data.talkTopics && (
     <section class="container section-tight" aria-labelledby="topics-heading">
-      <h2 id="topics-heading">Talk topics</h2>
-      <ul class="topics">
-        {press.data.talkTopics.map((t) => <li>{t}</li>)}
-      </ul>
+      <p class="eyebrow topics-eyebrow"><Icon name="mic" />For festivals, libraries and book groups</p>
+      <h2 id="topics-heading" class="display">Talk topics</h2>
+      <ol class="topics">
+        {press.data.talkTopics.map((t, i) => <li class="reveal"><span class="n" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>{t}</li>)}
+      </ol>
     </section>
   )}
 
@@ -56,9 +58,38 @@ const press = await getEntry("pages", "press");
 <style>
   .cta { margin-top: var(--space-3); }
   .list { margin-top: var(--space-2); }
-  .empty { margin-top: var(--space-2); }
-  .topics { margin-top: var(--space-2); padding-left: 1.25rem; }
-  .topics li + li { margin-top: 0.35rem; }
+  .empty {
+    margin-top: var(--space-2);
+    padding: var(--space-3);
+    border-radius: 18px;
+    background: var(--surface);
+    border: 1px dashed var(--ink-muted);
+    max-width: 44rem;
+  }
+  .topics-eyebrow { color: var(--brass); }
+  .topics {
+    list-style: none;
+    padding: 0;
+    margin-top: var(--space-3);
+    display: grid;
+    gap: var(--space-2);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  }
+  .topics li {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-height: 9rem;
+    padding: var(--space-3);
+    border-radius: 20px;
+    background: linear-gradient(135deg, var(--surface), var(--brass-tint));
+    border: 1px solid var(--line);
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  .topics .n { font-family: var(--font-mono); font-size: var(--label); font-weight: 500; letter-spacing: 0.1em; color: var(--brass); }
   .archive summary { cursor: pointer; display: flex; align-items: center; gap: 0.5rem; min-height: var(--tap); }
   .past-heading { font-size: var(--h3); }
   .archive { margin-top: var(--space-1); }

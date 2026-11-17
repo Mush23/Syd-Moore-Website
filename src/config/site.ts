@@ -37,10 +37,12 @@ export const site = {
   /** The lead "buy local" shop. Book pages link to it when a readOnSea URL is set. */
   localShop: { name: "Read on Sea", town: "Leigh-on-Sea", url: "https://readonsea.co.uk/" },
 
-  /** Only accounts confirmed in the brief. Add X and Instagram once Syd confirms them. */
+  /** Syd's social accounts. `icon` is a Simple Icons name (see src/components/Icon.astro). */
   social: [
-    { label: "Bluesky", url: "https://bsky.app/profile/sydmoore.bsky.social" },
-    { label: "Facebook", url: "https://www.facebook.com/SydMooreWriter" },
+    { label: "Facebook", url: "https://www.facebook.com/SydMooreWriter/", icon: "simple-icons:facebook" },
+    { label: "Instagram", url: "https://www.instagram.com/sydmoorewriter/", icon: "simple-icons:instagram" },
+    { label: "X", url: "https://x.com/SydMoore1", icon: "simple-icons:x" },
+    { label: "Bluesky", url: "https://bsky.app/profile/sydmoore.bsky.social", icon: "simple-icons:bluesky" },
   ],
 
   /** Profiles used in Person structured data. */
@@ -49,14 +51,17 @@ export const site = {
     "https://www.goodreads.com/author/show/5008398.Syd_Moore",
     "https://bsky.app/profile/sydmoore.bsky.social",
     "https://www.marjacq.com/syd-moore",
+    "https://www.facebook.com/SydMooreWriter",
+    "https://www.instagram.com/sydmoorewriter/",
+    "https://x.com/SydMoore1",
   ],
 
   nav: [
-    { label: "Books", href: "/books" },
-    { label: "About", href: "/about" },
-    { label: "Essex Girls & Witches", href: "/essex-girls-and-witches" },
-    { label: "Events", href: "/events" },
-    { label: "Press", href: "/press" },
+    { label: "Books", href: "/books", icon: "library" },
+    { label: "About", href: "/about", icon: "user-round" },
+    { label: "Essex Girls & Witches", href: "/essex-girls-and-witches", icon: "flame" },
+    { label: "Events", href: "/events", icon: "calendar" },
+    { label: "Contact", href: "/contact", icon: "mail" },
   ],
 
   disclosure:

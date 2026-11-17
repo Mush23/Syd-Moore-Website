@@ -1,5 +1,6 @@
 ---
 import { getEntry, render } from "astro:content";
+import Icon from "../components/Icon.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import CopyBio from "../components/CopyBio.astro";
 
@@ -31,18 +32,18 @@ const p = press.data;
       <dl class="contacts">
         {p.agentName && (
           <div>
-            <dt>Rights and representation</dt>
+            <dt><Icon name="briefcase" class="icon-lead icon-accent" />Rights and representation</dt>
             <dd>{p.agentName}, {p.agentAgency}{p.agentUrl && <> · <a href={p.agentUrl}>Agency page</a></>}</dd>
           </div>
         )}
         {p.publicistName && (
           <div>
-            <dt>Publicity and review copies</dt>
+            <dt><Icon name="megaphone" class="icon-lead icon-accent" />Publicity and review copies</dt>
             <dd>{p.publicistName}{p.publicistEmail && <> · <a href={`mailto:${p.publicistEmail}`}>{p.publicistEmail}</a></>}</dd>
           </div>
         )}
         <div>
-          <dt>Events and talks</dt>
+          <dt><Icon name="calendar" class="icon-lead icon-accent" />Events and talks</dt>
           <dd><a href="/contact">How to book Syd</a></dd>
         </div>
       </dl>
@@ -53,7 +54,7 @@ const p = press.data;
         <h2 id="coverage-heading">Selected coverage</h2>
         <ul class="coverage">
           {p.selectedPress.map((c) => (
-            <li><a href={c.url}>{c.title}</a> <span class="muted">· {c.outlet}{c.date ? `, ${c.date}` : ""}</span></li>
+            <li><a href={c.url}>{c.title}<Icon name="external-link" size="0.9em" class="icon-trail" /></a> <span class="muted">· {c.outlet}{c.date ? `, ${c.date}` : ""}</span></li>
           ))}
         </ul>
       </section>

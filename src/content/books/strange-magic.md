@@ -19,9 +19,20 @@ hook: "She doesn't believe in witches. She's just inherited a witch museum."
 quotes:
   - text: "Dennis Wheatley meets Caitlin Moran."
     source: "Starburst"
+    url: "https://oneworld-publications.com/work/strange-magic/"
+  - text: "…there is plenty of spooky fun in this spirited genre mashup."
+    source: "The Guardian"
+    url: "https://oneworld-publications.com/work/strange-magic/"
+  - text: "A brilliant beginning to a highly original new series."
+    source: "Crimesquad"
+    url: "https://oneworld-publications.com/work/strange-magic/"
+  - text: "I gleefully submitted to a tale of witchcraft, feminism, mysterious strangers, historical atrocities, plucky heroines and ghastly apparitions."
+    source: "Sarah Perry, author of The Essex Serpent"
+    url: "https://oneworld-publications.com/work/strange-magic/"
 links:
   waterstones: "https://www.waterstones.com/book/strange-magic/syd-moore/9781786070982"
   audible: "https://www.audible.co.uk/pd/Strange-Magic-Audiobook/B0753M5SLM"
+cover: "/covers/strange-magic.png"
 draft: false
 ---
 

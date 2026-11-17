@@ -133,6 +133,7 @@ content:
         fields:
           - { name: text, label: Quote, type: text, required: true }
           - { name: source, label: "Who said it (publication or author)", type: string, required: true }
+          - { name: url, label: "Where it was published (web link, not shown on the site)", type: string }
       - name: historyNote
         label: The history behind the book
         description: "Syd's 100–200 word note. Leave a blank line between paragraphs. Hidden if empty."
@@ -143,6 +144,10 @@ content:
         type: image
         options:
           media: covers
+      - name: coverAlt
+        label: Cover description (only if the cover shows a different title)
+        description: "Read out by screen readers. Leave empty unless the cover is for an earlier edition or title."
+        type: string
       - name: extract
         label: Extract (PDF)
         type: file

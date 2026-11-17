@@ -66,11 +66,14 @@ const books = defineCollection({
       .object({ paperback: isbn, hardback: isbn, ebook: isbn, audio: isbn })
       .default({})),
     hook: z.string().max(140),
-    quotes: z.preprocess(blank, z.array(z.object({ text: z.string(), source: z.string() })).default([])),
+    /** url records where the quote was published; it is kept for checking and isn't shown. */
+    quotes: z.preprocess(blank, z.array(z.object({ text: z.string(), source: z.string(), url })).default([])),
     /** Syd's "history behind the book" note (Markdown). Hidden when empty. */
     historyNote: opt(z.string()),
     /** Cover file name inside src/assets/covers (Pages CMS writes /covers/<file>). */
     cover: opt(z.string()),
+    /** Only when the cover shows something other than this title (e.g. an earlier edition). */
+    coverAlt: opt(z.string()),
     /** PDF extract path inside /public, e.g. /extracts/strange-magic.pdf */
     extract: opt(z.string()),
     links,

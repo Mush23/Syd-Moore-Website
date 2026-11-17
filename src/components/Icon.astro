@@ -1,0 +1,42 @@
+---
+/**
+ * The site's one way to show an icon. It wraps Astro Icon (astro-icon), which
+ * inlines SVG at build time, so there is no icon font and no extra JavaScript.
+ *
+ * - UI icons come from Lucide: <Icon name="calendar" />
+ * - Brand logos come from Simple Icons: <Icon name="simple-icons:instagram" />
+ *
+ * Icons are decorative by default (hidden from screen readers), because the
+ * text beside them already says what they mean. For an icon that stands alone,
+ * pass `label` so it is announced.
+ *
+ * Every icon is written out in full ("is:inline") rather than shared through an
+ * SVG sprite: several icons first appear inside elements that start hidden
+ * (the phone menu, format tabs), and a sprite defined in a hidden element is
+ * unreliable.
+ */
+import { Icon as AstroIcon } from "astro-icon/components";
+
+interface Props {
+  name: string;
+  /** Any CSS length. Defaults to slightly larger than the surrounding text. */
+  size?: string;
+  label?: string;
+  class?: string;
+  [key: string]: unknown;
+}
+const { name, size = "1.15em", label, class: className, ...rest } = Astro.props;
+const full = name.includes(":") ? name : `lucide:${name}`;
+const inline = { "is:inline": true };
+---
+<AstroIcon
+  name={full}
+  class:list={["icon", className]}
+  width={size}
+  height={size}
+  role={label ? "img" : undefined}
+  aria-label={label}
+  aria-hidden={label ? undefined : "true"}
+  {...inline}
+  {...rest}
+/>

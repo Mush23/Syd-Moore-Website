@@ -9,4 +9,4 @@ startHere: "the-witching-hour"
 notes: []
 ---
 
-Two haunting standalone novels rooted in Essex's coast and its witch-trial past, and a short story for winter nights.
+Two haunting standalone novels rooted in Essex’s coast and its witch-trial past.

@@ -7,6 +7,7 @@
  * Works without JavaScript: every format is listed under its own heading.
  */
 import { site } from "../config/site";
+import Icon from "./Icon.astro";
 import { bookStatus, buyLinks, type Book } from "../lib/books";
 
 interface Props { book: Book }
@@ -19,15 +20,16 @@ const printIsbn = book.data.isbn.paperback ?? book.data.isbn.hardback;
 const anyIsbn = printIsbn ?? book.data.isbn.ebook;
 const uid = `buy-${book.id}`;
 const title = book.data.title;
+const tabIcon: Record<string, string> = { print: "book-open", ebook: "tablet-smartphone", audio: "headphones" };
 const aria = (label: string) => `${verb} ${title} from ${label} (opens retailer site)`;
 ---
 <section class="buy-panel" id={uid} aria-labelledby={`${uid}-heading`} data-buy-panel>
-  <h2 class="buy-heading" id={`${uid}-heading`}>{heading}</h2>
+  <h2 class="buy-heading" id={`${uid}-heading`}><Icon name="shopping-bag" class="icon-lead icon-accent" />{heading}</h2>
 
   {status === "coming-soon" ? (
     <div class="coming-soon">
       <p>Be the first to hear when <cite>{title}</cite> is available to order.</p>
-      <a class="btn btn-primary" href="/newsletter">Join {site.newsletter.name}</a>
+      <a class="btn btn-primary" href="/newsletter"><Icon name="mail" />Join {site.newsletter.name}</a>
     </div>
   ) : tabs.length > 0 ? (
     <>
@@ -43,7 +45,7 @@ const aria = (label: string) => `${verb} ${title} from ${label} (opens retailer 
               aria-controls={`${uid}-panel-${t.tab}`}
               aria-selected={i === 0 ? "true" : "false"}
               tabindex={i === 0 ? 0 : -1}
-            >{t.label}</button>
+            ><Icon name={tabIcon[t.tab]} />{t.label}</button>
           ))}
         </div>
       )}
@@ -56,7 +58,7 @@ const aria = (label: string) => `${verb} ${title} from ${label} (opens retailer 
           aria-labelledby={tabs.length > 1 ? `${uid}-tab-${t.tab}` : undefined}
           data-tabpanel
         >
-          <h3 class="format-heading">{t.label}</h3>
+          <h3 class="format-heading"><Icon name={tabIcon[t.tab]} class="icon-lead" />{t.label}</h3>
           <ul class="retailers">
             {t.links.map((l) => (
               <li>
@@ -65,7 +67,7 @@ const aria = (label: string) => `${verb} ${title} from ${label} (opens retailer 
                   href={l.url}
                   rel="sponsored noopener"
                   aria-label={aria(l.retailer.label)}
-                >{l.retailer.primary ? `Buy local: ${l.retailer.label}` : l.retailer.label}</a>
+                >{l.retailer.primary && <Icon name="store" />}{l.retailer.primary ? `Buy local: ${l.retailer.label}` : l.retailer.label}<Icon name="external-link" size="0.9em" class="ext" /></a>
               </li>
             ))}
           </ul>
@@ -78,7 +80,7 @@ const aria = (label: string) => `${verb} ${title} from ${label} (opens retailer 
 
   {status !== "coming-soon" && anyIsbn && (
     <p class="isbn-note">
-      Prefer a bookshop near you? Any bookshop can order it with ISBN <span class="isbn">{anyIsbn}</span>.
+      <Icon name="map-pin" class="icon-lead" />Prefer a bookshop near you? Any bookshop can order it with ISBN <span class="isbn">{anyIsbn}</span>.
     </p>
   )}
 </section>
@@ -87,18 +89,18 @@ const aria = (label: string) => `${verb} ${title} from ${label} (opens retailer 
   <>
     <div class="buy-bar" data-buy-bar hidden>
       <button type="button" class="btn btn-primary" data-buy-open aria-haspopup="dialog" aria-controls={`${uid}-sheet`}>
-        {verb} <span class="bar-title">{title}</span>
+        <Icon name="shopping-bag" />{verb} <span class="bar-title">{title}</span>
       </button>
     </div>
     <dialog class="buy-sheet" id={`${uid}-sheet`} aria-labelledby={`${uid}-sheet-heading`} data-buy-sheet>
       <div class="sheet-head">
         <h2 id={`${uid}-sheet-heading`}>{verb} <cite>{title}</cite></h2>
-        <button type="button" class="sheet-close" data-buy-close aria-label="Close">×</button>
+        <button type="button" class="sheet-close" data-buy-close aria-label="Close"><Icon name="x" size="1.4rem" /></button>
       </div>
       <p class="disclosure">{site.disclosure}</p>
       {tabs.map((t) => (
         <div class="sheet-group">
-          <h3 class="format-heading">{t.label}</h3>
+          <h3 class="format-heading"><Icon name={tabIcon[t.tab]} class="icon-lead" />{t.label}</h3>
           <ul class="retailers">
             {t.links.map((l) => (
               <li>
@@ -107,7 +109,7 @@ const aria = (label: string) => `${verb} ${title} from ${label} (opens retailer 
                   href={l.url}
                   rel="sponsored noopener"
                   aria-label={aria(l.retailer.label)}
-                >{l.retailer.primary ? `Buy local: ${l.retailer.label}` : l.retailer.label}</a>
+                >{l.retailer.primary && <Icon name="store" />}{l.retailer.primary ? `Buy local: ${l.retailer.label}` : l.retailer.label}<Icon name="external-link" size="0.9em" class="ext" /></a>
               </li>
             ))}
           </ul>
@@ -221,6 +223,9 @@ const aria = (label: string) => `${verb} ${title} from ${label} (opens retailer 
   }
   .tablist[hidden] { display: none; }
   [role="tab"] {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
     min-height: var(--tap);
     padding: 0.5rem 0.9rem;
     background: transparent;
@@ -249,6 +254,7 @@ const aria = (label: string) => `${verb} ${title} from ${label} (opens retailer 
   }
   .retailers li:has(.btn-primary) { grid-column: 1 / -1; }
   .retailers .btn { width: 100%; }
+  .retailers :global(.ext) { opacity: 0.6; }
   .btn-retailer { background: var(--paper); color: var(--ink); border-color: var(--ink-muted); border-width: 1px; }
   .btn-retailer:hover { border-color: var(--ink); background: #ebe4d6; }
 
@@ -291,7 +297,9 @@ const aria = (label: string) => `${verb} ${title} from ${label} (opens retailer 
   .sheet-close {
     min-width: var(--tap);
     min-height: var(--tap);
-    font-size: 1.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     line-height: 1;
     background: transparent;
     border: 1px solid var(--ink-muted);

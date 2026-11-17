@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import Icon from "./Icon.astro";
 import { eventParts } from "../lib/dates";
 interface Props { event: CollectionEntry<"events">; past?: boolean; headingLevel?: 2 | 3 }
 const { event, past = false, headingLevel = 3 } = Astro.props;
@@ -21,19 +22,21 @@ const typeLabel: Record<string, string> = {
     <p class="label type">{typeLabel[e.type]}</p>
     <H class="title">{e.title}</H>
     <p class="meta">
-      <time datetime={e.start}>{when.full}, {when.time}{end ? `–${end.time}` : ""}</time>
-      <br />{e.venue}, {e.town}{e.price ? ` · ${e.price}` : ""}
+      <span class="meta-row"><Icon name="clock" class="icon-accent" /><time datetime={e.start}>{when.full}, {when.time}{end ? `–${end.time}` : ""}</time></span>
+      <span class="meta-row"><Icon name="map-pin" class="icon-accent" /><span>{e.venue}, {e.town}{e.price ? ` · ${e.price}` : ""}</span></span>
     </p>
     {!past && (
       <div class="actions">
-        {e.ticketUrl && <a class="btn btn-primary" href={e.ticketUrl} rel="noopener">Tickets<span class="visually-hidden"> for {e.title}</span></a>}
-        <a class="btn btn-secondary" href={`/events/${event.id}.ics`} download>Add to calendar<span class="visually-hidden">: {e.title}</span></a>
+        {e.ticketUrl && <a class="btn btn-primary" href={e.ticketUrl} rel="noopener"><Icon name="ticket" />Tickets<span class="visually-hidden"> for {e.title}</span></a>}
+        <a class="btn btn-secondary" href={`/events/${event.id}.ics`} download><Icon name="calendar-plus" />Add to calendar<span class="visually-hidden">: {e.title}</span></a>
       </div>
     )}
   </div>
 </article>
 
 <style>
+  .meta-row { display: flex; align-items: baseline; gap: 0.5rem; }
+  .meta-row :global(.icon) { position: relative; top: 0.15em; }
   .event {
     display: grid;
     grid-template-columns: 4.5rem 1fr;
