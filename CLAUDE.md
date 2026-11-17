@@ -48,6 +48,24 @@ The owner found the first build too plain. From three mockups they chose "A's he
   Content-dependent ideas from the research are in `docs/CONTENT-TODO.md`.
 - **Placeholder covers:** spine shading, grain, an inner frame and a book-like shadow. Title sizes scale with the cover width (container units), so small covers don't break words.
 
+### Modern layer (17 Nov 2026)
+
+The owner still found the site "a bit plain" and asked for a modern, fancy look. Colours and typefaces are unchanged; depth, scale and motion were added. This supersedes the gold frame around the hero copy.
+
+- **Motion is CSS-only** (end of `global.css`) and all of it is inside `prefers-reduced-motion: no-preference`:
+  - `.reveal` rises in on scroll (`animation-timeline: view()`; browsers without it just show the content);
+  - cross-page view transitions, with covers morphing between a card and its book page. The shared name is `cover-<book id>`, set in `BookCard.astro`, the home series panels and `Book3D` with `morph`. A name must be unique on a page, so don't add it to a second copy of the same cover.
+- **`Book3D.astro`:** a CSS 3D book (page block, floor shadow, straightens on hover). Used in the home hero and as the main cover on book pages.
+- **Header:** dark glass. `body` is night and `<main>` carries the paper colour, so the header blends with the top of every page.
+- **Page headers:** `.page-header` paints a full-width night band with the border-image trick. Keep its `background-color` as well: axe can't see border-image and would fail the contrast check. `.bleed-night` does the same for an element inside `.container` (the book-page title block).
+- **Home:** gradient display title, status pill, a figures strip, series showcases with a ghost book count, `PraiseWall.astro`, and a bento grid.
+  - The figures are counts from the book files, plus "2× CWA Short Story Dagger shortlists" from the press fact sheet. Update that one by hand if the fact sheet changes.
+  - The praise wall reads `quotes` from the book files (one per book first, repeats removed). On phones it is a swipeable row; nothing auto-rotates.
+- **Buttons** are pills; `--radius` is 14px; cards use 18–24px.
+- **Screenshots:** full-page captures must emulate reduced motion, otherwise `.reveal` blocks below the fold are captured at opacity 0.
+
+## Conventions
+
 - **Never invent content.** No quotes, dates, ISBNs, URLs or biographical facts beyond `docs/brief.md`. Anything missing goes in `docs/CONTENT-TODO.md`.
 - **Book status** is computed at build time (`bookStatus` in `src/lib/books.ts`): `auto` gives Pre-order before `pubDate` and Out now after it. The daily rebuild workflow keeps this current.
 - **Event times** are UK wall-clock strings (`2026-10-08T19:00`) handled by `src/lib/dates.ts`.
