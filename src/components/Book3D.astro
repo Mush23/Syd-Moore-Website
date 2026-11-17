@@ -9,15 +9,17 @@ import type { Book, Series } from "../lib/books";
 
 interface Props {
   book: Book; series?: Series; width?: number; loading?: "eager" | "lazy"; decorative?: boolean; float?: boolean;
+  /** Passed to Cover: how wide the cover is shown at each screen width. */
+  sizes?: string;
   /** Set on a book's own page so its cover morphs in from the card the visitor clicked. */
   morph?: boolean;
 }
-const { book, series, width = 320, loading = "lazy", decorative = false, float = false, morph = false } = Astro.props;
+const { book, series, width = 320, loading = "lazy", decorative = false, float = false, morph = false, sizes } = Astro.props;
 const accent = series?.data.accent ?? "brass";
 ---
 <div class:list={["book3d", { float }]} data-accent={accent} style={morph ? `view-transition-name: cover-${book.id}` : undefined}>
   <div class="book3d-inner">
-    <Cover book={book} series={series} width={width} loading={loading} decorative={decorative} />
+    <Cover book={book} series={series} width={width} loading={loading} decorative={decorative} sizes={sizes} />
   </div>
 </div>
 

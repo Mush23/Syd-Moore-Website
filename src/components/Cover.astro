@@ -9,13 +9,21 @@ import { coverAlt, coverImage, type Book, type Series } from "../lib/books";
 interface Props {
   book: Book;
   series?: Series;
+  /**
+   * The `sizes` attribute: how wide the cover is shown at each screen width.
+   * Defaults to `width` px. Give the real figure for large covers so phones
+   * aren't sent a bigger file than they can show.
+   */
+  sizes?: string;
   /** Rendered width in CSS pixels, used for responsive sizes. */
   width?: number;
   loading?: "eager" | "lazy";
   /** When the cover sits inside a link that already names the book, hide it from screen readers. */
   decorative?: boolean;
 }
-const { book, series, width = 240, loading = "lazy", decorative = false } = Astro.props;
+const { book, series, width = 240, loading = "lazy", decorative = false, sizes } = Astro.props;
+// Offer three files (0.75x, 1x, 2x of the layout width) so each screen gets a close fit.
+const widths = [Math.round(width * 0.75), width, width * 2];
 const img = coverImage(book);
 const accent = series?.data.accent ?? "brass";
 const alt = decorative ? "" : coverAlt(book);
@@ -25,8 +33,8 @@ const alt = decorative ? "" : coverAlt(book);
     <Image
       src={img}
       alt={alt}
-      widths={[width, width * 2]}
-      sizes={`${width}px`}
+      widths={widths}
+      sizes={sizes ?? `${width}px`}
       loading={loading}
       fetchpriority={loading === "eager" ? "high" : undefined}
       format="avif"

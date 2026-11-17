@@ -5,8 +5,17 @@
  */
 
 /*
- * Size-matched fallbacks: local Georgia/Arial scaled to Fraunces/Inter metrics
- * (values from @capsizecss/metrics), so text doesn't jump when the web fonts load.
+ * Size-matched fallbacks: fonts already on the visitor's device, scaled to the
+ * Fraunces and Inter metrics (values from @capsizecss/metrics), so text doesn't
+ * re-wrap and push the page about when the web fonts arrive.
+ *
+ * Each face names fonts with the same metrics. A face whose fonts aren't
+ * installed is skipped, and the browser tries the next one in the stack:
+ *   - Georgia / Arial: Windows, macOS, iOS
+ *   - Noto Serif / Roboto: Android
+ *   - Times New Roman, Liberation Serif, Tinos / Liberation Sans, Arimo: Linux, ChromeOS
+ * Without the Android and Linux faces, those devices showed a layout shift of
+ * about 0.13 (measured on GitHub's Linux runners, Nov 2026).
  */
 @font-face {
   font-family: "Fraunces Fallback";
@@ -17,11 +26,35 @@
   line-gap-override: 0%;
 }
 @font-face {
+  font-family: "Fraunces Fallback Android";
+  src: local("Noto Serif");
+  size-adjust: 97.51%;
+  ascent-override: 100.3%;
+  descent-override: 26.15%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Fraunces Fallback Times";
+  src: local("Times New Roman"), local("Liberation Serif"), local("Tinos");
+  size-adjust: 115.45%;
+  ascent-override: 84.71%;
+  descent-override: 22.09%;
+  line-gap-override: 0%;
+}
+@font-face {
   font-family: "Inter Fallback";
-  src: local("Arial");
+  src: local("Arial"), local("Helvetica"), local("Liberation Sans"), local("Arimo");
   size-adjust: 107.12%;
   ascent-override: 90.44%;
   descent-override: 22.52%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Inter Fallback Android";
+  src: local("Roboto");
+  size-adjust: 107.35%;
+  ascent-override: 90.24%;
+  descent-override: 22.47%;
   line-gap-override: 0%;
 }
 
@@ -60,8 +93,8 @@
   --line-night: #3a3541;
 
   /* Type */
-  --font-display: "Fraunces Variable", "Fraunces", "Fraunces Fallback", Georgia, "Times New Roman", serif;
-  --font-body: "Inter Variable", "Inter", "Inter Fallback", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Fraunces Variable", "Fraunces", "Fraunces Fallback", "Fraunces Fallback Android", "Fraunces Fallback Times", Georgia, "Times New Roman", serif;
+  --font-body: "Inter Variable", "Inter", "Inter Fallback", "Inter Fallback Android", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 
   --text-base: 1.125rem;     /* 18px */

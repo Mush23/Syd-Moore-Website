@@ -10,20 +10,31 @@ Author website for novelist Syd Moore. Read `docs/brief.md` for content and desi
 - **Plain CSS** with tokens in `src/styles/tokens.css`. No Tailwind, no UI framework.
 - **Client JS is limited to:** buy-panel tabs and mobile sheet (`BuyPanel.astro`), mobile menu (`Header.astro`), and the bio copy button (`CopyBio.astro`).
 - **Fonts** self-hosted with Fontsource (Fraunces, Inter, IBM Plex Mono). No Google Fonts requests.
-  - The Latin Fraunces and Inter files are preloaded in `BaseLayout.astro`, and `tokens.css` defines size-matched "Fraunces Fallback" and "Inter Fallback" faces (Georgia and Arial with `size-adjust`), so text doesn't shift when the fonts load. Keep both if the font files change.
-- **Hosting:** GitHub Pages, published by `.github/workflows/deploy.yml` on every push to `main` and daily at 05:00 UTC. The owner chose this over Cloudflare Pages on 25 Sep 2026 to keep everything in GitHub.
-  - `integrations/github-pages.mjs` runs after the build:
+  - The Latin Fraunces and Inter files are preloaded in `BaseLayout.astro`.
+  - `tokens.css` defines size-matched fallback faces built from fonts already on the device (Georgia and Arial; Noto Serif and Roboto for Android; Liberation and Times for Linux and ChromeOS), so text doesn't re-wrap when the web fonts load. Keep every platform covered: GitHub's Linux runners showed a layout shift of about 0.13 on some runs when only the Windows and Apple fonts were listed. Recalculate the numbers with `@capsizecss/metrics` if a typeface changes.
+- **Hosting:** Hostinger (LiteSpeed), where the domain's DNS and Syd's email already are. Chosen by the owner on 17 Nov 2026 in place of GitHub Pages. Full steps are in `docs/DEPLOY.md`.
+  - **Pipeline:** `.github/workflows/publish-hostinger.yml` builds with `DEPLOY_TARGET=hostinger` on every push to `main` and daily, and commits the result to the `live` branch. Hostinger's GitHub connection (hPanel → Advanced → Git) deploys that branch. No credentials are stored in the repository or in GitHub.
+  - **`integrations/hostinger.mjs`** writes `.htaccess` into the build:
+    - www and the .co.uk domain redirect to `https://sydmoore.com`, and HTTP to HTTPS;
+    - true 301s from `public/_redirects` (a trailing `/*` is a catch-all, Hostinger only);
+    - tidy URLs (`/about` from `about.html`), the 404 page, security headers and cache headers;
+    - `X-Robots-Tag: noindex` on every host except sydmoore.com, so a staging copy is never indexed.
+  - **Never edit `.htaccess` on the server** or use hPanel features that rewrite it. Every deploy replaces it.
+  - **`npm run check:host <url>`** (`scripts/check-host.mjs`) checks a deployed copy: pages, redirects, headers, caching, noindex rules. Run it after any change to the `.htaccess` rules. The rules can't be tested locally, because nothing here runs LiteSpeed.
+  - **`live` is a build output branch.** Never edit it by hand, and never merge it anywhere. CI ignores it.
+- **Preview copy:** GitHub Pages at `mush23.github.io/Syd-Moore-Website`, published by `.github/workflows/deploy.yml`. This is also what a plain `npm run build` produces, and what the tests run against.
+  - `integrations/github-pages.mjs` runs after that build:
     - turns `public/_redirects` into forwarding pages (`/old.html` and `/old/index.html`);
     - copies `x.html` to `x/index.html` where a folder `x/` exists, because GitHub Pages prefers the folder;
     - when `SITE_BASE` is set, prefixes root-relative URLs and adds `noindex`.
-  - `SITE_BASE` comes from `actions/configure-pages`. It's `/Syd-Moore-Website` on the github.io preview and empty once sydmoore.com is attached. Write internal links as plain root-relative paths (`/books`); the integration handles the prefix.
-  - Security headers aren't possible on GitHub Pages. The CSP and referrer policy are `<meta>` tags in `BaseLayout.astro`, so update the CSP there if you add a third-party script or form.
-  - To test the preview build locally from Git Bash: `MSYS_NO_PATHCONV=1 SITE_BASE=/Syd-Moore-Website npm run build`. Without `MSYS_NO_PATHCONV`, Git Bash rewrites the path.
+  - `SITE_BASE` comes from `actions/configure-pages` (`/Syd-Moore-Website`). Write internal links as plain root-relative paths (`/books`); the integration handles the prefix.
+  - To test that build locally from Git Bash: `MSYS_NO_PATHCONV=1 SITE_BASE=/Syd-Moore-Website npm run build`.
+- **Security policy:** the CSP and referrer policy are `<meta>` tags in `BaseLayout.astro` (so they also apply on the preview copy). Update the CSP there if you add a third-party script or form. On Hostinger, `.htaccess` adds the headers a meta tag can't set (framing, HSTS, nosniff, permissions).
 - **Newsletter:** Kit free plan via a plain HTML form (`PUBLIC_KIT_FORM_ACTION`).
-- **Contact form:** switched off. GitHub Pages can't run server code, so the contact page shows the agent's details (it does this whenever `PUBLIC_CONTACT_FORM` isn't `true`).
+- **Contact form:** switched off. The contact page shows the agent's details (it does this whenever `PUBLIC_CONTACT_FORM` isn't `true`). Hostinger can run PHP, so a form could be added there later.
   - `functions/api/contact.ts` (Turnstile + Resend) is kept, unused, in case the site ever moves to Cloudflare. A hosted form service could be added instead, with its domain added to the CSP `form-action`.
 - **Analytics:** Cloudflare Web Analytics (it works on any host). It's cookieless, so there's no cookie banner.
-- **Build-time settings** (`PUBLIC_KIT_FORM_ACTION`, `PUBLIC_CF_ANALYTICS_TOKEN`, `PUBLIC_AMAZON_TAG`) are GitHub repository variables, passed in by `deploy.yml`.
+- **Build-time settings** (`PUBLIC_KIT_FORM_ACTION`, `PUBLIC_CF_ANALYTICS_TOKEN`, `PUBLIC_AMAZON_TAG`) are GitHub repository variables, passed in by both publishing workflows.
 - **Social images:** `src/pages/og/[slug].png.ts`, built with Satori + Resvg at build time. These use static `@fontsource/*` .woff files because Satori can't read woff2.
 
 ## Design (refreshed 25 Sep 2026)
@@ -119,20 +130,26 @@ npm run lhci      # Lighthouse budgets (perf ≥ 95, a11y 100, best practices �
   - Tests and LHCI reuse whatever is on port 4321, so stop the dev server first or they test unbuilt pages.
   - Don't export `MSYS_NO_PATHCONV` when running LHCI: it stops `CHROME_PATH` being converted.
 
-### Hosting: decision pending (17 Nov 2026)
+### Hosting: moving to Hostinger (decided 17 Nov 2026)
 
-The owner learned that the existing sydmoore.com is a WordPress site on Hostinger, with the domain registered at OnlyDomains, and wants to go live there instead of on a github.io address. Public records on 17 Nov 2026 showed:
+Public records on 17 Nov 2026: sydmoore.com uses Hostinger's nameservers (`ns1/ns2.dns-parking.com`), the old WordPress site is on Hostinger, and MX records point at `mx1/mx2.hostinger.co.uk`. So nothing about the domain's DNS changes, and email must not be disturbed. The owner has the Hostinger and OnlyDomains logins; never ask for them. They carry out the hPanel steps themselves.
 
-- nameservers `ns1/ns2.dns-parking.com` (Hostinger), so DNS is managed in Hostinger, not OnlyDomains;
-- the site served by Hostinger (LiteSpeed, WordPress);
-- MX records pointing at `mx1/mx2.hostinger.co.uk`, so email on the domain is hosted there and must not be disturbed.
+Go-live is staged (`docs/DEPLOY.md`, "Going live, step by step"):
 
-The owner has also bought **sydmoore.co.uk** (registered at OnlyDomains and using OnlyDomains' own nameservers). It should always forward to https://sydmoore.com:
-- now: a 301 "web redirection" set in OnlyDomains (My Domains → the domain → DNS Settings);
-- if the site moves onto Hostinger: add it there as an extra domain instead, so https://sydmoore.co.uk forwards too, and redirect every non-canonical host to https://sydmoore.com in `.htaccess`.
-Canonical tags, the sitemap and structured data already use https://sydmoore.com only, so the second domain needs no site changes.
+1. back up WordPress;
+2. create `new.sydmoore.com`;
+3. connect Hostinger to the `live` branch, deploying into `public_html/new`;
+4. `npm run check:host https://new.sydmoore.com`;
+5. empty `public_html`, redeploy there, check again;
+6. park `sydmoore.co.uk` on Hostinger and point its nameservers there from OnlyDomains.
 
-Nothing has been changed yet. The site still publishes to GitHub Pages. Two routes were put to the owner: host the built site on Hostinger (true 301s and headers through `.htaccess`, no DNS change), or keep GitHub Pages and point the domain's A records at it from Hostinger's DNS. Record the choice here when it is made.
+Update this list as stages are completed. The old WordPress site had one page and two posts; every address in its sitemap has a redirect in `public/_redirects`.
+
+### CI
+
+- Runs on every push to any branch except `live` (a pull request shows the result for its branch).
+- Lighthouse runs three times per page, and a "Report Lighthouse scores" step repeats the scores as notices on the run page. The full log needs a GitHub sign-in, but notices can be read by anyone, including through the API (`/check-runs/<job id>/annotations`).
+- GitHub's runners are slower than a desktop and have no GPU. Speed scores there run a few points below local ones, so leave headroom above the 95 budget.
 
 ### Decisions made while finishing
 
@@ -148,8 +165,7 @@ Nothing has been changed yet. The site still publishes to GitHub Pages. Two rout
 
 ## Next steps
 
-1. Merge the `modern-redesign` pull request and check the live preview.
-2. Work through `docs/CONTENT-TODO.md` with Syd: covers and the portrait first, then quote approvals.
-3. Set up Kit so newsletter sign-up works (`docs/DEPLOY.md`, step 3).
-4. Move sydmoore.com over only once the launch content is ready (`docs/DEPLOY.md`, step 6).
-5. Before launch, test with VoiceOver on an iPhone. The brief's checklist asks for this and it can't be automated.
+1. Go live on Hostinger: follow the stages above with the owner, running `npm run check:host` after stages 3 and 5.
+2. Work through `docs/CONTENT-TODO.md` with Syd: higher-resolution covers, photo credits, quote approvals, the privacy notice.
+3. Set up Kit so newsletter sign-up works (`docs/DEPLOY.md`, Newsletter).
+4. Before launch, test with VoiceOver on an iPhone. The brief's checklist asks for this and it can't be automated.

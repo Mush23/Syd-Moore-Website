@@ -1,0 +1,83 @@
+name: Publish to Hostinger
+
+# Builds the site for Hostinger and commits the finished files to the "live"
+# branch. Hostinger's GitHub connection (hPanel → Advanced → Git) watches that
+# branch and copies it onto the server after every push. No password or key is
+# stored anywhere: see docs/DEPLOY.md.
+#
+# Runs on every push to main (including every save in Pages CMS) and every
+# morning, so "Pre-order" becomes "Out now" on publication day. If a build
+# produces the same files as last time, nothing is committed or deployed.
+# 05:10 UTC = 06:10 UK time in summer, 05:10 in winter.
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "10 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: live-branch
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Build for Hostinger
+        run: npm run build
+        env:
+          DEPLOY_TARGET: hostinger
+          PUBLIC_KIT_FORM_ACTION: ${{ vars.PUBLIC_KIT_FORM_ACTION }}
+          PUBLIC_CF_ANALYTICS_TOKEN: ${{ vars.PUBLIC_CF_ANALYTICS_TOKEN }}
+          PUBLIC_AMAZON_TAG: ${{ vars.PUBLIC_AMAZON_TAG }}
+
+      - name: Check the build has what Hostinger needs
+        run: |
+          test -f dist/index.html
+          test -f dist/.htaccess
+          test -f dist/404.html
+
+      - name: Commit the built site to the live branch
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Check out the live branch beside the source, or start it if this is the first publish.
+          if git fetch --depth 1 origin live 2>/dev/null; then
+            git worktree add -B live ../live FETCH_HEAD
+          else
+            git worktree add --detach ../live
+            git -C ../live checkout --orphan live
+          fi
+
+          # Replace its contents with the new build (dot files such as .htaccess included).
+          cd ../live
+          git rm -rf --quiet --ignore-unmatch .
+          git clean -fdxq
+          cp -a "$GITHUB_WORKSPACE/dist/." .
+          git add -A
+
+          if git diff --cached --quiet; then
+            echo "::notice title=Hostinger::The site is unchanged, so nothing was published."
+          else
+            git commit --quiet -m "Publish ${GITHUB_SHA::7}"
+            git push origin live
+            echo "::notice title=Hostinger::Published ${GITHUB_SHA::7} to the live branch."
+          fi

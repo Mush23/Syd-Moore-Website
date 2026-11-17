@@ -9,8 +9,8 @@ Last reviewed 17 November 2026. Everything below is either missing or unconfirme
 - [ ] A larger copy of the bookshelf portrait. The supplied file is only 317 pixels wide, so it can't be shown any bigger than it is now or offered to the press.
 - [ ] **launch** Kit newsletter form: create the form, paste its action URL into `PUBLIC_KIT_FORM_ACTION`, and set Kit's "after subscribing" redirect to `https://sydmoore.com/newsletter/thanks`
 - [ ] **launch** Read on Sea: agree to be the lead "Buy local" button, and send their Bookshop.org product links (or confirm the shop link format) for each title; say whether they'll handle signed copies
-- [ ] **launch** Syd to approve the privacy notice. It now names GitHub as the host, and there's no contact form: visitors email her or her agent instead.
-- [ ] Decide whether a contact form is wanted. GitHub Pages can't run one itself, but a hosted form service can be added.
+- [ ] **launch** Syd to approve the privacy notice. It names Hostinger as the host (the same company that hosted the old site), and there's no contact form: visitors email her or her agent instead.
+- [ ] Decide whether a contact form is wanted. Hostinger can run one, so it can be added if Syd would like it.
 - [ ] Amazon Associates UK store ID → `PUBLIC_AMAZON_TAG`
 - [ ] Bookshop.org, Waterstones (Awin) and Hive (Webgains) affiliate links for each book
 - [x] X (@SydMoore1), Instagram (@sydmoorewriter) and Facebook links supplied by the site owner on 17 November 2026 and added to `site.social`. Syd should still confirm Bluesky is active.
@@ -78,5 +78,5 @@ We looked at 14 comparable author sites (Ruth Ware, Val McDermid, Elly Griffiths
 
 ## Old site
 
-- [ ] Crawl the old sydmoore.com (e.g. Screaming Frog, free up to 500 URLs) and add any missing URLs to `public/_redirects`
+- [x] Old site checked on 17 November 2026. It was a small WordPress site: one page, two posts and a few category, tag and author pages. Every address in its sitemap now has a permanent redirect in `public/_redirects`.
 - [ ] The old post "Noirwich: The Witching Hour" couldn't be retrieved; it currently redirects to /news. Recreate it in News if it's worth keeping.

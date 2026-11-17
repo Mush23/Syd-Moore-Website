@@ -65,11 +65,11 @@ const stats = [
       <div class:list={["fan", `fan-${fanBack.length}`]}>
         {fanBack.map((b, i) => (
           <div class={`fan-back fan-back-${fanBack.length - i}`} aria-hidden="true">
-            <Cover book={b} series={featuredSeries} width={220} decorative />
+            <Cover book={b} series={featuredSeries} width={140} decorative />
           </div>
         ))}
         <div class="fan-front">
-          <Book3D book={featured} series={featuredSeries} width={320} loading="eager" float />
+          <Book3D book={featured} series={featuredSeries} width={320} loading="eager" float sizes="(min-width: 900px) 19rem, 13.5rem" />
         </div>
       </div>
       <div class="hero-copy">
@@ -226,6 +226,10 @@ const stats = [
 <style>
   /* ---- Hero: candlelit band, 3D book in front of a fan, oversized title ---- */
   .hero { padding-block: var(--space-5) 0; }
+  /* Wide screens only. On a phone the letter is mostly cut off, and as the largest thing on screen it
+     made the browser treat a decoration (which waits for the display font) as the page's main content. */
+  .watermark { display: none; }
+  @media (min-width: 900px) { .watermark { display: block; } }
   .watermark {
     position: absolute;
     z-index: -1;
