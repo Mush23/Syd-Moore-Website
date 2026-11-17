@@ -5,6 +5,7 @@
  * Don't add answers that aren't backed by docs/brief.md or the content files.
  */
 import { getEntry } from "astro:content";
+import Icon from "../components/Icon.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { bookStatus, bookUrl, booksInSeries, getBooks, getSeriesList, type Book } from "../lib/books";
 import { site } from "../config/site";
@@ -77,7 +78,7 @@ const ld = {
   <div class="container faq">
     {orders.map(({ s, books }) => (
       <section aria-labelledby={`q-${s.id}`}>
-        <h2 id={`q-${s.id}`}>What order should I read {s.data.name} in?</h2>
+        <h2 id={`q-${s.id}`}><Icon name="circle-help" class="icon-lead icon-accent" />What order should I read {s.data.name} in?</h2>
         <ul class="order-list">
           {books.map((b) => (
             <li><span class="pos">{position(b)}</span> <a href={bookUrl(b)}><cite>{b.data.title}</cite></a>{bookStatus(b) !== "out-now" && <span class="muted"> ({bookStatus(b) === "pre-order" ? "pre-order" : "coming soon"})</span>}</li>
@@ -90,7 +91,7 @@ const ld = {
 
     {strangeMagic && grandIllusion && (
       <section aria-labelledby="q-start">
-        <h2 id="q-start">Which book should I start with?</h2>
+        <h2 id="q-start"><Icon name="circle-help" class="icon-lead icon-accent" />Which book should I start with?</h2>
         <p>
           Start with <a href={bookUrl(strangeMagic)}><cite>{strangeMagic.data.title}</cite></a> for witches and wit,
           or <a href={bookUrl(grandIllusion)}><cite>{grandIllusion.data.title}</cite></a> for wartime espionage.
@@ -100,7 +101,7 @@ const ld = {
 
     {upcoming.length > 0 && (
       <section aria-labelledby="q-next">
-        <h2 id="q-next">What's coming next?</h2>
+        <h2 id="q-next"><Icon name="circle-help" class="icon-lead icon-accent" />What's coming next?</h2>
         <ul>
           {upcoming.map((b) => (
             <li><a href={bookUrl(b)}><cite>{b.data.title}</cite></a>: {bookStatus(b) === "pre-order" ? "available to pre-order now" : "coming soon"}.</li>
@@ -111,7 +112,7 @@ const ld = {
 
     {audio.length > 0 && (
       <section aria-labelledby="q-audio">
-        <h2 id="q-audio">Are there audiobooks?</h2>
+        <h2 id="q-audio"><Icon name="circle-help" class="icon-lead icon-accent" />Are there audiobooks?</h2>
         <p>Yes. These books are available as audiobooks:</p>
         <ul>{audio.map((b) => <li><a href={bookUrl(b)}><cite>{b.data.title}</cite></a>{b.data.narrator && <>, read by {b.data.narrator}</>}</li>)}</ul>
       </section>
@@ -119,7 +120,7 @@ const ld = {
 
     {renamed.length > 0 && (
       <section aria-labelledby="q-renamed">
-        <h2 id="q-renamed">Have any books been published under other titles?</h2>
+        <h2 id="q-renamed"><Icon name="circle-help" class="icon-lead icon-accent" />Have any books been published under other titles?</h2>
         {renamed.map((b) => (
           <p><a href={bookUrl(b)}><cite>{b.data.title}</cite></a> was previously published as <cite>{b.data.formerTitle}</cite>.</p>
         ))}
@@ -127,7 +128,7 @@ const ld = {
     )}
 
     <section aria-labelledby="q-local">
-      <h2 id="q-local">Where can I buy Syd's books locally?</h2>
+      <h2 id="q-local"><Icon name="circle-help" class="icon-lead icon-accent" />Where can I buy Syd's books locally?</h2>
       <p>
         <a href="https://readonsea.co.uk/">Read on Sea</a> on Broadway in Leigh-on-Sea is Syd's local independent
         bookshop, and any bookshop can order her books using the ISBN on each book's page.
@@ -136,7 +137,7 @@ const ld = {
 
     {press.agentName && (
       <section aria-labelledby="q-events">
-        <h2 id="q-events">How do I book Syd for a talk or event?</h2>
+        <h2 id="q-events"><Icon name="circle-help" class="icon-lead icon-accent" />How do I book Syd for a talk or event?</h2>
         <p>
           Contact {press.agentName} at {press.agentAgency}{press.agentUrl && <> via the <a href={press.agentUrl}>agency page</a></>}.
           See the <a href="/events">events page</a> for talk topics.
@@ -145,7 +146,7 @@ const ld = {
     )}
 
     <section aria-labelledby="q-news">
-      <h2 id="q-news">How can I hear about new books and events?</h2>
+      <h2 id="q-news"><Icon name="circle-help" class="icon-lead icon-accent" />How can I hear about new books and events?</h2>
       <p>
         Sign up to <a href="/newsletter">{site.newsletter.name}</a>, Syd's newsletter, for new books, events and history
         notes from her research.

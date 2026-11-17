@@ -1,0 +1,43 @@
+---
+/**
+ * Round icon links to Syd's social accounts (from `site.social`). Each link is
+ * an icon only, so it carries an accessible name and a tooltip.
+ * `tone` is the background it sits on: "dark" for night bands, "light" for paper.
+ */
+import Icon from "./Icon.astro";
+import { site } from "../config/site";
+
+interface Props { tone?: "dark" | "light" }
+const { tone = "dark" } = Astro.props;
+---
+{site.social.length > 0 && (
+  <ul class:list={["social", tone]} aria-label="Syd Moore on social media">
+    {site.social.map((s) => (
+      <li>
+        <a class="social-link" href={s.url} rel="me noopener" aria-label={`Syd Moore on ${s.label}`} title={s.label}>
+          <Icon name={s.icon} size="1.25rem" />
+        </a>
+      </li>
+    ))}
+  </ul>
+)}
+
+<style>
+  .social { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.6rem; }
+  .social .social-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--tap);
+    height: var(--tap);
+    border: 1px solid;
+    border-radius: 50%;
+    transition: background-color var(--duration) ease, border-color var(--duration) ease, color var(--duration) ease,
+      transform var(--duration) ease;
+  }
+  .social .social-link:hover { transform: translateY(-2px); }
+  .social.dark .social-link { color: var(--parchment); border-color: rgb(239 232 218 / 0.3); }
+  .social.dark .social-link:hover { background: var(--brass-light); border-color: var(--brass-light); color: var(--night); }
+  .social.light .social-link { color: var(--ink); border-color: var(--ink-muted); }
+  .social.light .social-link:hover { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+</style>

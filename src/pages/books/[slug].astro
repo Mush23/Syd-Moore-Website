@@ -1,5 +1,6 @@
 ---
 import { render } from "astro:content";
+import Icon from "../../components/Icon.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Book3D from "../../components/Book3D.astro";
 import StatusTag from "../../components/StatusTag.astro";
@@ -56,6 +57,10 @@ if (d.isbn.ebook) details.push(["ISBN (ebook)", d.isbn.ebook]);
 if (d.isbn.audio) details.push(["ISBN (audiobook)", d.isbn.audio]);
 if (d.narrator) details.push(["Audiobook narrator", d.narrator]);
 
+const detailIcon = (label: string) =>
+  label.startsWith("ISBN") ? "barcode"
+    : ({ "UK publication": "calendar", "First published": "calendar", Publisher: "building-2", Formats: "layers", Pages: "file-text", "Audiobook narrator": "mic" } as Record<string, string>)[label] ?? "info";
+
 const position = seriesPosition(book, series);
 const title = d.seoTitle ?? `${d.title} by Syd Moore${d.seriesNumber && series ? ` · ${series.data.shortName} book ${d.seriesNumber}` : ""}`;
 const description = d.seoDescription ?? d.hook;
@@ -111,21 +116,21 @@ const ogImage = `/og/${book.id}.png`;
 
       {historyParas.length > 0 && (
         <section class="history" aria-labelledby="history-heading">
-          <p class="label series-label">From Syd's research</p>
+          <p class="label series-label"><Icon name="landmark" class="icon-lead" />From Syd's research</p>
           <h2 id="history-heading">The history behind the book</h2>
           <div class="prose">{historyParas.map((p) => <p>{p}</p>)}</div>
         </section>
       )}
 
       {d.extract && (
-        <p><a class="btn btn-secondary" href={d.extract}>Read an extract (PDF)</a></p>
+        <p><a class="btn btn-secondary" href={d.extract}><Icon name="file-text" />Read an extract (PDF)</a></p>
       )}
 
       {details.length > 0 && (
         <section aria-labelledby="details-heading">
           <h2 id="details-heading" class="details-heading">Details</h2>
           <dl class="details">
-            {details.map(([k, v]) => (<div><dt>{k}</dt><dd>{v}</dd></div>))}
+            {details.map(([k, v]) => (<div><dt><Icon name={detailIcon(k)} class="icon-lead icon-accent" />{k}</dt><dd>{v}</dd></div>))}
           </dl>
         </section>
       )}
@@ -134,21 +139,21 @@ const ogImage = `/og/${book.id}.png`;
 
   {series && series.id !== "standalones" && siblings.length > 1 && (
     <section class="container section" aria-labelledby="order-heading">
-      <p class="eyebrow series-label">Reading order</p>
+      <p class="eyebrow series-label"><Icon name="list-ordered" />Reading order</p>
       <h2 id="order-heading" class="display">{series.data.name}</h2>
       <div class="order-wrap">
         <SeriesReadingOrder books={siblings} series={series} currentId={book.id} headingId="order-heading" />
       </div>
       <nav class="prev-next" aria-label="Series navigation">
-        {prev && <a href={bookUrl(prev)} rel="prev"><span class="label">Previous</span><span>{prev.data.title}</span></a>}
-        {next && <a href={bookUrl(next)} rel="next" class="next"><span class="label">Next</span><span>{next.data.title}</span></a>}
+        {prev && <a href={bookUrl(prev)} rel="prev"><span class="label"><Icon name="arrow-left" class="icon-lead" />Previous</span><span>{prev.data.title}</span></a>}
+        {next && <a href={bookUrl(next)} rel="next" class="next"><span class="label">Next<Icon name="arrow-right" class="icon-trail" /></span><span>{next.data.title}</span></a>}
       </nav>
     </section>
   )}
 
   {crossLinks.length > 0 && (
     <section class="container section cross" aria-labelledby="cross-heading">
-      <p class="eyebrow series-label">More from Syd</p>
+      <p class="eyebrow series-label"><Icon name="library" />More from Syd</p>
       <h2 id="cross-heading" class="display">If you liked this</h2>
       <div class="grid-books">
         {crossLinks.map(({ s, b }) => <BookCard book={b} series={s} />)}

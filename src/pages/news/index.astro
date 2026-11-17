@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import Icon from "../../components/Icon.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import NewsletterBand from "../../components/NewsletterBand.astro";
 import { formatDate } from "../../lib/dates";
@@ -18,14 +19,14 @@ const posts = (await getCollection("news", ({ data }) => !data.draft))
       {posts.map((p) => (
         <li>
           <article>
-            <p class="muted"><time datetime={p.data.date.toISOString().slice(0, 10)}>{formatDate(p.data.date)}</time></p>
+            <p class="muted"><Icon name="calendar" class="icon-lead" /><time datetime={p.data.date.toISOString().slice(0, 10)}>{formatDate(p.data.date)}</time></p>
             <h2><a href={`/news/${p.id}`}>{p.data.title}</a></h2>
             <p>{p.data.summary}</p>
           </article>
         </li>
       ))}
     </ol>
-    <p class="rss"><a href="/rss.xml">RSS feed</a></p>
+    <p class="rss"><a href="/rss.xml"><Icon name="rss" class="icon-lead" />RSS feed</a></p>
   </div>
   <NewsletterBand idPrefix="news-nl" />
 </BaseLayout>

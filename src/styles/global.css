@@ -339,3 +339,11 @@ textarea.input { min-height: 9rem; resize: vertical; }
   color: var(--parchment);
   border-image: linear-gradient(90deg, color-mix(in srgb, var(--accent, var(--brass)) 40%, var(--night)) 32%, var(--night) 54%, #0f0d12 70%) fill 0 / 0 / 0 100vw;
 }
+
+/* ---------- Icons (see src/components/Icon.astro) ---------- */
+.icon { flex: none; display: inline-block; vertical-align: -0.18em; }
+.icon-lead { margin-right: 0.45em; }
+.icon-trail { margin-left: 0.4em; }
+.icon-accent { color: var(--accent, var(--brass)); }
+.eyebrow:has(> .icon)::before { content: none; }
+.status-tag { display: inline-flex; align-items: center; gap: 0.3rem; }

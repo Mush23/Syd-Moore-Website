@@ -11,7 +11,7 @@ Last reviewed 25 September 2026. Everything below is either missing or unconfirm
 - [ ] Decide whether a contact form is wanted. GitHub Pages can't run one itself, but a hosted form service can be added.
 - [ ] Amazon Associates UK store ID → `PUBLIC_AMAZON_TAG`
 - [ ] Bookshop.org, Waterstones (Awin) and Hive (Webgains) affiliate links for each book
-- [ ] Confirm X (@SydMoore1) and Instagram (@sydmoorewriter) are active, then add them to `site.social` in `src/config/site.ts`
+- [x] X (@SydMoore1), Instagram (@sydmoorewriter) and Facebook links supplied by the site owner on 17 November 2026 and added to `site.social`. Syd should still confirm Bluesky is active.
 - [ ] Which other Essex bookshops stock Syd's books (for the "Find Syd's books in Essex" block on /books)
 - [ ] Tagline choice from the brief, and confirm the newsletter name *Strange Tidings*
 

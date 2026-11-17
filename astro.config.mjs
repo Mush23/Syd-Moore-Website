@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
+import icon from "astro-icon";
 import githubPages from "./integrations/github-pages.mjs";
 
 export default defineConfig({
@@ -11,6 +12,7 @@ export default defineConfig({
   build: { format: "file", inlineStylesheets: "auto" },
   prefetch: { prefetchAll: false, defaultStrategy: "hover" },
   integrations: [
+    icon(),
     githubPages(),
     sitemap({
       filter: (page) => !/\/(contact|newsletter)\/thanks$/.test(page.replace(/\/$/, "")),

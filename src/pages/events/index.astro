@@ -1,5 +1,6 @@
 ---
 import { getCollection, getEntry } from "astro:content";
+import Icon from "../../components/Icon.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import EventRow from "../../components/EventRow.astro";
 import { buildNow, fromLondon } from "../../lib/dates";
@@ -21,7 +22,7 @@ const press = await getEntry("pages", "press");
     <p class="label">Events</p>
     <h1>Events and talks</h1>
     <p class="lede">Talks, signings and workshops across Essex and beyond. Want Syd at your festival, library, school or book group?</p>
-    <p class="btn-row cta"><a class="btn btn-primary" href="/contact?reason=event">Book Syd for a talk</a></p>
+    <p class="btn-row cta"><a class="btn btn-primary" href="/contact?reason=event"><Icon name="mic" />Book Syd for a talk</a></p>
   </header>
 
   <section class="container section-tight" aria-labelledby="upcoming-heading">
@@ -29,13 +30,13 @@ const press = await getEntry("pages", "press");
     {upcoming.length > 0 ? (
       <div class="list">{upcoming.map((e) => <EventRow event={e} />)}</div>
     ) : (
-      <p class="empty">New dates are announced in the newsletter first. <a href="/newsletter">Sign up to hear about them.</a></p>
+      <p class="empty"><Icon name="mail" class="icon-lead icon-accent" />New dates are announced in the newsletter first. <a href="/newsletter">Sign up to hear about them.</a></p>
     )}
   </section>
 
   {press?.data.talkTopics && (
     <section class="container section-tight" aria-labelledby="topics-heading">
-      <p class="eyebrow topics-eyebrow">For festivals, libraries and book groups</p>
+      <p class="eyebrow topics-eyebrow"><Icon name="mic" />For festivals, libraries and book groups</p>
       <h2 id="topics-heading" class="display">Talk topics</h2>
       <ol class="topics">
         {press.data.talkTopics.map((t, i) => <li class="reveal"><span class="n" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>{t}</li>)}

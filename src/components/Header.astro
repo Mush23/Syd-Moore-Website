@@ -1,5 +1,6 @@
 ---
 import { site } from "../config/site";
+import Icon from "./Icon.astro";
 const current = Astro.url.pathname.replace(/\/$/, "") || "/";
 const isCurrent = (href: string) => current === href || current.startsWith(`${href}/`) ||
   (href === "/books" && current.startsWith("/series"));
@@ -9,7 +10,7 @@ const isCurrent = (href: string) => current === href || current.startsWith(`${hr
     <a class="wordmark" href="/" aria-label="Syd Moore, home">Syd Moore</a>
 
     <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" hidden>
-      <span class="menu-icon" aria-hidden="true"></span>
+      <Icon name="menu" size="1.25em" />
       <span>Menu</span>
     </button>
 
@@ -17,10 +18,10 @@ const isCurrent = (href: string) => current === href || current.startsWith(`${hr
       <ul>
         {site.nav.map((item) => (
           <li>
-            <a href={item.href} aria-current={isCurrent(item.href) ? "page" : undefined}>{item.label}</a>
+            <a href={item.href} aria-current={isCurrent(item.href) ? "page" : undefined}><Icon name={item.icon} class="nav-icon" />{item.label}</a>
           </li>
         ))}
-        <li class="nav-cta"><a class="btn btn-primary" href="/newsletter">Newsletter</a></li>
+        <li class="nav-cta"><a class="btn btn-primary" href="/newsletter"><Icon name="mail" />Newsletter</a></li>
       </ul>
     </nav>
   </div>
@@ -110,16 +111,8 @@ const isCurrent = (href: string) => current === href || current.startsWith(`${hr
     font-weight: 600;
   }
   .menu-toggle[hidden] { display: none; }
-  .menu-icon, .menu-icon::before, .menu-icon::after {
-    display: block;
-    width: 18px;
-    height: 2px;
-    background: currentColor;
-    position: relative;
-  }
-  .menu-icon::before, .menu-icon::after { content: ""; position: absolute; left: 0; }
-  .menu-icon::before { top: -6px; }
-  .menu-icon::after { top: 6px; }
+  /* Menu icons only show in the collapsed (phone and tablet) menu. */
+  .site-nav :global(.nav-icon) { display: none; margin-right: 0.75rem; color: var(--brass-light); }
 
   /* Below 1000px, collapse the menu once JS is available */
   @media (max-width: 999px) {
@@ -128,6 +121,7 @@ const isCurrent = (href: string) => current === href || current.startsWith(`${hr
     .site-header[data-js] .site-nav ul { flex-direction: column; align-items: stretch; gap: 0; }
     .site-header[data-js] .site-nav li { border-top: 1px solid var(--line-night); }
     .site-header[data-js] .site-nav a:not(.btn) { width: 100%; }
+    .site-header[data-js] .site-nav :global(.nav-icon) { display: inline-block; }
     .nav-cta { padding-top: var(--space-2); }
     .nav-cta .btn { width: 100%; }
   }

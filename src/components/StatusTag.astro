@@ -1,6 +1,8 @@
 ---
+import Icon from "./Icon.astro";
 import { statusLabel, type Status } from "../lib/books";
 interface Props { status: Status }
 const { status } = Astro.props;
+const icons: Record<Status, string> = { "out-now": "check", "pre-order": "clock", "coming-soon": "hourglass" };
 ---
-<span class="status-tag" data-status={status}>{statusLabel[status]}</span>
+<span class="status-tag" data-status={status}><Icon name={icons[status]} size="1em" />{statusLabel[status]}</span>

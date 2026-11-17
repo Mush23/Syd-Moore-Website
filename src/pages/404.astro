@@ -1,13 +1,15 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import Icon from "../components/Icon.astro";
 ---
 <BaseLayout title="Page not found · Syd Moore" description="This page has vanished." noindex>
   <div class="container page-header nf">
+    <Icon name="ghost" size="3.5rem" style="display: block; margin-bottom: var(--space-2); color: var(--brass-light);" />
     <p class="label">404</p>
     <h1>This page has vanished.</h1>
     <p class="lede">Possibly witchcraft. It may have moved, or the link may be wrong.</p>
     <p class="btn-row cta">
-      <a class="btn btn-primary" href="/books">Back to the books</a>
+      <a class="btn btn-primary" href="/books"><Icon name="library" />Back to the books</a>
       <a class="btn btn-secondary" href="/">Home</a>
     </p>
   </div>

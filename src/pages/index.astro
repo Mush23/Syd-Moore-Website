@@ -1,5 +1,7 @@
 ---
 import { getCollection, getEntry } from "astro:content";
+import Icon from "../components/Icon.astro";
+import SocialLinks from "../components/SocialLinks.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Cover from "../components/Cover.astro";
 import Book3D from "../components/Book3D.astro";
@@ -49,9 +51,9 @@ const label = status === "pre-order"
 // Hero figures. Counts come from the book files; the shortlists are from the press fact sheet.
 const published = books.filter((b) => bookStatus(b) === "out-now").length;
 const stats = [
-  { n: String(published), label: "books published" },
-  { n: String(seriesList.filter((s) => s.id !== "standalones").length), label: "series, plus standalone novels" },
-  { n: "2×", label: "shortlisted for the CWA Short Story Dagger" },
+  { n: String(published), label: "books published", icon: "book-open" },
+  { n: String(seriesList.filter((s) => s.id !== "standalones").length), label: "series, plus standalone novels", icon: "library" },
+  { n: "2×", label: "shortlisted for the CWA Short Story Dagger", icon: "award" },
 ];
 ---
 <BaseLayout jsonLd={[websiteLd(), personLd()]}>
@@ -76,7 +78,7 @@ const stats = [
         <div class="btn-row">
           <a class="btn btn-primary" href={`${bookUrl(featured)}#buy-${featured.id}`}>
             {status === "pre-order" ? "Pre-order now" : status === "coming-soon" ? "Find out more" : "Buy now"}
-            <span class="arrow" aria-hidden="true">→</span>
+            <Icon name="arrow-right" class="arrow" />
           </a>
           {featuredSeries && featuredSeries.id !== "standalones" && (
             <a class="btn btn-secondary" href={`/series/${featuredSeries.id}`}>Discover {featuredSeries.data.shortName}</a>
@@ -89,7 +91,7 @@ const stats = [
       {stats.map((s) => (
         <div class="stat">
           <dt>{s.label}</dt>
-          <dd>{s.n}</dd>
+          <dd><Icon name={s.icon} size="1.5rem" class="stat-icon" />{s.n}</dd>
         </div>
       ))}
     </dl>
@@ -103,7 +105,7 @@ const stats = [
 
   <section class="container section-tight series-panels" aria-labelledby="series-heading">
     <div class="section-intro reveal">
-      <p class="eyebrow accent-brass">The books</p>
+      <p class="eyebrow accent-brass"><Icon name="library" />The books</p>
       <h2 id="series-heading" class="display">Two series and two haunting standalones</h2>
     </div>
     {seriesList.map((s) => {
@@ -116,7 +118,7 @@ const stats = [
             <p class="label accent">{s.data.label}</p>
             <h3 id={`sp-${s.id}`}><a href={`/series/${s.id}`}>{s.data.name}</a></h3>
             <p>{s.data.tagline}</p>
-            {first && <a class="btn btn-accent" href={bookUrl(first)}>Start with {first.data.title} <span class="arrow" aria-hidden="true">→</span></a>}
+            {first && <a class="btn btn-accent" href={bookUrl(first)}>Start with {first.data.title} <Icon name="arrow-right" class="arrow" /></a>}
           </div>
           <ul class="series-covers" aria-label={`${s.data.name} books`}>
             {inSeries.map((b) => (
@@ -153,56 +155,59 @@ const stats = [
 
   <section class="container section bento" aria-labelledby="meet-heading">
     <article class="tile tile-meet reveal">
-      <p class="eyebrow accent-brass">About</p>
+      <p class="eyebrow accent-brass"><Icon name="user-round" />About</p>
       <h2 id="meet-heading" class="display">Meet Syd</h2>
       <p class="tile-text">{about?.data.shortBio}</p>
-      <a class="btn btn-secondary" href="/about">More about Syd <span class="arrow" aria-hidden="true">→</span></a>
+      <div class="tile-actions">
+        <a class="btn btn-secondary" href="/about">More about Syd <Icon name="arrow-right" class="arrow" /></a>
+        <SocialLinks tone="light" />
+      </div>
     </article>
 
     <article class="tile tile-eglf band-night band-candle reveal" data-accent="oxblood" aria-labelledby="eglf-heading">
-      <p class="eyebrow accent-brass-light">Essex Girls &amp; Witches</p>
+      <p class="eyebrow accent-brass-light"><Icon name="flame" />Essex Girls &amp; Witches</p>
       <h2 id="eglf-heading">The women history called witches</h2>
       <p>
         The women of Essex were called witches for centuries. Now they're called something else. Syd co-founded the
         Essex Girls Liberation Front to change that.
       </p>
-      <a class="btn btn-primary" href="/essex-girls-and-witches">Read the story <span class="arrow" aria-hidden="true">→</span></a>
+      <a class="btn btn-primary" href="/essex-girls-and-witches">Read the story <Icon name="arrow-right" class="arrow" /></a>
     </article>
 
     {strangeMagic && grandIllusion && (
       <article class="tile tile-start reveal" aria-labelledby="start-heading">
-        <p class="eyebrow accent-brass">New here?</p>
+        <p class="eyebrow accent-brass"><Icon name="book-open" />New here?</p>
         <h2 id="start-heading">Where to start</h2>
         <ul class="start-list">
           <li data-accent="witch-green">
-            <a href={bookUrl(strangeMagic)}><cite>{strangeMagic.data.title}</cite><span>for witches and wit <span class="arrow" aria-hidden="true">→</span></span></a>
+            <a href={bookUrl(strangeMagic)}><cite>{strangeMagic.data.title}</cite><span>for witches and wit <Icon name="arrow-right" class="arrow" /></span></a>
           </li>
           <li data-accent="oxblood">
-            <a href={bookUrl(grandIllusion)}><cite>{grandIllusion.data.title}</cite><span>for wartime espionage <span class="arrow" aria-hidden="true">→</span></span></a>
+            <a href={bookUrl(grandIllusion)}><cite>{grandIllusion.data.title}</cite><span>for wartime espionage <Icon name="arrow-right" class="arrow" /></span></a>
           </li>
         </ul>
       </article>
     )}
 
     <article class="tile tile-events reveal" aria-labelledby="tile-events-heading">
-      <p class="eyebrow accent-brass">Events</p>
+      <p class="eyebrow accent-brass"><Icon name="calendar" />Events</p>
       <h2 id="tile-events-heading">Talks, signings and festivals</h2>
       <p>See where Syd is appearing next, or book her for your festival, library or book group.</p>
-      <a class="tile-link" href="/events">Events and talks <span class="arrow" aria-hidden="true">→</span></a>
+      <a class="tile-link" href="/events">Events and talks <Icon name="arrow-right" class="arrow" /></a>
     </article>
 
     <article class="tile tile-news reveal" aria-labelledby="tile-news-heading">
-      <p class="eyebrow accent-brass">Newsletter</p>
+      <p class="eyebrow accent-brass"><Icon name="mail" />Newsletter</p>
       <h2 id="tile-news-heading">{site.newsletter.name}</h2>
       <p>New books, events and history notes from Syd's research. Once a month at most.</p>
-      <a class="tile-link" href="/newsletter">About the newsletter <span class="arrow" aria-hidden="true">→</span></a>
+      <a class="tile-link" href="/newsletter">About the newsletter <Icon name="arrow-right" class="arrow" /></a>
     </article>
 
     <article class="tile tile-faq reveal" aria-labelledby="tile-faq-heading">
-      <p class="eyebrow accent-brass">FAQ</p>
+      <p class="eyebrow accent-brass"><Icon name="circle-help" />FAQ</p>
       <h2 id="tile-faq-heading">Reading order and more</h2>
       <p>Which book comes next, which have audiobooks, and where to buy locally.</p>
-      <a class="tile-link" href="/faq">Read the answers <span class="arrow" aria-hidden="true">→</span></a>
+      <a class="tile-link" href="/faq">Read the answers <Icon name="arrow-right" class="arrow" /></a>
     </article>
   </section>
 </BaseLayout>
@@ -293,7 +298,8 @@ const stats = [
     .stat:first-child { padding-left: 0; }
     .stat + .stat { border-top: 0; border-left: 1px solid rgb(255 255 255 / 0.12); }
   }
-  .stat dd { font-family: var(--font-display); font-size: clamp(2.25rem, 1.8rem + 1.6vw, 3.25rem); font-weight: 600; line-height: 1; color: var(--brass-light); }
+  .stat dd { display: flex; align-items: center; gap: 0.75rem; font-family: var(--font-display); font-size: clamp(2.25rem, 1.8rem + 1.6vw, 3.25rem); font-weight: 600; line-height: 1; color: var(--brass-light); }
+  .stat :global(.stat-icon) { color: var(--parchment-muted); }
   .stat dt { font-size: var(--small); color: var(--parchment-muted); max-width: 18rem; }
 
   /* ---- Praise: large italic pull quote ---- */
@@ -417,7 +423,8 @@ const stats = [
       var(--night);
   }
   .tile-eglf h2 { font-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.4rem) !important; line-height: 1.05; }
-  .tile-link, .tile .btn { margin-top: auto; }
+  .tile-link, .tile > .btn, .tile-actions { margin-top: auto; }
+  .tile-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-3); }
   .tile-link { display: inline-flex; align-items: center; gap: 0.4rem; min-height: var(--tap); font-weight: 600; color: var(--ink); text-underline-offset: 0.3em; }
   .start-list { list-style: none; padding: 0; width: 100%; display: grid; gap: var(--space-2); }
   @media (min-width: 600px) { .start-list { grid-template-columns: 1fr 1fr; } }

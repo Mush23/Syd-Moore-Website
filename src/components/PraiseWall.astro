@@ -4,6 +4,7 @@
  * files (never written here), and each card links to its book.
  */
 import { bookUrl, type Book } from "../lib/books";
+import Icon from "./Icon.astro";
 
 interface Props {
   books: Book[]; limit?: number; headingId?: string; heading?: string;
@@ -26,13 +27,13 @@ const clean = (t: string) => t.replace(/^[“"]|[”"]$/g, "");
 {items.length > 0 && (
   <section class="praise-wall band-night band-candle" aria-labelledby={headingId}>
     <div class="container inner">
-      <p class="eyebrow">Praise</p>
+      <p class="eyebrow"><Icon name="quote" />Praise</p>
       <h2 id={headingId} class="display">{heading}</h2>
       <ul class="wall" tabindex="0" aria-label="Review quotes">
         {items.map(({ q, b }) => (
           <li class="card glass reveal">
             <figure>
-              <span class="stars" aria-hidden="true">✦</span>
+              <Icon name="quote" class="stars" size="1.25rem" />
               <blockquote><p>{clean(q.text)}</p></blockquote>
               <figcaption>
                 <span class="source">{q.source}</span>
@@ -73,7 +74,7 @@ const clean = (t: string) => t.replace(/^[“"]|[”"]$/g, "");
   @media (min-width: 640px) { .wall { columns: 2; } }
   @media (min-width: 1000px) { .wall { columns: 3; } }
   .card { break-inside: avoid; margin-bottom: var(--space-3); padding: var(--space-3); }
-  .stars { color: var(--brass-light); font-size: 0.9rem; letter-spacing: 0.3em; }
+  .card :global(.stars) { color: var(--brass-light); }
   blockquote p {
     margin-top: var(--space-1);
     font-family: var(--font-display);

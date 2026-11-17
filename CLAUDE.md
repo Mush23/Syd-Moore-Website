@@ -64,6 +64,23 @@ The owner still found the site "a bit plain" and asked for a modern, fancy look.
 - **Buttons** are pills; `--radius` is 14px; cards use 18–24px.
 - **Screenshots:** full-page captures must emulate reduced motion, otherwise `.reveal` blocks below the fold are captured at opacity 0.
 
+### Icons (17 Nov 2026)
+
+The owner asked for icons to be used wherever possible, through one standard system.
+
+- **One component:** `src/components/Icon.astro`. It wraps Astro Icon (`astro-icon`, registered in `astro.config.mjs`), which writes SVG into the page at build time. There is no icon font and no extra JavaScript.
+  - UI icons are Lucide: `<Icon name="calendar" />`.
+  - Brand logos are Simple Icons: `<Icon name="simple-icons:instagram" />`.
+  - Custom SVGs can go in `src/icons/` (Astro Icon's default folder).
+- **Don't add icons any other way** (no pasted SVG, emoji or icon fonts). The ✦ ornament on eyebrows and quote cards is the one exception; an eyebrow that contains an `<Icon>` drops the ✦ automatically.
+- **Accessibility:** icons are decorative (`aria-hidden`) because text sits beside them. An icon-only control needs its own accessible name: see `SocialLinks.astro`, which uses `aria-label` and a 44px target.
+- **Helper classes** (in `global.css`): `.icon-lead` and `.icon-trail` for spacing in running text, `.icon-accent` for the series or brass colour. Flex containers such as `.btn` and `.eyebrow` space icons with `gap`.
+- **Where icon names live:**
+  - menu items and social accounts: `site.nav` and `site.social` in `src/config/site.ts`;
+  - book-detail labels, quick facts and buy-panel format tabs: small lookup maps in their own files, with `info` as the fallback.
+- **Social links:** `SocialLinks.astro` renders `site.social` in the footer, the Contact and About pages and the home "Meet Syd" tile. The same list feeds `sameAs` structured data, so update both when an account changes.
+- Icons are always written inline (`is:inline`), not shared through a sprite: several first appear inside elements that start hidden, where a sprite is unreliable.
+
 ## Conventions
 
 - **Never invent content.** No quotes, dates, ISBNs, URLs or biographical facts beyond `docs/brief.md`. Anything missing goes in `docs/CONTENT-TODO.md`.
