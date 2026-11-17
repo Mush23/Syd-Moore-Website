@@ -62,6 +62,6 @@ export const site = {
   ],
 
   disclosure:
-    "Ad · Some of these links pay Syd a small commission. Buying local helps Essex bookshops most.",
+    "Ad · Some of these links pay Syd a small commission.",
   amazonStatement: "As an Amazon Associate, Syd Moore earns from qualifying purchases.",
 } as const;
