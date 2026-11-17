@@ -156,7 +156,14 @@ const ld = {
 
 <style>
   .faq { max-width: calc(var(--measure) + 2 * var(--gutter)); margin-inline: 0; padding-bottom: var(--space-6); }
-  .faq section + section { margin-top: var(--space-5); }
+  .faq section {
+    padding: var(--space-3);
+    border-radius: 20px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    box-shadow: 0 20px 40px -34px rgb(28 26 31 / 0.5);
+  }
+  .faq section + section { margin-top: var(--space-2); }
   .faq h2 { font-size: var(--h3); }
   .faq h2 + * { margin-top: var(--space-2); }
   .faq p + p, .faq ul + p, .faq p + ul { margin-top: var(--space-1); }

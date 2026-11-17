@@ -4,7 +4,7 @@ const current = Astro.url.pathname.replace(/\/$/, "") || "/";
 const isCurrent = (href: string) => current === href || current.startsWith(`${href}/`) ||
   (href === "/books" && current.startsWith("/series"));
 ---
-<header class="site-header">
+<header class="site-header band-night">
   <div class="container bar">
     <a class="wordmark" href="/" aria-label="Syd Moore, home">Syd Moore</a>
 
@@ -54,9 +54,10 @@ const isCurrent = (href: string) => current === href || current.startsWith(`${hr
     position: sticky;
     top: 0;
     z-index: 50;
-    background: color-mix(in srgb, var(--paper) 94%, transparent);
-    backdrop-filter: saturate(1.2) blur(8px);
-    border-bottom: 1px solid var(--line);
+    background: color-mix(in srgb, var(--night) 82%, transparent);
+    backdrop-filter: saturate(1.4) blur(14px);
+    -webkit-backdrop-filter: saturate(1.4) blur(14px);
+    border-bottom: 1px solid rgb(255 255 255 / 0.08);
   }
   .bar {
     display: flex;
@@ -71,7 +72,7 @@ const isCurrent = (href: string) => current === href || current.startsWith(`${hr
     font-size: 1.5rem;
     font-weight: 650;
     letter-spacing: -0.01em;
-    color: var(--ink);
+    color: var(--parchment);
     text-decoration: none;
     padding-block: 0.5rem;
   }
@@ -87,14 +88,14 @@ const isCurrent = (href: string) => current === href || current.startsWith(`${hr
     display: inline-flex;
     align-items: center;
     min-height: var(--tap);
-    color: var(--ink);
+    color: var(--parchment);
     font-weight: 500;
     font-size: 1rem;
     text-decoration: none;
     border-bottom: 2px solid transparent;
   }
-  .site-nav a:not(.btn):hover { border-bottom-color: var(--ink); }
-  .site-nav a[aria-current="page"] { border-bottom-color: var(--brass); }
+  .site-nav a:not(.btn):hover { border-bottom-color: var(--parchment); }
+  .site-nav a[aria-current="page"] { border-bottom-color: var(--brass-light); }
 
   .menu-toggle {
     display: inline-flex;
@@ -103,7 +104,8 @@ const isCurrent = (href: string) => current === href || current.startsWith(`${hr
     min-height: var(--tap);
     padding: 0.5rem 0.9rem;
     background: transparent;
-    border: 1px solid var(--ink-muted);
+    border: 1px solid var(--parchment-muted);
+    color: var(--parchment);
     border-radius: var(--radius);
     font-weight: 600;
   }
@@ -124,7 +126,7 @@ const isCurrent = (href: string) => current === href || current.startsWith(`${hr
     .site-header[data-js] .site-nav { flex-basis: 100%; display: none; padding-bottom: var(--space-2); }
     .site-header[data-js][data-open="true"] .site-nav { display: block; }
     .site-header[data-js] .site-nav ul { flex-direction: column; align-items: stretch; gap: 0; }
-    .site-header[data-js] .site-nav li { border-top: 1px solid var(--line); }
+    .site-header[data-js] .site-nav li { border-top: 1px solid var(--line-night); }
     .site-header[data-js] .site-nav a:not(.btn) { width: 100%; }
     .nav-cta { padding-top: var(--space-2); }
     .nav-cta .btn { width: 100%; }

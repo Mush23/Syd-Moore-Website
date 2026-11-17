@@ -77,7 +77,7 @@
   /* Space & layout */
   --gutter: 1rem;            /* 16px phone gutter */
   --max: 75rem;              /* 1200px */
-  --radius: 6px;
+  --radius: 14px;
   --space-1: 0.5rem;
   --space-2: 1rem;
   --space-3: 1.5rem;

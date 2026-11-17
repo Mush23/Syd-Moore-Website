@@ -1,0 +1,84 @@
+---
+/**
+ * A wall of review quotes on a night band. Quotes come straight from the book
+ * files (never written here), and each card links to its book.
+ */
+import { bookUrl, type Book } from "../lib/books";
+
+interface Props { books: Book[]; limit?: number; headingId?: string; heading?: string }
+const { books, limit = 9, headingId = "praise-wall", heading = "What the critics say" } = Astro.props;
+
+// One quote per book first, so the wall covers the whole list, then any extras.
+const firsts = books.flatMap((b) => (b.data.quotes[0] ? [{ q: b.data.quotes[0], b }] : []));
+const rest = books.flatMap((b) => b.data.quotes.slice(1).map((q) => ({ q, b })));
+// The same quote can sit on two books (series praise), so show each wording once.
+const seen = new Set<string>();
+const items = [...firsts, ...rest]
+  .filter(({ q }) => !seen.has(q.text) && Boolean(seen.add(q.text)))
+  .slice(0, limit);
+const clean = (t: string) => t.replace(/^[“"]|[”"]$/g, "");
+---
+{items.length > 0 && (
+  <section class="praise-wall band-night band-candle" aria-labelledby={headingId}>
+    <div class="container inner">
+      <p class="eyebrow">Praise</p>
+      <h2 id={headingId} class="display">{heading}</h2>
+      <ul class="wall" tabindex="0" aria-label="Review quotes">
+        {items.map(({ q, b }) => (
+          <li class="card glass reveal">
+            <figure>
+              <span class="stars" aria-hidden="true">✦</span>
+              <blockquote><p>{clean(q.text)}</p></blockquote>
+              <figcaption>
+                <span class="source">{q.source}</span>
+                <a href={bookUrl(b)}><span class="visually-hidden">About </span><cite>{b.data.title}</cite></a>
+              </figcaption>
+            </figure>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}
+
+<style>
+  .praise-wall { padding-block: var(--space-6); }
+  .eyebrow { color: var(--brass-light); }
+  .display { margin-top: var(--space-1); }
+  .wall {
+    list-style: none;
+    padding: 0;
+    margin-top: var(--space-4);
+    columns: 1;
+    column-gap: var(--space-3);
+  }
+  @media (max-width: 639px) {
+    .wall {
+      display: flex;
+      gap: var(--space-2);
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      margin-inline: calc(var(--gutter) * -1);
+      padding: 0 var(--gutter) var(--space-2);
+      scrollbar-width: thin;
+      scrollbar-color: var(--parchment-muted) transparent;
+    }
+    .wall .card { flex: 0 0 82%; scroll-snap-align: center; margin-bottom: 0; animation: none; }
+  }
+  @media (min-width: 640px) { .wall { columns: 2; } }
+  @media (min-width: 1000px) { .wall { columns: 3; } }
+  .card { break-inside: avoid; margin-bottom: var(--space-3); padding: var(--space-3); }
+  .stars { color: var(--brass-light); font-size: 0.9rem; letter-spacing: 0.3em; }
+  blockquote p {
+    margin-top: var(--space-1);
+    font-family: var(--font-display);
+    font-size: clamp(1.2rem, 1.05rem + 0.5vw, 1.45rem);
+    line-height: 1.3;
+    font-weight: 500;
+    text-wrap: balance;
+  }
+  .card:nth-child(3n + 1) blockquote p { font-style: italic; }
+  figcaption { margin-top: var(--space-2); display: grid; gap: 0.15rem; font-size: var(--small); }
+  .source { font-family: var(--font-mono); font-size: var(--label); letter-spacing: 0.1em; text-transform: uppercase; color: var(--parchment); }
+  figcaption a { display: inline-flex; align-items: center; min-height: 1.5rem; }
+</style>

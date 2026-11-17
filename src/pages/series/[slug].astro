@@ -52,8 +52,10 @@ const ld = series.id === "standalones" ? undefined : {
     </div>
   </header>
 
-  <section class="container section" aria-labelledby="order-heading">
-    <h2 id="order-heading">{series.id === "standalones" ? "The books" : "Reading order"}</h2>
+  <section class="container section" aria-labelledby="order-heading" data-accent={s.accent}>
+    <div class="panel-tint">
+    <p class="eyebrow order-eyebrow">{books.length} {books.length === 1 ? "book" : "books"}</p>
+    <h2 id="order-heading" class="display">{series.id === "standalones" ? "The books" : "Reading order"}</h2>
     <div class="order">
       <SeriesReadingOrder books={books} series={series} headingId="order-heading" />
     </div>
@@ -62,6 +64,7 @@ const ld = series.id === "standalones" ? undefined : {
         {s.notes.map((n) => <li>{n}</li>)}
       </ul>
     )}
+    </div>
   </section>
 
   <section class="container section-tight" aria-labelledby="more-heading">
@@ -83,7 +86,8 @@ const ld = series.id === "standalones" ? undefined : {
   .intro :global(p) { max-width: var(--measure); }
   .cta { margin-top: var(--space-3); }
   .order { margin-top: var(--space-3); }
-  .notes { margin-top: var(--space-4); max-width: var(--measure); padding-left: 1.25rem; color: var(--ink-muted); }
+  .order-eyebrow { color: var(--accent); }
+  .notes { margin-top: var(--space-4); max-width: var(--measure); padding-left: 1.25rem; color: var(--ink); }
   .notes li + li { margin-top: 0.5rem; }
   .more { margin-top: var(--space-3); }
 </style>

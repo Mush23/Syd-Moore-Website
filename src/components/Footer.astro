@@ -42,10 +42,25 @@ const year = new Date().getFullYear();
     <p>{site.amazonStatement} Some other book links are affiliate links too; see the <a href="/privacy#links-to-shops">privacy notice</a>.</p>
     <p>© {year} Syd Moore</p>
   </div>
+  <p class="giant" aria-hidden="true">Syd Moore</p>
 </footer>
 
 <style>
-  .site-footer { margin-top: var(--space-6); }
+  .site-footer { position: relative; overflow: hidden; border-top: 1px solid rgb(255 255 255 / 0.08); }
+  .giant {
+    margin: 0 0 -0.16em;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(4.5rem, 19vw, 19rem);
+    line-height: 0.85;
+    letter-spacing: -0.04em;
+    white-space: nowrap;
+    text-align: center;
+    color: transparent;
+    -webkit-text-stroke: 1px rgb(239 232 218 / 0.24);
+    user-select: none;
+    pointer-events: none;
+  }
   .footer-grid {
     display: grid;
     gap: var(--space-4);
