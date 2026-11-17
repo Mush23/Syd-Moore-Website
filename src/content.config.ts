@@ -66,7 +66,8 @@ const books = defineCollection({
       .object({ paperback: isbn, hardback: isbn, ebook: isbn, audio: isbn })
       .default({})),
     hook: z.string().max(140),
-    quotes: z.preprocess(blank, z.array(z.object({ text: z.string(), source: z.string() })).default([])),
+    /** url records where the quote was published; it is kept for checking and isn't shown. */
+    quotes: z.preprocess(blank, z.array(z.object({ text: z.string(), source: z.string(), url })).default([])),
     /** Syd's "history behind the book" note (Markdown). Hidden when empty. */
     historyNote: opt(z.string()),
     /** Cover file name inside src/assets/covers (Pages CMS writes /covers/<file>). */

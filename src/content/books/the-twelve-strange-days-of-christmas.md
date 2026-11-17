@@ -19,6 +19,10 @@ hook: "Twelve uncanny tales for the darkest nights of the year."
 quotes:
   - text: "Spooky and sassy."
     source: "Sunday Times Crime Club"
+    url: "https://oneworld-publications.com/work/the-twelve-strange-days-of-christmas/"
+  - text: "This is a great collection of seasonal stories…"
+    source: "Mystery People"
+    url: "https://oneworld-publications.com/work/the-twelve-strange-days-of-christmas/"
 links:
   waterstones: "https://www.waterstones.com/book/the-twelve-strange-days-of-christmas/syd-moore/9781786076809"
 draft: false

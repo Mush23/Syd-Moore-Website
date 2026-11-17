@@ -19,12 +19,23 @@ Last reviewed 25 September 2026. Everything below is either missing or unconfirm
 
 - [ ] **launch** High-resolution covers for all 14 published titles plus *The Final Act of Daphne Devine* (upload in Pages CMS → Books → Cover)
 - [ ] **launch** Check every description against the publisher-approved blurb (drafts are in each book file)
-- [ ] **launch** Confirm the praise quotes can be used on the site (Oneworld and HarperCollins publicity)
-- [ ] *The Final Act of Daphne Devine*: a review quote of its own once reviews arrive. It currently shows Erin Kelly's quote about *The Grand Illusion*, labelled as such, as the brief suggests.
+- [ ] **launch** Confirm the praise quotes can be used on the site (Oneworld and HarperCollins publicity). On 17 November 2026, 20 more quotes were added across ten books.
+  - Each was checked word for word against the page it came from, and that page's link is saved with the quote (the "Where it was published" field in Pages CMS).
+  - Nearly all come from Oneworld's own book pages. *The Witching Hour* quotes come from the publisher's description on Apple Books.
+  - One is not from a publisher: the Blue Book Balloon blog review of *The Final Act of Daphne Devine*. Remove it in Pages CMS if Syd would rather not use it.
+  - Long quotes were shortened with "…". Syd or the publisher may prefer the full versions.
+- [ ] *The Final Act of Daphne Devine*: add press reviews of its own as they arrive. The publisher's page still lists only praise for *The Grand Illusion*, which the site shows labelled as such.
+- [ ] The Sarah Perry quote was moved from *Strange Tricks* to *Strange Magic*. Oneworld's page shows she wrote it about *Strange Magic* ("Strange Magic is that rarest of things…"). The brief had it under *Strange Tricks*.
+- [ ] *Witch Hunt*: HarperCollins's page is said to carry Guardian and other quotes, but it couldn't be opened to check the wording, so none were added.
+- [ ] *The Grand Illusion*: Simon & Schuster's page is said to list more author endorsements (Barbara Nadel, Sophia Bennett, Emma Haughton and others). It couldn't be opened to check, so only the two that Oneworld also prints were added.
+- [ ] *Strange Tricks*: a Peterborough Telegraph quote calls it the "sixth case", while the site numbers it Book 5. It was left out until the series numbering is settled.
 - [ ] "The history behind the book" note for each novel, 100–200 words (start with Section W)
 - [ ] Extracts (PDF) if the publishers allow them
 - [ ] Verify the ebook ISBNs (taken from Simon & Schuster listings) and the audiobook ISBN for *The Great Deception*
-- [ ] *Strange Maven*: confirm the date (Waterstones says 6 January 2028; Fantastic Fiction says 2027) and a description
+- [ ] *Strange Maven*: confirm the date and a description. The sources disagree:
+  - Waterstones says 6 January 2028 and Fantastic Fiction says 2027;
+  - Oneworld's own page (seen 17 November 2026) shows "January 14, 2027" beside US prices, and a caption on the same page says "Out on 20th May 2027".
+  The site still says "Coming soon" with no date until Syd confirms.
 - [ ] Series numbering for the Christmas collections and *The Strange Casebook* (retailers number them differently)
 - [ ] *If on a Winter's Night a Traveller Passes By* (2013 Kindle story): keep or drop? It is saved as a draft; add a description and link, then untick Draft to publish
 - [ ] Kindle, Apple Books, Kobo, Google Play, Hive and Libro.fm links where available

@@ -19,6 +19,13 @@ hook: "Halloween, a dead body, and a stone knight missing one finger."
 quotes:
   - text: "A hugely enjoyable series."
     source: "i"
+    url: "https://oneworld-publications.com/work/strange-tombs-an-essex-witch-museum-mystery/"
+  - text: "…it's always a pleasure to spend time in her company."
+    source: "Crime Review"
+    url: "https://oneworld-publications.com/work/strange-tombs-an-essex-witch-museum-mystery/"
+  - text: "…the series shows no sign of flagging…"
+    source: "Blue Book Balloon"
+    url: "https://oneworld-publications.com/work/strange-tombs-an-essex-witch-museum-mystery/"
 links:
   waterstones: "https://www.waterstones.com/book/strange-tombs-an-essex-witch-museum-mystery/syd-moore/9781786074485"
   bookshop: "https://uk.bookshop.org/p/books/strange-tombs-an-essex-witch-museum-mystery-syd-moore/20716d91c6548368"

@@ -19,6 +19,13 @@ hook: "Move the witch's stone and see what happens."
 quotes:
   - text: "…the most entertaining, intricate, ingeniously structured and beautifully written entry so far…"
     source: "Starburst"
+    url: "https://oneworld-publications.com/work/strange-fascination/"
+  - text: "It makes for a thoroughly good read... Very much recommended."
+    source: "Mystery People"
+    url: "https://oneworld-publications.com/work/strange-fascination/"
+  - text: "There was some real threat and excitement as well as a few spooky chills."
+    source: "Crime Review"
+    url: "https://oneworld-publications.com/work/strange-fascination/"
 links:
   waterstones: "https://www.waterstones.com/book/strange-fascination/syd-moore/9781786072573"
 draft: false

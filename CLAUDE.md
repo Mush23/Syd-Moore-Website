@@ -88,14 +88,15 @@ npm test          # Playwright: routes, buy panel, keyboard, axe, links, redirec
 npm run lhci      # Lighthouse budgets (perf ≥ 95, a11y 100, best practices ≥ 95, SEO 100)
 ```
 
-## Status (25 Sep 2026)
+## Status (17 Nov 2026)
 
-- Installed, built and tested for the first time on branch `finish-and-test`.
-- `npm run check`: 0 errors, 0 warnings, 0 hints. `npm run build`: 32 pages, no warnings.
-- `npm test`: all 65 Playwright tests pass (routes, axe WCAG 2.2 AA, buy panel, keyboard tabs, phone sheet, links, redirects).
-- `npm run lhci`: 100 / 100 / 100 / 100 (mobile) on `/`, the Final Act book page and `/series/section-w`.
-- Screenshots of the four key pages at 1200px and 390px were checked against the brief: no horizontal scroll, covers at 2:3, buttons at least 44px.
-- The repo's first commit had every file flattened into the root by the browser upload. The folder structure was restored from the original zip; contents were unchanged.
+- Live at https://mush23.github.io/Syd-Moore-Website/ (GitHub Pages preview; sydmoore.com not yet moved). `main` has the first design refresh.
+- Branch `modern-redesign` (built on `review-improvements`, which was never merged) holds the site-review changes, the modern design layer and the extra review quotes. One pull request covers all three.
+- On that branch: `npm run check` is clean, `npm test` passes 66 of 66, and `npm run lhci` scores 100 / 100 / 100 / 100 with CLS 0.
+- Review quotes: 20 added on 17 Nov 2026. Each was checked against its source page, and the link is stored in the quote's `url` field (not displayed). See `docs/CONTENT-TODO.md` for what still needs Syd's or the publisher's approval.
+- Local tooling notes (Windows, Git Bash):
+  - Tests and LHCI reuse whatever is on port 4321, so stop the dev server first or they test unbuilt pages.
+  - Don't export `MSYS_NO_PATHCONV` when running LHCI: it stops `CHROME_PATH` being converted.
 
 ### Decisions made while finishing
 
@@ -111,7 +112,8 @@ npm run lhci      # Lighthouse budgets (perf ≥ 95, a11y 100, best practices �
 
 ## Next steps
 
-1. Merge the `finish-and-test` pull request.
-2. Turn on GitHub Pages (Settings → Pages → Source: GitHub Actions) and check the github.io preview, following `docs/DEPLOY.md`. Move sydmoore.com over only once the launch content is ready.
-3. Work through `docs/CONTENT-TODO.md` with Syd, covers and the portrait first.
-4. Before launch, test with VoiceOver on an iPhone. The brief's checklist asks for this and it can't be automated.
+1. Merge the `modern-redesign` pull request and check the live preview.
+2. Work through `docs/CONTENT-TODO.md` with Syd: covers and the portrait first, then quote approvals.
+3. Set up Kit so newsletter sign-up works (`docs/DEPLOY.md`, step 3).
+4. Move sydmoore.com over only once the launch content is ready (`docs/DEPLOY.md`, step 6).
+5. Before launch, test with VoiceOver on an iPhone. The brief's checklist asks for this and it can't be automated.

@@ -5,12 +5,17 @@
  */
 import { bookUrl, type Book } from "../lib/books";
 
-interface Props { books: Book[]; limit?: number; headingId?: string; heading?: string }
-const { books, limit = 9, headingId = "praise-wall", heading = "What the critics say" } = Astro.props;
+interface Props {
+  books: Book[]; limit?: number; headingId?: string; heading?: string;
+  /** Quote wording already shown elsewhere on the page (e.g. the big pull quote), to leave out. */
+  exclude?: string;
+}
+const { books, limit = 9, headingId = "praise-wall", heading = "What the critics say", exclude } = Astro.props;
 
 // One quote per book first, so the wall covers the whole list, then any extras.
-const firsts = books.flatMap((b) => (b.data.quotes[0] ? [{ q: b.data.quotes[0], b }] : []));
-const rest = books.flatMap((b) => b.data.quotes.slice(1).map((q) => ({ q, b })));
+const pool = books.map((b) => ({ b, quotes: b.data.quotes.filter((q) => q.text !== exclude) }));
+const firsts = pool.flatMap(({ b, quotes }) => (quotes[0] ? [{ q: quotes[0], b }] : []));
+const rest = pool.flatMap(({ b, quotes }) => quotes.slice(1).map((q) => ({ q, b })));
 // The same quote can sit on two books (series praise), so show each wording once.
 const seen = new Set<string>();
 const items = [...firsts, ...rest]

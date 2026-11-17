@@ -16,8 +16,15 @@ isbn:
   ebook: "9780861541652"
 hook: "One last mission: into enemy territory with a grimoire and a cover story."
 quotes:
+  - text: "A gripping read, strongly recommended."
+    source: "Blue Book Balloon"
+    url: "https://bluebookballoon.blogspot.com/2026/10/the-final-act-of-daphne-devine-great.html"
   - text: "A breathtaking historical thriller."
     source: "Erin Kelly, on The Grand Illusion"
+    url: "https://oneworld-publications.com/work/the-final-act-of-daphne-devine/"
+  - text: "Vivid and thoroughly entertaining... More, please."
+    source: "The Guardian, on The Grand Illusion"
+    url: "https://oneworld-publications.com/work/the-final-act-of-daphne-devine/"
 links:
   waterstones: "https://www.waterstones.com/book/the-final-act-of-daphne-devine/syd-moore/9780861541645"
 draft: false
